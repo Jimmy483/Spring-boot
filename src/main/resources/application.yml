@@ -1,0 +1,35 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/test
+    username: root
+    password: password
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size=:10
+  application:
+  name:
+    learn
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML
+    enabled: true
+
+server:
+  port:
+    7071
+  error:
+    whitelabel:
+      enabled: false  # Disable the default error page
+    include-message: always  # Always include error message in the response
+    include-binding-errors: always  # Always include binding errors in the response
+
+
+logging:
+  level:
+    root: DEBUG
+    org.springframework: DEBUG
+    org.hibernate: DEBUG
+    com.com.gmi.learn: DEBUG
+
+
