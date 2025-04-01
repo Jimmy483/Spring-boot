@@ -118,3 +118,6 @@ public class HelloWorldController {
 
 
 }
+
+
+// create a platform where people can check the average prices for stuffs

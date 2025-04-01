@@ -4,15 +4,69 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nav Bar Example</title>
-    <link rel="stylesheet" href="/css/style.css">
+<!--    <link rel="stylesheet" href="/css/style.css">-->
+    <style>
+        body {
+    font-family: Arial, sans-serif ;
+    margin: 0 ;
+    padding: 0 ;
+}
+
+nav {
+    background-color: #333;
+    padding: 10px;
+}
+
+ul.navbar {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+ul.navbar li {
+    display: inline;
+    margin: 0 15px;
+}
+
+ul.navbar li a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+ul.navbar li a:hover {
+    background-color: #575757;
+}
+
+
+#carDiv {
+    width: 300px; /* Set a fixed width for centering */
+    margin: 0 auto; /* Center horizontally */
+    padding: 10px;
+    margin-top:250px;
+    display: flex; /* Use Flexbox to center the content */
+    justify-content: center; /* Center horizontally inside the div */
+    align-items: center; /* Center vertically inside the div */
+    height: auto; /* Set a height for the div */
+}
+
+#carDiv input {
+    width: 100%; /* Make the input take up the full width of the container */
+    padding: 10px;
+    box-sizing: border-box; /* Ensures padding doesn't affect width */
+    height:40px;
+    border-radius: 8px;
+    border: 1px solid #24968f
+}
+    </style>
 </head>
 <body>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" type="text/javascript"></script>
-<script type="text/javascript">
-    function showAlert(menuItem) {
-    alert("You clicked on " + menuItem);
-     }
-</script>
+
 <nav>
     <ul class="navbar">
         <li><a href="#home" onclick="showAlert('Home')">Home</a></li>
@@ -23,10 +77,21 @@
     </ul>
 </nav>
 
+<form id="searchForm" action="/search">
 <div id="carDiv">
-    <img src="/buggati.jpeg"/>
+    <input type="text" placeholder="Enter name of the product/edible you would like to search" onkeydown="keyPressed(event)"/>
 </div>
+</form>
+<script type="text/javascript">
+    function showAlert(menuItem) {
+    alert("You clicked on " + menuItem);
+     }
 
+     function keyPressed(event){
+     if(event.key=='Enter')
+alert("enter pressed");
+     }
+</script>
 
 </body>
 </html>
