@@ -62,10 +62,61 @@ ul.navbar li a:hover {
     border-radius: 8px;
     border: 1px solid #24968f
 }
+
+#items {
+    display: grid;
+    place-items: center;
+    height: 100vh;
+}
     </style>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+$("#items").hide();
+
+
+    });
+    
+    
+    function showAlert(menuItem) {
+    alert("You clicked on " + menuItem);
+     }
+
+     function keyPressed(event){
+     if(event.key=='Enter'){
+     alert("asdsadsda");
+        $.ajax({
+            url:"/search",
+            method: "GET",
+            data: {name:name},
+            success: function(data){
+                $("#items").show();
+                alert("success is permanent:" + data);
+                data.forEach(function(item){
+
+                $("#items").html(
+                
+                "Items&nbsp&nbsp&nbsp&nbsp Price </br></br>" +
+                
+                item.name + "     " + item.price);
+
+                })
+
+            },
+            error: function(){
+
+                alert("fail");
+            }
+
+        })
+     }
+    }
+    
+</script>
 </head>
 <body>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js" type="text/javascript"></script>
 
 <nav>
     <ul class="navbar">
@@ -77,21 +128,18 @@ ul.navbar li a:hover {
     </ul>
 </nav>
 
-<form id="searchForm" action="/search">
+<!-- <form id="searchForm" action="/search"> -->
 <div id="carDiv">
-    <input type="text" placeholder="Enter name of the product/edible you would like to search" onkeydown="keyPressed(event)"/>
+    <input type="text" name="name" placeholder="Enter name of the product/edible you would like to search" onkeydown="keyPressed(event)"/>
 </div>
-</form>
-<script type="text/javascript">
-    function showAlert(menuItem) {
-    alert("You clicked on " + menuItem);
-     }
+<!-- </form> -->
 
-     function keyPressed(event){
-     if(event.key=='Enter')
-alert("enter pressed");
-     }
-</script>
+<div id="items">
+    
+    
+    </div>
+
+
 
 </body>
 </html>

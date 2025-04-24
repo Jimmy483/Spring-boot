@@ -1,6 +1,7 @@
 package com.gmi.learn;
 
 import com.gmi.learn.dao.impl.BookDaoImpl;
+import com.gmi.learn.dao.impl.FoodDaoImpl;
 import com.gmi.learn.dao.impl.UserInfoDaoImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -22,5 +23,10 @@ public class AppConfig {
     @Bean
     public UserInfoDaoImpl userInfoDao(){
         return new UserInfoDaoImpl(jdbcTemplate);
+    }
+
+    @Bean
+    public FoodDaoImpl foodDao(){
+        return new FoodDaoImpl(jdbcTemplate);
     }
 }

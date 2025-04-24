@@ -1,8 +1,11 @@
 package com.gmi.learn.controller;
 
+import com.gmi.learn.dao.FoodDao;
 import com.gmi.learn.dao.impl.BookDaoImpl;
+import com.gmi.learn.dao.impl.FoodDaoImpl;
 import com.gmi.learn.dao.impl.UserInfoDaoImpl;
 import com.gmi.learn.domain.Book;
+import com.gmi.learn.domain.Food;
 import com.gmi.learn.domain.UserInfo;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +38,9 @@ public class HelloWorldController {
 
     @Autowired
     private UserInfoDaoImpl userInfoDao;
+
+    @Autowired
+    private FoodDaoImpl foodDao;
 
 //    public HelloWorldController(UserInfoDaoImpl userInfoDao){
 //        this.userInfoDao=userInfoDao;
@@ -81,6 +87,13 @@ public class HelloWorldController {
         }
 
 
+        @RequestMapping(value="/search")
+        @ResponseBody
+        public List<Food> getFoodWithSearch(@RequestParam("name") String name){
+            List<Food> foodList=foodDao.fetch(name);
+            System.out.println("food list = " + foodList);
+            return foodList;
+        }
 
 
     //    @PostMapping("/home")  // Ensure you're using POST and not GET
