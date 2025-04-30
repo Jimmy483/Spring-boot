@@ -90,11 +90,22 @@ public class HelloWorldController {
         @RequestMapping(value="/search")
         @ResponseBody
         public List<Food> getFoodWithSearch(@RequestParam("name") String name){
+            System.out.println("name params = " + name);
             List<Food> foodList=foodDao.fetch(name);
             System.out.println("food list = " + foodList);
             return foodList;
         }
 
+    @RequestMapping(value="/sort")
+    @ResponseBody
+    public List<Food> sortTable(@RequestParam("name") String name, @RequestParam("sort") String sort, @RequestParam("order") String order){
+        System.out.println("name  = " + name);
+        System.out.println("sort = " + sort);
+        System.out.println("order = " + order);
+        List<Food> foodList=foodDao.fetchWithSortOrder(name,sort,order);
+        System.out.println("food list = " + foodList);
+        return foodList;
+    }
 
     //    @PostMapping("/home")  // Ensure you're using POST and not GET
     @RequestMapping(value = "/home", method = RequestMethod.POST)

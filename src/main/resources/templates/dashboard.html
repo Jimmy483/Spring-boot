@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nav Bar Example</title>
+    <title>Momo</title>
 <!--    <link rel="stylesheet" href="/css/style.css">-->
     <style>
         body {
@@ -64,9 +64,29 @@ ul.navbar li a:hover {
 }
 
 #items {
-    display: grid;
-    place-items: center;
-    height: 100vh;
+    display: block;
+    margin-top: 30px; /* Adjust as needed */
+    text-align: center;
+}
+
+#items table {
+    border-collapse: collapse;
+    width: 50%; /* or 100% if you want it full width */
+    text-align: left;
+    margin: 0 auto;
+}
+
+#items th, #items td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+#items th {
+    background-color: #f2f2f2;
+}
+
+#intro{
+    text-align:center;
 }
     </style>
 
@@ -74,44 +94,81 @@ ul.navbar li a:hover {
 
 <script type="text/javascript">
     $(document).ready(function(){
-$("#items").hide();
+$('#items').hide();
 
 
     });
     
-    
+
     function showAlert(menuItem) {
-    alert("You clicked on " + menuItem);
+    alert('You clicked on ' + menuItem);
      }
 
      function keyPressed(event){
      if(event.key=='Enter'){
-     alert("asdsadsda");
+
+     let name=$('#name').val();
+     
         $.ajax({
-            url:"/search",
-            method: "GET",
+            url:'/search',
+            method: 'GET',
             data: {name:name},
             success: function(data){
-                $("#items").show();
-                alert("success is permanent:" + data);
+                $('#items').show();
+                var stringToDisplay = '<table>';
+                stringToDisplay += '<tr><th onclick="sortTable(\'name\')">Items</th><th onclick="sortTable(\'price\')">Price</th></tr>'
                 data.forEach(function(item){
-
-                $("#items").html(
                 
-                "Items&nbsp&nbsp&nbsp&nbsp Price </br></br>" +
+                stringToDisplay += '<tr><td>' + item.name +'</td><td>' + item.price +'</td></tr>' ;
+               
+                });
                 
-                item.name + "     " + item.price);
+                $('#items').html(stringToDisplay);
+                
+                
 
-                })
-
+                
             },
             error: function(){
 
-                alert("fail");
+                alert('fail');
             }
 
         })
      }
+    }
+
+    function sortTable(sort){ 
+        let name=$('#name').val();
+        let currentorder =$('#order').val(); 
+        let order=currentorder === 'asc' ? 'desc':'asc';
+        $('#order').val(order);
+        $.ajax({
+            url : '/sort',
+            method: 'GET',
+            data: {
+                name:name,
+                sort:sort,
+                order:order
+            },
+            success:function(data){
+                var stringToDisplay = '<table>';
+                stringToDisplay += '<tr><th onclick="sortTable(\'name\')">Items</th><th onclick="sortTable(\'price\')">Price</th></tr>'
+                data.forEach(function(item){
+                
+                stringToDisplay += '<tr><td>' + item.name +'</td><td>' + item.price +'</td></tr>' ;
+               
+                });
+                
+                // $('#items').html("");
+                $('#items').html(stringToDisplay);
+
+            },error:function(){
+                alert('fail');
+            }
+
+        })
+    
     }
     
 </script>
@@ -122,17 +179,19 @@ $("#items").hide();
     <ul class="navbar">
         <li><a href="#home" onclick="showAlert('Home')">Home</a></li>
         <li><a href="#about" onclick="showAlert('About')">About</a></li>
-        <li><a href="#services" onclick="showAlert('Services')">Services</a></li>
-        <li><a href="#portfolio" onclick="showAlert('Portfolio')">Portfolio</a></li>
+        <li><a href="#services" onclick="showAlert('Services')">Kathmandu</a></li>
+        <li><a href="#portfolio" onclick="showAlert('Portfolio')">Lalitpur</a></li>
         <li><a href="#contact" onclick="showAlert('Contact')">Contact</a></li>
     </ul>
 </nav>
 
-<!-- <form id="searchForm" action="/search"> -->
-<div id="carDiv">
-    <input type="text" name="name" placeholder="Enter name of the product/edible you would like to search" onkeydown="keyPressed(event)"/>
+<div id="intro">
+    <strong>Momo is an application which helps you find the average price for edibles around the city in nepal.</strong>
 </div>
-<!-- </form> -->
+
+<div id="carDiv">
+    <input type="text" id="name" placeholder="Enter name of the edible you would like to search" onkeydown="keyPressed(event)"/>
+</div>
 
 <div id="items">
     
@@ -140,6 +199,7 @@ $("#items").hide();
     </div>
 
 
-
+<input type="hidden" id="sort" value=""/>
+<input type="hidden" id="order" value="desc"/>
 </body>
 </html>
