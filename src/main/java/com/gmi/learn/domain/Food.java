@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Date;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,4 +19,8 @@ public class Food {
     String name;
 
     long price;
+
+    String image;
+
+    Date lastUpdated;
 }

@@ -6,6 +6,8 @@ import com.gmi.learn.domain.UserInfo;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.io.IOException;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -43,7 +45,9 @@ public class FoodDaoImpl implements FoodDao {
                     (rs, rowNum) ->new Food(
                             rs.getLong("id"),
                             rs.getString("name"),
-                            rs.getLong("price")
+                            rs.getLong("price"),
+                            rs.getString("image"),
+                            rs.getObject("lastUpdated", Date.class)
                     )
             );
 
@@ -62,7 +66,9 @@ public class FoodDaoImpl implements FoodDao {
                 (rs, rowNum) ->new Food(
                         rs.getLong("id"),
                         rs.getString("name"),
-                        rs.getLong("price")
+                        rs.getLong("price"),
+                        rs.getString("image"),
+                        rs.getObject("lastUpdated",Date.class)
                 )
         );
 

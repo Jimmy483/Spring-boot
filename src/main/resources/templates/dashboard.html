@@ -82,7 +82,8 @@ ul.navbar li a:hover {
 }
 
 #items th {
-    background-color: #f2f2f2;
+    background-color: #6071b1;
+    color: rgb(255, 255, 255);
 }
 
 #intro{
@@ -155,10 +156,13 @@ $('#items').hide();
 
     function updateTable(data){
         var stringToDisplay = '<table>';
-                stringToDisplay += '<tr><th onclick="sortTable(\'name\')">Items</th><th onclick="sortTable(\'price\')">Price</th></tr>'
+                stringToDisplay += '<tr><th>Image</th><th onclick="sortTable(\'name\')">Items</th><th onclick="sortTable(\'price\')">Price</th><th>Last Updated</th></tr>'
                 data.forEach(function(item){
-                
-                stringToDisplay += '<tr><td>' + item.name +'</td><td>' + item.price +'</td></tr>' ;
+                let imageSrc=item.image;
+                if(!item.image){
+                  imageSrc='/defaultFood.jpg';
+                }
+                stringToDisplay += '<tr><td><img src="'+ imageSrc +'" title="'+ item.name +'" height="100px" width="150px"/></td><td>' + item.name +'</td><td>' + item.price +'</td><td>'+item.lastUpdated+'</td></tr>' ;
                
                 });
                 
