@@ -22,5 +22,5 @@ public class Food {
 
     String image;
 
-    Date lastUpdated;
+    String lastUpdated;
 }

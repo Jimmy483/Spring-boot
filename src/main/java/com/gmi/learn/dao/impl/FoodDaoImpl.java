@@ -33,10 +33,10 @@ public class FoodDaoImpl implements FoodDao {
             order = "asc"; // Default order if invalid
         }
 
-        if (!Arrays.asList("name", "price").contains(sort)) {
+        if (!Arrays.asList("name", "price","lastUpdated").contains(sort)) {
             sort = "name"; // Default sort column if invalid
         }
-        String query="Select * from food where name like ? order by " + sort + " " + order;
+        String query="Select id, name, price, image, DATE_FORMAT(lastUpdated,'%d-%m-%Y') as lastUpdated from food where name like ? order by " + sort + " " + order;
 //        String query="Select * from food where name like ? order by name asc";
         System.out.println("query sort = " + query);
 
@@ -47,7 +47,7 @@ public class FoodDaoImpl implements FoodDao {
                             rs.getString("name"),
                             rs.getLong("price"),
                             rs.getString("image"),
-                            rs.getObject("lastUpdated", Date.class)
+                            rs.getString("lastUpdated")
                     )
             );
 
@@ -62,13 +62,13 @@ public class FoodDaoImpl implements FoodDao {
     public List<Food> fetch(String name) {
         List<Food> foodList = new ArrayList<>();
         System.out.println("name of = " + name);
-        foodList=jdbcTemplate.query("Select * from food where name like ?",new Object[]{"%" + name + "%"},
+        foodList=jdbcTemplate.query("Select id, name, price, image, DATE_FORMAT(lastUpdated,'%d-%m-%Y') as lastUpdated from food where name like ?",new Object[]{"%" + name + "%"},
                 (rs, rowNum) ->new Food(
                         rs.getLong("id"),
                         rs.getString("name"),
                         rs.getLong("price"),
                         rs.getString("image"),
-                        rs.getObject("lastUpdated",Date.class)
+                        rs.getString("lastUpdated")
                 )
         );
 
