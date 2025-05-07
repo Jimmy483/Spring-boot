@@ -1,6 +1,7 @@
 package com.gmi.learn.domain;
 
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,8 +13,12 @@ import java.sql.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Entity
 public class Food {
 
+//    used Entity cause new interface foodRepository extends PagingAndSortingRepository which is part of JPA and thus spring tries to process FoodRepository
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     long id;
 
     String name;
@@ -22,5 +27,6 @@ public class Food {
 
     String image;
 
+    @Column(name="lastUpdated")
     String lastUpdated;
 }

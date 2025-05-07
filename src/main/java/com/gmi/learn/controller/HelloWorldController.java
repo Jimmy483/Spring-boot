@@ -22,6 +22,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
@@ -41,6 +42,8 @@ public class HelloWorldController {
 
     @Autowired
     private FoodDaoImpl foodDao;
+
+//    private FoodController foodController=new FoodController();
 
 //    public HelloWorldController(UserInfoDaoImpl userInfoDao){
 //        this.userInfoDao=userInfoDao;
@@ -102,8 +105,9 @@ public class HelloWorldController {
         System.out.println("name  = " + name);
         System.out.println("sort = " + sort);
         System.out.println("order = " + order);
-        List<Food> foodList=foodDao.fetchWithSortOrder(name,sort,order);
-        System.out.println("food list = " + foodList);
+//        List<Food> foodList=foodDao.fetchWithSortOrder(name,sort,order);
+        List<Food> foodList=new ArrayList<>();
+//        System.out.println("food list = " + foodList);
         return foodList;
     }
 
