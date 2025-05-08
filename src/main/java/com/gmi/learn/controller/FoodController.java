@@ -26,20 +26,29 @@ public class FoodController {
 
 
     @GetMapping
-    public Page<Food> getFoods(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam String name,@RequestParam String sort,@RequestParam String order){
+    public Page<Food> getFoods(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size, @RequestParam(required = false) String name,@RequestParam(required = false) String sort,@RequestParam(required = false) String order,@RequestParam(defaultValue = "false") String fromPagination){
 
 
-        if (!"asc".equalsIgnoreCase(order) && !"desc".equalsIgnoreCase(order)) {
-            order = "asc"; // Default order if invalid
+        Pageable pageable;
+
+        if(sort!=null){
+            if (!Arrays.asList("name", "price","lastUpdated").contains(sort)) {
+                sort = "name"; // Default sort column if invalid
+            }
+            Sort.Direction direction;
+            if(fromPagination.equals("false")){
+                direction = "desc".equalsIgnoreCase(order) ? Sort.Direction.ASC : Sort.Direction.DESC;
+            }else {
+                direction ="desc".equalsIgnoreCase(order) ? Sort.Direction.DESC : Sort.Direction.ASC;
+            }
+            pageable= PageRequest.of(page, size, Sort.by(direction,sort));
+            return foodRepository.findByNameContainingIgnoreCase(name,pageable);
+
+        }else {
+            pageable= PageRequest.of(page,size);
+            return foodRepository.findAll(pageable);
         }
 
-        if (!Arrays.asList("name", "price","lastUpdated").contains(sort)) {
-            sort = "name"; // Default sort column if invalid
-        }
-
-        Sort.Direction direction = "desc".equalsIgnoreCase(order) ? Sort.Direction.DESC : Sort.Direction.ASC;
-        Pageable pageable= PageRequest.of(page, size, Sort.by(direction,sort));
-        return foodRepository.findByNameContainingIgnoreCase(name,pageable);
     }
 
 

@@ -181,6 +181,11 @@ ul.navbar li a:hover {
 .form-row textarea {
     flex: 1;
 }
+
+#pagination{
+    margin-top: 20px;
+    text-align: center;
+}
     </style>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" type="text/javascript"></script>
@@ -236,12 +241,12 @@ const modalContact=$('#contact-modal');
      let name=$('#name').val();
      
         $.ajax({
-            url:'/search',
+            url:'/api/foods',
             method: 'GET',
             data: {name:name},
             success: function(data){
                 $('#items').show();
-                updateTable(data);
+                renderTable(data);
                 
 
                 
@@ -257,11 +262,12 @@ const modalContact=$('#contact-modal');
 
     function sortTable(sort){ 
         let name=$('#name').val();
-        let currentorder =$('#order').val(); 
-        let order=currentorder === 'asc' ? 'desc':'asc';
-        $('#order').val(order);
+        let order =$('#order').val();
+        // let currentorder =$('#order').val(); 
+        // let order=currentorder === 'asc' ? 'desc':'asc';
+        // $('#order').val(order);
         $.ajax({
-            url : '/sort',
+            url : '/api/foods',
             method: 'GET',
             data: {
                 name:name,
@@ -269,7 +275,8 @@ const modalContact=$('#contact-modal');
                 order:order
             },
             success:function(data){
-               updateTable(data);
+               $('#order').val(order);
+               renderTable(data);
 
             },error:function(){
                 alert('fail');
@@ -279,10 +286,34 @@ const modalContact=$('#contact-modal');
     
     }
 
-    function updateTable(data){
+    function updateTableAfterPagination(page){
+        let name=$('#name').val();
+        let order =$('#order').val(); 
+        let sort=$('sort').val();
+        $.ajax({
+            url : '/api/foods',
+            method: 'GET',
+            data: {
+                name:name,
+                sort:sort,
+                order:order,
+                page:page,
+                fromPagination:'true'
+            },
+            success:function(data){
+               renderTable(data);
+
+            },error:function(){
+                alert('fail');
+            }
+
+        })
+    }
+
+    function renderTable(data){
         var stringToDisplay = '<table>';
                 stringToDisplay += '<tr><th>Image</th><th onclick="sortTable(\'name\')">Items</th><th onclick="sortTable(\'price\')">Price</th><th onclick="sortTable(\'lastUpdated\')">Last Updated</th></tr>'
-                data.forEach(function(item){
+                data.content.forEach(function(item){
                 let imageSrc=item.image;
                 if(!item.image){
                   imageSrc='/defaultFood.jpg';
@@ -293,6 +324,41 @@ const modalContact=$('#contact-modal');
                 
                 // $('#items').html("");
                 $('#items').html(stringToDisplay);
+
+                renderPagination(data);
+                
+
+    }
+
+    function renderPagination(data){
+        let currentPage=data.pageable.pageNumber;
+        let totalPage=data.totalPages;
+
+        const pagination=document.getElementById('pagination');
+        pagination.innerHTML='';
+
+        const previousBtn=document.createElement('button');
+        previousBtn.innerText='Previous';
+        previousBtn.disabled = currentPage===0;
+        previousBtn.onclick = ()=>updateTableAfterPagination(currentPage-1);
+        pagination.appendChild(previousBtn);
+
+        
+        for (let i = 0; i < totalPage; i++) {
+            const button = document.createElement('button');
+            button.innerText = i + 1;
+            button.disabled = i === currentPage;
+            
+            button.onclick = () => updateTableAfterPagination(i);
+            pagination.appendChild(button);
+        }
+
+
+        const nextButton = document.createElement('button');
+        nextButton.innerText = 'Next';
+        nextButton.disabled = currentPage === totalPage - 1;
+        nextButton.onclick = () => updateTableAfterPagination(currentPage + 1);
+        pagination.appendChild(nextButton);
     }
     
 </script>
@@ -319,8 +385,9 @@ const modalContact=$('#contact-modal');
     <input type="text" id="name" placeholder="Enter name of the edible you would like to search" onkeydown="keyPressed(event)"/>
 </div>
 
-<div id="items">
-</div>
+<div id="items"></div>
+<div id="pagination"></div>
+
 
 <div id="about-modal" class="modal">
     <div class="modal-content">
