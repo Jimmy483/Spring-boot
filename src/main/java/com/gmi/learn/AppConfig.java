@@ -4,6 +4,7 @@ import com.gmi.learn.dao.FoodRepository;
 import com.gmi.learn.dao.impl.BookDaoImpl;
 import com.gmi.learn.dao.impl.FoodDaoImpl;
 import com.gmi.learn.dao.impl.UserInfoDaoImpl;
+import com.gmi.learn.service.FoodService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,6 +32,8 @@ public class AppConfig {
         return new FoodDaoImpl(jdbcTemplate);
     }
 
+    @Bean
+    public FoodService foodService(){return new FoodService();}
 
 
 

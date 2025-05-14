@@ -13,7 +13,7 @@
 }
 
 nav {
-    background-color: #50898b;
+    background-color: #496B70;
     padding: 10px;
 }
 
@@ -82,8 +82,8 @@ ul.navbar li a:hover {
 }
 
 #items th {
-    background-color: #6071b1;
-    color: rgb(255, 255, 255);
+    background-color: #F2F5EA;
+    color: #000000;
 }
 
 #intro{
@@ -184,6 +184,7 @@ ul.navbar li a:hover {
 
 #pagination{
     margin-top: 20px;
+    margin-bottom: 40px;
     text-align: center;
 }
     </style>
@@ -306,7 +307,7 @@ const modalContact=$('#contact-modal');
                 fromPagination:'true'
             },
             success:function(data){
-               $('#page').val(data.row.pageable.pageNumber);
+               $('#page').val(data.row.pageNumber);
                renderTable(data.row);
 
             },error:function(){
@@ -338,7 +339,7 @@ const modalContact=$('#contact-modal');
     }
 
     function renderPagination(data){
-        let currentPage=data.pageable.pageNumber;
+        let currentPage=data.pageNumber;
         let totalPage=data.totalPages;
 
         const pagination=document.getElementById('pagination');
