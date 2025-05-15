@@ -85,6 +85,7 @@ public class HelloWorldController {
         @RequestMapping(value = "/dashboard", method = {RequestMethod.GET, RequestMethod.POST})  // Accept both GET and POST
         public String dashboard(Model model, HttpSession httpSession) {
             model.addAttribute("name", httpSession.getAttribute("username"));  // You can pass more model attributes if necessary
+            model.addAttribute("loggedIn",httpSession.getAttribute("username")!=null);
             System.out.println("model = " + model);
             return "dashboard";
         }
@@ -130,6 +131,12 @@ public class HelloWorldController {
             return "Incorrect Username or Password";  // Return the view name, like a Thymeleaf template
 
         }
+    }
+
+    @GetMapping(path = "/logout")
+    public String logoutUser(HttpSession httpSession){
+        httpSession.invalidate();
+        return "loginPage";
     }
 
 //    responsBody to return as a string instead of a template
