@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,9 +12,26 @@
     padding: 0 ;
 }
 
+
 nav {
     background-color: #496B70;
     padding: 10px;
+}
+
+ul.profile{
+    list-style-type: none;
+    text-align: right;
+    margin: 0;
+}
+
+ul.profile li{
+    display: inline-block;
+    margin-left: 10px;
+}
+
+ul.profile li a{
+    color: #FFFFFF;
+    text-decoration: none;
 }
 
 ul.navbar {
@@ -43,19 +60,19 @@ ul.navbar li a:hover {
 }
 
 
-#carDiv {
-    width: 300px; /* Set a fixed width for centering */
+#search {
+    width: 320px;
     margin: 0 auto; /* Center horizontally */
     padding: 10px;
-    margin-top:250px;
-    display: flex; /* Use Flexbox to center the content */
-    justify-content: center; /* Center horizontally inside the div */
-    align-items: center; /* Center vertically inside the div */
-    height: auto; /* Set a height for the div */
+    margin-top:200px;
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    height: auto;
 }
 
-#carDiv input {
-    width: 100%; /* Make the input take up the full width of the container */
+#search input {
+    width: 100%; 
     padding: 10px;
     box-sizing: border-box; /* Ensures padding doesn't affect width */
     height:40px;
@@ -187,6 +204,25 @@ ul.navbar li a:hover {
     margin-bottom: 40px;
     text-align: center;
 }
+
+.pageBtn{
+    border-radius: 5px;
+    border-color: #6A8E7F;
+    background-color: #D0CFEC;
+    font-style: italic;
+}
+
+#mainDiv{
+    margin: 100px;
+    background-color: #FFFFFF;
+    border-radius: 10px;
+    position: relative;
+}
+
+body{
+    /* background-color: #000000; */
+    background-image: url("/foodJunk.jpeg");
+}
     </style>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" type="text/javascript"></script>
@@ -196,23 +232,15 @@ ul.navbar li a:hover {
 $('#items').hide();
 const mod = $('#about-modal');
 const modalContact=$('#contact-modal');
-    // const aboutButton = $('#aboutButton');
     const closeButton = $('.close-btn');
 
-    // aboutButton.click(() => {
-    //     alert('test')
-    //     modal.css('display', 'block');
-    // });
-
+   
     closeButton.click(() => {
         mod.css('display', 'none');
         modalContact.css('display','none');
     });
 
-    // alternative
-//     $(document).on('click', '.close-btn', function() {
-//     $('#about-modal').css('display', 'none');
-// });
+
 
     $(window).click((event) => {
         if (event.target === mod[0]) {
@@ -223,6 +251,15 @@ const modalContact=$('#contact-modal');
         }
     });
     });
+
+    function profilemenu(option){
+
+        if(option=='logout'||option =='login' ){
+            window.location.href = '/logout';
+        }else{
+            window.location.href = '/profile'
+        }
+    }
 
     function sendMessageToAdmin(){
         alert("Sorry, this feature is not available for now.");
@@ -349,6 +386,7 @@ const modalContact=$('#contact-modal');
         previousBtn.innerText='Previous';
         previousBtn.disabled = currentPage===0;
         previousBtn.onclick = ()=>updateTableAfterPagination(currentPage-1);
+        previousBtn.className="pageBtn";
         pagination.appendChild(previousBtn);
 
         
@@ -358,6 +396,7 @@ const modalContact=$('#contact-modal');
             button.disabled = i === currentPage;
             
             button.onclick = () => updateTableAfterPagination(i);
+            button.className="pageBtn";
             pagination.appendChild(button);
         }
 
@@ -366,6 +405,7 @@ const modalContact=$('#contact-modal');
         nextButton.innerText = 'Next';
         nextButton.disabled = currentPage === totalPage - 1;
         nextButton.onclick = () => updateTableAfterPagination(currentPage + 1);
+        nextButton.className="pageBtn";
         pagination.appendChild(nextButton);
     }
     
@@ -382,14 +422,20 @@ const modalContact=$('#contact-modal');
         <li><a href="#contact" onclick="menu('Contact')">Contact</a></li>
         <li><a href="#about" onclick="menu('About')">About</a></li>
     </ul>
+    <ul class="profile">
+        <li th:if="${loggedIn}"><a href="#profile" onclick="profilemenu('profile')" th:text="${name}"></a></li>
+        <li th:if="${loggedIn}"><a href="#logout" onclick="profilemenu('logout')">Logout</a></li>
+        <li th:unless="${loggedIn}"><a href="#login" onclick="profilemenu('login')">Login</a></li>
+    </ul>
 </nav>
 
+<div id="mainDiv">
 <div id="intro">
     <h1>Welcome to Momo</h1>
     <p>Discover the average prices of local foods across Nepal with Momo</p>
 </div>
 
-<div id="carDiv">
+<div id="search">
     <input type="text" id="name" placeholder="Enter name of the edible you would like to search" onkeydown="keyPressed(event)"/>
 </div>
 
@@ -426,5 +472,6 @@ const modalContact=$('#contact-modal');
 <input type="hidden" id="order" value=""/>
 <input type="hidden" id="page" value="0"/>
 
+</div>
 </body>
 </html>

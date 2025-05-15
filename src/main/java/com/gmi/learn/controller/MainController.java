@@ -1,35 +1,22 @@
 package com.gmi.learn.controller;
 
-import com.gmi.learn.dao.FoodDao;
-import com.gmi.learn.dao.impl.BookDaoImpl;
 import com.gmi.learn.dao.impl.FoodDaoImpl;
 import com.gmi.learn.dao.impl.UserInfoDaoImpl;
-import com.gmi.learn.domain.Book;
 import com.gmi.learn.domain.Food;
 import com.gmi.learn.domain.UserInfo;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Scanner;
 
 
 @Controller
-public class HelloWorldController {
+public class MainController {
 
 
     File file=new File("src\\main\\resources\\templates\\dashboard.html");
@@ -58,9 +45,16 @@ public class HelloWorldController {
 
 
     //    byte[] content = Files.readAllBytes(name);
-    @GetMapping(path = "/hello")
-    public String helloWorld(){
+    @GetMapping(path = "/login")
+    public String loginPage(Model model, HttpSession httpSession){
 
+        System.out.println("userid login = " + SessionUtils.getSessionValue(httpSession,"userId"));
+        if(SessionUtils.getSessionValue(httpSession,"userId")!=null){
+            model.addAttribute("name", httpSession.getAttribute("username"));  // You can pass more model attributes if necessary
+            model.addAttribute("loggedIn",httpSession.getAttribute("username")!=null);
+            return "dashboard";
+
+        }
 //        StringBuilder html=new StringBuilder();
 //
 //
@@ -82,9 +76,9 @@ public class HelloWorldController {
     }
 
 //        @PostMapping("/dashboard")  // Ensure you're using POST and not GET
-        @RequestMapping(value = "/dashboard", method = {RequestMethod.GET, RequestMethod.POST})  // Accept both GET and POST
+        @RequestMapping(value = "/dashboard", method = {RequestMethod.GET, RequestMethod.POST})
         public String dashboard(Model model, HttpSession httpSession) {
-            model.addAttribute("name", httpSession.getAttribute("username"));  // You can pass more model attributes if necessary
+            model.addAttribute("name", httpSession.getAttribute("username"));
             model.addAttribute("loggedIn",httpSession.getAttribute("username")!=null);
             System.out.println("model = " + model);
             return "dashboard";
@@ -131,6 +125,13 @@ public class HelloWorldController {
             return "Incorrect Username or Password";  // Return the view name, like a Thymeleaf template
 
         }
+    }
+
+    @GetMapping(path = "/profile")
+    public String goToProfile(HttpSession httpSession, Model model){
+        model.addAttribute("id",SessionUtils.getSessionValue(httpSession,"userId"));
+        model.addAttribute("username",SessionUtils.getSessionValue(httpSession,"username"));
+        return "profile";
     }
 
     @GetMapping(path = "/logout")
