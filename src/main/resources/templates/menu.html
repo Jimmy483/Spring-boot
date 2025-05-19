@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<body>
+<div id="about-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <h2>About</h2>
+        <label>Developed by Jimmy Sherpa</label>
+        <label>App version 1.0.0</label>
+        <label>May 2025</label>
+    </div>
+</div>
+
+
+<!-- add the ability to send message to the admin later. Maybe for logged in users only -->
+<div id="contact-modal" class="modal">
+    <div class="modal-content1">
+        <span class="close-btn">&times;</span>
+        <h2>Contact</h2>
+        <label for="contactNo">Contact</label><input type="text" value="+977 6789998212" id="contactNo" readonly/>
+        <div class="form-row">
+            <label for="message">Message</label><textarea id="message" cols="4" rows="6"></textarea>
+            <input type="button" id="sendBtn" onclick="sendMessageToAdmin()" value="Send">
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

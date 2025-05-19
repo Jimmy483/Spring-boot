@@ -5,60 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Momo</title>
 <!--    <link rel="stylesheet" href="/css/style.css">-->
-    <style>
-        body {
+<style>
+body {
     font-family: Arial, sans-serif ;
     margin: 0 ;
     padding: 0 ;
 }
-
-
-nav {
-    background-color: #496B70;
-    padding: 10px;
-}
-
-ul.profile{
-    list-style-type: none;
-    text-align: right;
-    margin: 0;
-}
-
-ul.profile li{
-    display: inline-block;
-    margin-left: 10px;
-}
-
-ul.profile li a{
-    color: #FFFFFF;
-    text-decoration: none;
-}
-
-ul.navbar {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    text-align: center;
-}
-
-ul.navbar li {
-    display: inline;
-    margin: 0 15px;
-}
-
-ul.navbar li a {
-    color: white;
-    text-decoration: none;
-    font-size: 18px;
-    padding: 10px 20px;
-    border-radius: 5px;
-    transition: background-color 0.3s;
-}
-
-ul.navbar li a:hover {
-    background-color: #575757;
-}
-
 
 #search {
     width: 320px;
@@ -105,7 +57,6 @@ ul.navbar li a:hover {
 
 #intro{
     text-align:center;
-    margin-top: 40px;
     margin-bottom: 30px;
 
 }
@@ -121,83 +72,6 @@ ul.navbar li a:hover {
     color: #666;
 }
 
-.modal{
-    display: none;
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgba(0, 0, 0, 0.4); /* Black with opacity */
-}
-
-.modal-content{
-    background-color: #fefefe;
-    margin: 15% auto; /* 15% from the top, centered */
-    padding: 20px;
-    border: 1px solid #888;
-    border-radius: 10px;
-    width: 40%; /* Could be any size */
-}
-
-.modal-content1{
-    background-color: #fefefe;
-    margin: 15% auto; /* 15% from the top, centered */
-    padding: 20px;
-    border: 1px solid #888;
-    border-radius: 10px;
-    width: 40%; /* Could be any size */
-}
-/* .modal-content input{
-    display: block;
-    margin-top: 10px;
-} */
-
-.modal-content label{
-    display: block;
-    margin-top: 5px;
-}
-.modal-content1 input{
-   margin-left: 55px;
-}
-.modal-content1 input[type="button"]{
-   background-color: #6071b1;
-   color: #fefefe;
-   width: 20%;
-   font-size:20px;
-}
-
-.close-btn {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.close-btn:hover,
-.close-btn:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-.form-row {
-    display: flex;
-    align-items: center;
-    margin-bottom: 15px;
-    margin-top: 4px;
-}
-
-.form-row label {
-    width: 100px;
-    margin-right: 10px;
-}
-
-.form-row textarea {
-    flex: 1;
-}
 
 #pagination{
     margin-top: 20px;
@@ -214,42 +88,24 @@ ul.navbar li a:hover {
 
 #mainDiv{
     margin: 100px;
+    padding-top: 40px;
+    padding-bottom: 40px;
     background-color: #FFFFFF;
     border-radius: 10px;
     position: relative;
 }
 
 body{
-    /* background-color: #000000; */
     background-image: url("/foodJunk.jpeg");
 }
-    </style>
+</style>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" type="text/javascript"></script>
-
+<script src="/js/commonjs.js" type="text/javascript"></script>
+<link href="/css/common.css" rel="stylesheet" type="text/css">
 <script type="text/javascript">
     $(document).ready(function(){
-$('#items').hide();
-const mod = $('#about-modal');
-const modalContact=$('#contact-modal');
-    const closeButton = $('.close-btn');
-
-   
-    closeButton.click(() => {
-        mod.css('display', 'none');
-        modalContact.css('display','none');
-    });
-
-
-
-    $(window).click((event) => {
-        if (event.target === mod[0]) {
-            mod.css('display', 'none');
-        }
-        if(event.target==modalContact[0]){
-            modalContact.css('display','none');
-        }
-    });
+    $('#items').hide();
     });
 
     function profilemenu(option){
@@ -305,9 +161,6 @@ const modalContact=$('#contact-modal');
         let name=$('#name').val();
         let order =$('#order').val();
         let page=$('#page').val();
-        // let currentorder =$('#order').val(); 
-        // let order=currentorder === 'asc' ? 'desc':'asc';
-        // $('#order').val(order);
         $.ajax({
             url : '/api/foods',
             method: 'GET',
@@ -413,21 +266,7 @@ const modalContact=$('#contact-modal');
 </head>
 <body>
 
-<nav>
-    <ul class="navbar">
-        <li><a href="/dashboard">Home</a></li>
-        <li><a href="#none" onclick="menu('none')">none</a></li>
-        <!-- add the ability to change theme colour -->
-        <li><a href="#setting" onclick="menu('Setting')">Setting</a></li>
-        <li><a href="#contact" onclick="menu('Contact')">Contact</a></li>
-        <li><a href="#about" onclick="menu('About')">About</a></li>
-    </ul>
-    <ul class="profile">
-        <li th:if="${loggedIn}"><a href="#profile" onclick="profilemenu('profile')" th:text="${name}"></a></li>
-        <li th:if="${loggedIn}"><a href="#logout" onclick="profilemenu('logout')">Logout</a></li>
-        <li th:unless="${loggedIn}"><a href="#login" onclick="profilemenu('login')">Login</a></li>
-    </ul>
-</nav>
+<div th:replace="header.html"></div>
 
 <div id="mainDiv">
 <div id="intro">
@@ -443,30 +282,7 @@ const modalContact=$('#contact-modal');
 <div id="pagination"></div>
 
 
-<div id="about-modal" class="modal">
-    <div class="modal-content">
-        <span class="close-btn">&times;</span>
-        <h2>About</h2>
-        <label>Developed by Jimmy Sherpa</label>
-        <label>App version 1.0.0</label>
-        <label>May 2025</label>
-    </div>
-</div>
-
-
-<!-- add the ability to send message to the admin later. Maybe for logged in users only -->
-<div id="contact-modal" class="modal">
-    <div class="modal-content1">
-        <span class="close-btn">&times;</span>
-        <h2>Contact</h2>
-        <label for="contactNo">Contact</label><input type="text" value="+977 6789998212" id="contactNo" readonly/>
-        <div class="form-row">
-            <label for="message">Message</label><textarea id="message" cols="4" rows="6"></textarea>
-            <input type="button" id="sendBtn" onclick="sendMessageToAdmin()" value="Send">
-        </div>
-    </div>
-</div>
-
+<div th:replace="menu.html"></div>
 
 <input type="hidden" id="sort" value=""/>
 <input type="hidden" id="order" value=""/>

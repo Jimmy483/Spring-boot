@@ -16,6 +16,7 @@ public class InitalizeRequests {
     @GetMapping("/set-session")
     public void setSessionAttributes(HttpSession sessionAttributes, List<UserInfo> userInfo){
 //        model.addAttribute("username","Jimmy");
+        System.out.println("test this");
         SessionUtils.storeSessionValue(sessionAttributes,"username",userInfo.get(0).getUsername());
         SessionUtils.storeSessionValue(sessionAttributes,"userId",userInfo.get(0).getId());
     }
