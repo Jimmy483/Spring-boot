@@ -70,7 +70,7 @@
     width: 40%; /* Could be any size */
 }
 nav {
-    background-color: #496B70;
+    background-color: #EAE21D;
     padding: 10px;
 }
 
@@ -86,8 +86,10 @@ ul.profile li{
 }
 
 ul.profile li a{
-    color: #FFFFFF;
+    color: #000000;
     text-decoration: none;
+    font-size: 1rem;
+    letter-spacing: 1px;
 }
 
 ul.navbar {
@@ -103,14 +105,15 @@ ul.navbar li {
 }
 
 ul.navbar li a {
-    color: white;
+    color: #000000;
     text-decoration: none;
-    font-size: 18px;
+    font-size: 1rem;
     padding: 10px 20px;
     border-radius: 5px;
-    transition: background-color 0.3s;
+    /* transition: background-color 0.3s; */
+    letter-spacing: 1px;
 }
 
-ul.navbar li a:hover {
+/* ul.navbar li a:hover {
     background-color: #575757;
-}
+} */

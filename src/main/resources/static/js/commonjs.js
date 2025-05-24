@@ -23,3 +23,24 @@ $(document).ready(function(){
 
 
 });
+
+  function profilemenu(option){
+
+        if(option=='logout'||option =='login' ){
+            window.location.href = '/logout';
+        }else {
+            window.location.href = '/profile'
+        }
+    }
+
+    function sendMessageToAdmin(){
+        alert("Sorry, this feature is not available for now.");
+    }
+
+    function menu(menuItem) {
+        if(menuItem =='About'){
+            $('#about-modal').css('display', 'block');
+        }else if(menuItem == 'Contact'){
+            $('#contact-modal').css('display','block');
+        }
+     }
