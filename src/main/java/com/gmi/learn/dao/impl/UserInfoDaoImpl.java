@@ -4,6 +4,7 @@ import com.gmi.learn.controller.InitalizeRequests;
 import com.gmi.learn.dao.UserInfoDao;
 import com.gmi.learn.domain.UserInfo;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.SessionAttributes;
@@ -15,7 +16,8 @@ public class UserInfoDaoImpl implements UserInfoDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    InitalizeRequests requests= new InitalizeRequests();
+    @Autowired
+    InitalizeRequests requests;
 
     public UserInfoDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;

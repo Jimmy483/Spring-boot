@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <body>
 <div id="about-modal" class="modal">
     <div class="modal-content">
@@ -20,7 +20,7 @@
         <label for="contactNo">Contact</label><input type="text" value="+977 6789998212" id="contactNo" readonly/>
         <div class="form-row">
             <label for="message">Message</label><textarea id="message" cols="4" rows="6"></textarea>
-            <input type="button" id="sendBtn" onclick="sendMessageToAdmin()" value="Send">
+            <input type="button" id="sendBtn" th:class="${'colour-' + (session.themeColour!=null?session.themeColour:'EAE21D')}" onclick="sendMessageToAdmin()" value="Send">
         </div>
     </div>
 </div>

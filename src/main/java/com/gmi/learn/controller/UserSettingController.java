@@ -22,19 +22,22 @@ public class UserSettingController {
 
     @GetMapping
     @ResponseBody
-    public Map<String, Object> getThemeColor(HttpSession httpSession){
+    public String getThemeColor(HttpSession httpSession){
         UserSetting userSettings;
         Map<String, Object> returnMap=new HashMap<>();
         long userid= (Long)(SessionUtils.getSessionValue(httpSession,"userId")!=null? SessionUtils.getSessionValue(httpSession, "userId"):0L);
         System.out.println("userid = " + userid);
+        String theme;
         if(userid==0){
-            returnMap.put("theme","#EAE21D");
+//            returnMap.put("theme","#EAE21D");
+            theme="EAE21D";
         }else {
             userSettings=userSettingRepository.findByUserId(userid);
-            returnMap.put("theme",userSettings);
+//            returnMap.put("theme",userSettings);
+            theme=userSettings.getTheme();
         }
 
-        return returnMap;
+        return theme;
 
 
     }

@@ -2,6 +2,7 @@ package com.gmi.learn.controller;
 
 import jakarta.servlet.http.HttpSession;
 import org.aspectj.lang.annotation.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
 
@@ -10,6 +11,8 @@ import org.springframework.ui.Model;
 public class RequestValidationAspect {
 
 
+@Autowired
+InitalizeRequests initalizeRequests;
     @Pointcut("execution(* com.gmi.learn..*(..))")
     public void applicationMethods(){
     }
@@ -39,7 +42,6 @@ public class RequestValidationAspect {
 
 
     public Boolean isUserLoggedIn(HttpSession session){
-        InitalizeRequests initalizeRequests=new InitalizeRequests();
         Boolean isFound= initalizeRequests.getSessionAttributes(session);
         return isFound;
     }

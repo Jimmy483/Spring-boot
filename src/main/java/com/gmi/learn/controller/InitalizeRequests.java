@@ -1,5 +1,7 @@
 package com.gmi.learn.controller;
+import com.gmi.learn.dao.UserSettingRepository;
 import com.gmi.learn.domain.UserInfo;
+import com.gmi.learn.domain.UserSetting;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,7 +13,12 @@ import java.util.List;
 
 @Controller
 @SessionAttributes("username")
-public class InitalizeRequests {
+public class InitalizeRequests{
+    UserSettingRepository userSettingRepository;
+
+    public InitalizeRequests(UserSettingRepository userSettingRepository){
+        this.userSettingRepository=userSettingRepository;
+    }
 
     @GetMapping("/set-session")
     public void setSessionAttributes(HttpSession sessionAttributes, List<UserInfo> userInfo){
@@ -19,17 +26,13 @@ public class InitalizeRequests {
         System.out.println("test this");
         SessionUtils.storeSessionValue(sessionAttributes,"username",userInfo.get(0).getUsername());
         SessionUtils.storeSessionValue(sessionAttributes,"userId",userInfo.get(0).getId());
+        SessionUtils.storeSessionValue(sessionAttributes,"themeColour",getUserThemeColor(userInfo.get(0).getId()));
     }
 
     @GetMapping("/get-session")
     public Boolean getSessionAttributes(HttpSession sessionAttributes) {
-        // Fetch session values using the SessionUtils class
         String username = (String) SessionUtils.getSessionValue(sessionAttributes, "username");
         Long userId = (Long) SessionUtils.getSessionValue(sessionAttributes, "userId");
-
-        // Add session values to the model to display in the view (optional)
-//        model.addAttribute("username", username);
-//        model.addAttribute("userId", userId);
 
         System.out.println("username = " + username);
         System.out.println("userId = " + userId);
@@ -38,10 +41,24 @@ public class InitalizeRequests {
         }else{
             return false;
         }
-        // Return a view name (change to your actual view)
-//        return "showSessionAttributes"; // This is the view where you'll display the session attributes
+
     }
 
+    public String getUserThemeColor(Long userId){
+//        Long userid
+        UserSetting userSetting;
+        System.out.println("userid = " + userId);
+        String toReturn;
+        if(userId==0){
+            toReturn="#FFFFF";
+        }else{
+            userSetting=userSettingRepository.findByUserId(userId);
+            toReturn=userSetting.getTheme();
+        }
+        System.out.println("theme colour = " + toReturn);
+        return toReturn;
+
+    }
 
 }
 

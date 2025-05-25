@@ -35,11 +35,11 @@
    margin-left: 55px;
 }
 .modal-content1 input[type="button"]{
-   background-color: #6071b1;
    color: #fefefe;
    width: 20%;
    font-size:20px;
 }
+
 .modal{
     display: none;
     position: fixed; /* Stay in place */
@@ -70,9 +70,18 @@
     width: 40%; /* Could be any size */
 }
 nav {
-    background-color: #EAE21D;
     padding: 10px;
 }
+
+.colour-EAE21D{
+   background-color: #EAE21D;
+}
+
+.colour-42c5f5{
+   background-color: #42c5f5;
+}
+
+
 
 ul.profile{
     list-style-type: none;
