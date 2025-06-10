@@ -1,13 +1,12 @@
 package com.gmi.learn.controller;
 
-import com.gmi.learn.dao.UserSettingRepository;
+import com.gmi.learn.SessionUtility;
+import com.gmi.learn.repository.UserSettingRepository;
 import com.gmi.learn.domain.UserSetting;
 import jakarta.servlet.http.HttpSession;
-import org.antlr.v4.runtime.misc.ObjectEqualityComparator;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -20,12 +19,13 @@ public class UserSettingController {
         this.userSettingRepository=userSettingRepository;
     }
 
+//    no use?
     @GetMapping
     @ResponseBody
     public String getThemeColor(HttpSession httpSession){
         UserSetting userSettings;
         Map<String, Object> returnMap=new HashMap<>();
-        long userid= (Long)(SessionUtils.getSessionValue(httpSession,"userId")!=null? SessionUtils.getSessionValue(httpSession, "userId"):0L);
+        long userid= (Long)(SessionUtility.getSessionValue(httpSession,"userId")!=null? SessionUtility.getSessionValue(httpSession, "userId"):0L);
         System.out.println("userid = " + userid);
         String theme;
         if(userid==0){

@@ -1,5 +1,6 @@
 package com.gmi.learn.controller;
 
+import com.gmi.learn.SessionUtility;
 import com.gmi.learn.dao.impl.FoodDaoImpl;
 import com.gmi.learn.dao.impl.UserInfoDaoImpl;
 import com.gmi.learn.domain.Food;
@@ -48,10 +49,9 @@ public class MainController {
     @GetMapping(path = "/login")
     public String loginPage(Model model, HttpSession httpSession){
 
-        System.out.println("userid login = " + SessionUtils.getSessionValue(httpSession,"userId"));
-        if(SessionUtils.getSessionValue(httpSession,"userId")!=null){
+        System.out.println("userid login = " + SessionUtility.getSessionValue(httpSession,"userId"));
+        if(SessionUtility.getSessionValue(httpSession,"userId")!=null){
             model.addAttribute("name", httpSession.getAttribute("username"));  // You can pass more model attributes if necessary
-            model.addAttribute("loggedIn",httpSession.getAttribute("username")!=null);
             return "dashboard";
 
         }
@@ -81,6 +81,7 @@ public class MainController {
             model.addAttribute("name", httpSession.getAttribute("username"));
             model.addAttribute("loggedIn",httpSession.getAttribute("username")!=null);
             System.out.println("model = " + model);
+            System.out.println("theme name " + SessionUtility.getSessionValue(httpSession, "themeColour"));
             return "dashboard";
         }
 
@@ -134,8 +135,8 @@ public class MainController {
 
     @GetMapping(path = "/profile")
     public String goToProfile(HttpSession httpSession, Model model){
-        model.addAttribute("id",SessionUtils.getSessionValue(httpSession,"userId"));
-        model.addAttribute("username",SessionUtils.getSessionValue(httpSession,"username"));
+        model.addAttribute("id",SessionUtility.getSessionValue(httpSession,"userId"));
+        model.addAttribute("username",SessionUtility.getSessionValue(httpSession,"username"));
         return "profile";
     }
 

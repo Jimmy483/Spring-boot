@@ -1,12 +1,10 @@
-package com.gmi.learn.controller;
-import com.gmi.learn.dao.UserSettingRepository;
+package com.gmi.learn;
+import com.gmi.learn.repository.UserSettingRepository;
 import com.gmi.learn.domain.UserInfo;
 import com.gmi.learn.domain.UserSetting;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import java.util.List;
@@ -24,15 +22,15 @@ public class InitalizeRequests{
     public void setSessionAttributes(HttpSession sessionAttributes, List<UserInfo> userInfo){
 //        model.addAttribute("username","Jimmy");
         System.out.println("test this");
-        SessionUtils.storeSessionValue(sessionAttributes,"username",userInfo.get(0).getUsername());
-        SessionUtils.storeSessionValue(sessionAttributes,"userId",userInfo.get(0).getId());
-        SessionUtils.storeSessionValue(sessionAttributes,"themeColour",getUserThemeColor(userInfo.get(0).getId()));
+        SessionUtil.storeSessionValue(sessionAttributes,"username",userInfo.get(0).getUsername());
+        SessionUtil.storeSessionValue(sessionAttributes,"userId",userInfo.get(0).getId());
+        SessionUtil.storeSessionValue(sessionAttributes,"themeColour",getUserThemeColor(userInfo.get(0).getId()));
     }
 
     @GetMapping("/get-session")
     public Boolean getSessionAttributes(HttpSession sessionAttributes) {
-        String username = (String) SessionUtils.getSessionValue(sessionAttributes, "username");
-        Long userId = (Long) SessionUtils.getSessionValue(sessionAttributes, "userId");
+        String username = (String) SessionUtil.getSessionValue(sessionAttributes, "username");
+        Long userId = (Long) SessionUtil.getSessionValue(sessionAttributes, "userId");
 
         System.out.println("username = " + username);
         System.out.println("userId = " + userId);
@@ -62,7 +60,7 @@ public class InitalizeRequests{
 
 }
 
-class SessionUtils {
+class SessionUtil {
 
     // Utility method to store a key-value pair in the session
     public static void storeSessionValue(HttpSession session, String key, Object value) {

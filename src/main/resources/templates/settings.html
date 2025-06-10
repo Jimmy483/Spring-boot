@@ -1,0 +1,46 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Settings</title>
+    <style>
+        body{
+            margin: 0px;
+            padding: 0px;
+        }
+
+        #content{
+            margin:200px;
+        }
+    </style>
+    <script>
+
+    </script>
+</head>
+<body>
+<div id="mainDiv">
+<div th:replace="header.html"></div>
+<link href="/css/common.css?v=123" rel="stylesheet" type="text/css">
+<div id="content">
+    <div id="settings"></div>
+    <p th:text="theme + ${currentTheme}"></p>
+
+      <form th:action="@{/updateSetting}" th:object="${themeForm}" method="POST">
+        <label for="colours">Theme</label>
+        <select th:field="*{colours}">
+            <option value="EAE21D">Default</option>
+            <option th:each="tc : ${themeColours}" 
+                    th:value="${tc.value}"
+                    th:text="${tc.key}"></option>
+        </select>
+        <button type="submit">Save</button>
+
+      </form>
+
+</div>
+</div>
+</body>
+</html>

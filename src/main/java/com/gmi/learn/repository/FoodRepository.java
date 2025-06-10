@@ -1,4 +1,4 @@
-package com.gmi.learn.dao;
+package com.gmi.learn.repository;
 
 import com.gmi.learn.domain.Food;
 import org.springframework.data.domain.Page;

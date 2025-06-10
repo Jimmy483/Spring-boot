@@ -1,6 +1,5 @@
 package com.gmi.learn;
 
-import com.gmi.learn.dao.FoodRepository;
 import com.gmi.learn.dao.impl.BookDaoImpl;
 import com.gmi.learn.dao.impl.FoodDaoImpl;
 import com.gmi.learn.dao.impl.UserInfoDaoImpl;

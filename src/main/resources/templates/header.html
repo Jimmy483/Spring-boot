@@ -5,15 +5,14 @@
     <ul class="navbar">
         <li><a href="/dashboard">Home</a></li>
         <li><a href="/messages">Messages</a></li>
-        <!-- add the ability to change theme colour -->
         <li><a href="#setting" onclick="menu('Setting')">Setting</a></li>
         <li><a href="#contact" onclick="menu('Contact')">Contact</a></li>
         <li><a href="#about" onclick="menu('About')">About</a></li>
     </ul>
-    <ul class="profile">
-        <li th:if="${loggedIn}"><a href="#profile" onclick="profilemenu('profile')" th:text="${name}"></a></li>
-        <li th:if="${loggedIn}"><a href="#logout" onclick="profilemenu('logout')">Logout</a></li>
-        <li th:unless="${loggedIn}"><a href="#login" onclick="profilemenu('login')">Login</a></li>
+    <ul th:with="userLoggedIn=${session.userId!=null?true:false}" class="profile">
+        <li th:if="${userLoggedIn}"><a href="#profile" onclick="profilemenu('profile')" th:text="${session.username}"></a></li>
+        <li th:if="${userLoggedIn}"><a href="#logout" onclick="profilemenu('logout')">Logout</a></li>
+        <li th:unless="${userLoggedIn}"><a href="#login" onclick="profilemenu('login')">Login</a></li>
     </ul>
     </nav>
 </body>

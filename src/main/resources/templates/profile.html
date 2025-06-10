@@ -6,13 +6,19 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <style>
+        body{
+            margin:0px;
+        }
         .mainDiv{
-            margin: 100px auto;
-            max-width: 1000px;
+            margin-top: 80px ;
+            margin-bottom: 100px;
+            margin-right: auto;
+            width: 1000px;
             overflow: hidden;
             /* justify-content: center; */
         }
         .profile{
+            margin-left: 400px;
             margin-top: 30px;
         }
         .imageDiv{
@@ -27,7 +33,7 @@
             float: left;
         }
         .mainDiv h2{
-            text-align: center;
+            margin-left: 500px;
         }
         .mainDiv .profile .details label{
             display: block;
@@ -38,12 +44,42 @@
             height: 100%;
         }
 
+        #leftNavList a{
+            text-decoration: none;
+            display: block;
+            color: #000000;
+            font-size: 20px;
+            margin-top: 10px;
+            letter-spacing: 1px;
+
+        }
+        #leftNav{
+            margin-left: 5px;
+            float: left;
+            width: 200px;
+            height: 500px;
+            overflow: hidden;
+            /* border: 2px solid black; */
+        }
+        
+        #leftNavList{
+            box-sizing: border-box;
+            width: 100vh;
+            height: auto; 
+        }
+
+        #leftNav *{
+            max-width: 100%;
+        }
+
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" type="text/javascript"></script>
     <script src="/js/commonjs.js" type="text/javascript"></script>
     <link href="/css/common.css?v=123" rel="stylesheet" type="text/css">
     <script>
-    
+    function setting(){
+        window.location.href='/loadSetting'
+    }
     
     </script>
 </head>
@@ -54,8 +90,14 @@
 
 <div class="mainDiv">
 <h2>Profile Details</span></h2>
-    <form>
+    <div id="leftNav" th:class="'colour-'+${session.themeColour!=null?session.themeColour:'EAE21D'}">
+        <div id="leftNavList" >
+            <a href="#" onclick="setting()">Setting</a>
+            <a href="#">Add Item</a>
+        </div>
+    </div>
     <div class="profile">
+        <form></form>
         <div class="imageDiv">
             <img class="profilePic" src="/profilePics/whoAmI.jpg"/>
         </div>
@@ -64,8 +106,9 @@
             <label for="fName">First Name</label><input type="text" id="fName" value="Jimmy"/>
             <label for="lName">Last Name</label><input type="text" id="lName" value="Sherpa"/>
         </div>
+        </form>
     </div>
-    </form>
+    
 <div th:replace="menu.html"></div>
 
 </div>

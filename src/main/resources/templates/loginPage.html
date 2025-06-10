@@ -18,7 +18,6 @@
         .btn-block{
         --mdb-btn-margin-top: 0.5rem;
     display: block;
-<!--    width: 100%;-->
         }
 
         .mb-4{
@@ -114,40 +113,32 @@ background-color: #FFFFFF;
 <script type="text/javascript">
 $(document).ready(function() {
 
-    // When the form is submitted
     $('#dashboardForm').submit(function(e) {
-        e.preventDefault();  // Prevent the default form submission (GET request)
+        e.preventDefault();  
 
-        // Get the username and password values from the form
         var username = $('#username').val();
         var password = $('#password').val();
 
-        // Send the values using AJAX
         $.ajax({
-            url: '/home',             // The endpoint in your Spring controller
-            method: 'POST',           // The HTTP method is POST
+            url: '/home',             
+            method: 'POST',           
             data: {
-                username: username,   // Send username
-                password: password    // Send password
+                username: username,
+                password: password
             },
             success: function(response) {
-<!--            alert("success " + response);-->
                 console.log("Success:", response);
                 if(response=='true'){
-                // Optionally redirect or handle success here
-                window.location.href = '/dashboard'; // Redirect after success
+                window.location.href = '/dashboard';
                 }else{
                 $('#password').css('border-color','#FF0000');
-<!--                $('#password').css('background-color','#FF0000');-->
-<!--                    document.getElementById('password').style.borderColor='#FF0000';-->
-<!--                    document.getElementById('password').style.backgroundColor ='#FF0000';-->
                 alert(response);
                 }
 
             },
             error: function(xhr, status, error) {
             alert("error");
-                console.log("Error:", error);  // Handle the error
+                console.log("Error:", error);
             }
         });
     });
@@ -156,35 +147,24 @@ $(document).ready(function() {
 </script>
 
 <center>
-<!--    &lt;!&ndash; Remove the 'th:action' and keep a simple form &ndash;&gt;-->
     <form id="dashboardForm" method="post">
-<!--        <div align="center" style="background-color:burlywood; width: 300px;">-->
-<!--            Username: <input type='text' id='username' placeholder='Enter Your Username'/><br><br>-->
-<!--            Password: <input type='password' id='password' placeholder='Enter your Password'/><br><br>-->
-<!--            <input type='submit' id='loginBtn' value='Login'/>-->
-<!--        </div>-->
-<!--    </form>-->
 
         <div id="mainDiv">
 
         <div id="loginDiv">
             <center><h3>Please Login</h3></center>
 
-            <!-- Email input -->
         <div data-mdb-input-init class="form-outline mb-4">
             <input type="text" id="username" class="form-control" placeholder="Username"/>
 
         </div>
 
-        <!-- Password input -->
         <div data-mdb-input-init class="form-outline mb-4">
             <input type="password" id="password" class="form-control" placeholder="Password" />
         </div>
 
-        <!-- 2 column grid layout for inline styling -->
         <div class="row mb-4">
             <div class="col d-flex justify-content-center">
-                <!-- Checkbox -->
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" value="" id="form2Example31" checked />
                     <label class="form-check-label" for="form2Example31"> Remember me </label>
@@ -192,15 +172,12 @@ $(document).ready(function() {
             </div>
 
             <div class="col">
-                <!-- Simple link -->
                 <a href="/underConst" target="_blank">Forgot password?</a>
             </div>
         </div>
 
-        <!-- Submit button -->
         <button id="loginBtn" type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-block mb-4">Sign in</button>
 
-        <!-- Register buttons -->
         <div class="text-center">
             <p>Not a member? <a href="/underConst" target="_blank">Register</a></p>
             <p>or sign up with:</p>

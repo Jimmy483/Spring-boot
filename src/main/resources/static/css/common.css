@@ -71,6 +71,7 @@
 }
 nav {
     padding: 10px;
+    height: 30px;
 }
 
 .colour-EAE21D{
@@ -81,6 +82,17 @@ nav {
    background-color: #42c5f5;
 }
 
+.colour-F2F2F2{
+   background-color: #F2F2F2;
+}
+
+.colour-FFFFF0{
+   background-color: #FFFFF0;
+}
+
+.colour-F8F8FF{
+   background-color: #F8F8FF;
+}
 
 
 ul.profile{
@@ -121,8 +133,10 @@ ul.navbar li a {
     border-radius: 5px;
     /* transition: background-color 0.3s; */
     letter-spacing: 1px;
+    display: inline-block;
+    transition: transform 0.2s ease-in-out;
 }
 
-/* ul.navbar li a:hover {
-    background-color: #575757;
-} */
+ul.navbar li a:hover {
+    transform: scale(1.1);
+}

@@ -7,9 +7,10 @@
 <!--    <link rel="stylesheet" href="/css/style.css">-->
 <style>
 body {
-    font-family: Arial, sans-serif ;
+    /* font-family: Arial, sans-serif ; */
     margin: 0 ;
     padding: 0 ;
+    overflow: hidden;
 }
 
 #search {
@@ -93,10 +94,17 @@ body {
     background-color: #FFFFFF;
     border-radius: 10px;
     position: relative;
+    overflow:auto;
+    height: calc(70vh - 30px);    
 }
 
 body{
     background-image: url("/foodJunk.jpeg");
+}
+
+#footerGap{
+    width: 100vh;
+    float: left;
 }
 </style>
 
@@ -249,6 +257,7 @@ body{
 
 <div th:replace="header.html"></div>
 
+<div id="content">
 <div id="mainDiv">
 <div id="intro">
     <h1>Welcome to Momo</h1>
@@ -269,6 +278,8 @@ body{
 <input type="hidden" id="order" value=""/>
 <input type="hidden" id="page" value="0"/>
 
+</div>
+<div id="footerGap"></div>
 </div>
 </body>
 </html>
