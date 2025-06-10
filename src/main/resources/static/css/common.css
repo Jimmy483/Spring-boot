@@ -35,7 +35,7 @@
    margin-left: 55px;
 }
 .modal-content1 input[type="button"]{
-   color: #fefefe;
+   color: #000000;
    width: 20%;
    font-size:20px;
 }
@@ -70,8 +70,9 @@
     width: 40%; /* Could be any size */
 }
 nav {
-    padding: 10px;
+    padding: 7px 10px 30px 0px ;
     height: 30px;
+    overflow: hidden;
 }
 
 .colour-EAE21D{
