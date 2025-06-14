@@ -13,6 +13,11 @@ public class ItemController {
         return "addItem";
     }
 
+    @GetMapping(path="/viewItem")
+    public String viewItemPage(){
+        System.out.println("loading view page");
+        return "viewItems";
+    }
     @GetMapping(path="/addItem")
     public String saveItem(){
         System.out.println("Success la");
