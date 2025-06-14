@@ -77,8 +77,8 @@
     <script src="/js/commonjs.js" type="text/javascript"></script>
     <link href="/css/common.css?v=123" rel="stylesheet" type="text/css">
     <script>
-    function setting(){
-        window.location.href='/loadSetting'
+    function goTo(url){
+        window.location.href=url
     }
     
     </script>
@@ -92,8 +92,8 @@
 <h2>Profile Details</span></h2>
     <div id="leftNav" th:class="'colour-'+${session.themeColour!=null?session.themeColour:'EAE21D'}">
         <div id="leftNavList" >
-            <a href="#" onclick="setting()">Setting</a>
-            <a href="#">Add Item</a>
+            <a href="#" onclick="goTo('/loadSetting')">Setting</a>
+            <a href="#" onclick="goTo('/item')">Add Item</a>
         </div>
     </div>
     <div class="profile">
