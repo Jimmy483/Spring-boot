@@ -6,28 +6,12 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Items</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js" type="text/javascript"></script>
-<script src="/js/commonjs.js" type="text/javascript"></script>
-<link href="/css/common.css?v=123" rel="stylesheet" type="text/css"/>
+
 <style>
 
-body{
-    margin: 0;
-    padding: 0;
-}
-
-#addBtn{
-    font-size: 60px;
-}
-
-#mainDiv{
-    height: 100%;
-    width: 100%;
-}
-
 #content{
-    margin: 200px auto;
-    width: 600px;
+    margin-top: 174px;
+    margin-left: 370px;
 }
 
 #topContent{
@@ -69,12 +53,19 @@ table tr td img{
 
 </style>
 <script>
-
+function addEditRestore(action){
+    
+    let response = confirm('Do you want to '+ action+' the item?');
+    if(response){
+        alert('Item '+action+'d successfully');
+    }
+    
+    
+}
 </script>
 </head>
 <body>
-<div id="mainDiv">
-    <div th:replace="header.html"></div>
+
 <div id="content">
     <div id="topContent">
        <input id="addBtn" type="button" value="+">
@@ -96,15 +87,13 @@ table tr td img{
                 <td>Test Updated By</td>
                 <td>Test Last Updated</td>
                 <td>
-                    <img src="/icons/editIcon.png">
-                    <img src="/icons/restoreIcon.png">
-                    <img src="/icons/deleteIcon.png">
+                    <img src="/icons/editIcon.png" onclick="addEditRestore('edit')">
+                    <img src="/icons/restoreIcon.png" onclick="addEditRestore('restore')">
+                    <img src="/icons/deleteIcon.png" onclick="addEditRestore('delete')">
                 </td>
             </tr>
          </table>
     </div>
-</div>
-    <div th:replace="menu.html"></div>
 </div>
 </body>
 </html>

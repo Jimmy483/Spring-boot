@@ -135,9 +135,11 @@ public class MainController {
 
     @GetMapping(path = "/profile")
     public String goToProfile(HttpSession httpSession, Model model){
+        String templateToRender="profile.html";
         model.addAttribute("id",SessionUtility.getSessionValue(httpSession,"userId"));
         model.addAttribute("username",SessionUtility.getSessionValue(httpSession,"username"));
-        return "profile";
+        model.addAttribute("templateToRender",templateToRender);
+        return "profileGeneric";
     }
 
     @GetMapping(path = "/logout")

@@ -27,6 +27,12 @@ public class Food {
 
     String image;
 
+    @Column(name="createdBy")
+    String createdBy;
+
+    @Column(name="updatedBy")
+    String updatedBy;
+
     @Column(name="lastUpdated")
     String lastUpdated;
 }

@@ -31,8 +31,8 @@ public class AppConfig {
         return new FoodDaoImpl(jdbcTemplate);
     }
 
-    @Bean
-    public FoodService foodService(){return new FoodService();}
+//    @Bean
+//    public FoodService foodService(){return new FoodService();}
 
 
 

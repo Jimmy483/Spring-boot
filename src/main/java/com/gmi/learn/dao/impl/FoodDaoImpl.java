@@ -47,7 +47,9 @@ public class FoodDaoImpl implements FoodDao {
                             rs.getString("name"),
                             rs.getLong("price"),
                             rs.getString("image"),
-                            rs.getString("lastUpdated")
+                            rs.getString("lastUpdated"),
+                            rs.getString("createdBy"),
+                            rs.getString("updatedBy")
                     )
             );
 
@@ -68,7 +70,9 @@ public class FoodDaoImpl implements FoodDao {
                         rs.getString("name"),
                         rs.getLong("price"),
                         rs.getString("image"),
-                        rs.getString("lastUpdated")
+                        rs.getString("lastUpdated"),
+                        rs.getString("createdBy"),
+                        rs.getString("updatedBy")
                 )
         );
 

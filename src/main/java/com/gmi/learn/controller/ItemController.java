@@ -1,8 +1,12 @@
 package com.gmi.learn.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 public class ItemController {
@@ -14,14 +18,11 @@ public class ItemController {
     }
 
     @GetMapping(path="/viewItem")
-    public String viewItemPage(){
+    public String viewItemPage(Model model){
+        String templateToRender="viewItems.html";
         System.out.println("loading view page");
-        return "viewItems";
+        model.addAttribute("templateToRender",templateToRender);
+        return "profileGeneric";
     }
-    @GetMapping(path="/addItem")
-    public String saveItem(){
-        System.out.println("Success la");
 
-        return "addItem";
-    }
 }

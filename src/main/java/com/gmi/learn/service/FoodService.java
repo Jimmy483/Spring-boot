@@ -1,15 +1,28 @@
 package com.gmi.learn.service;
 
 import com.gmi.learn.DateUtils;
+import com.gmi.learn.SessionUtility;
 import com.gmi.learn.domain.Food;
+import com.gmi.learn.repository.FoodRepository;
+import jakarta.servlet.http.HttpSession;
+import org.apache.catalina.manager.util.SessionUtils;
 import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Service
 public class FoodService {
+    private FoodRepository foodRepository;
+    public FoodService(FoodRepository foodRepository){
+        this.foodRepository=foodRepository;
+    }
 
     public Map<String,Object> convertDateToDaysAndUpdateFood(Page<Food> foodList){
 
@@ -50,5 +63,36 @@ public class FoodService {
                 return "A day ago";
             return period.getDays() + " days ago";
         }
+    }
+
+    public String uploadImage(MultipartFile imageFile){
+        try{
+            String staticDir = new File("src/main/resources/static/uploads").getAbsolutePath();
+
+            File dir= new File(staticDir);
+            if(!dir.exists()){
+                dir.mkdirs();
+            }
+
+            String fileName = imageFile.getOriginalFilename();
+            File destination = new File(dir,fileName);
+            imageFile.transferTo(destination);
+
+            return "/uploads/" + fileName;
+        }catch (IOException e){
+            e.printStackTrace();
+            return "Upload Failed : " + e.getMessage();
+        }
+
+    }
+    public void saveFood(String name, String price, String image, String lastUpdated, HttpSession httpSession){
+        String createdBy= SessionUtility.getSessionValue(httpSession, "username").toString();
+        Food food=new Food();
+        food.setName(name);
+        food.setPrice(Integer.parseInt(price));
+        food.setImage(image);
+        food.setLastUpdated(lastUpdated);
+        food.setCreatedBy(createdBy);
+        foodRepository.save(food);
     }
 }

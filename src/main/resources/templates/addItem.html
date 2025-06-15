@@ -131,16 +131,23 @@ if(response){
 alert('test');
 let name=$('#itemName').val();
 let price=$('#itemPrice').val();
+let file=$('#imageFileChooser')[0].files[0];
+
+const formData= new FormData();
+formData.append('name',name);
+formData.append('price',price);
+formData.append('image',file);
+
 $.ajax({
     url: '/addItem',
-    method:'GET',
-    data:{
-        name:name,
-        price:price
-    },
+    method:'POST',
+    data: formData,
+    processData: false,
+    contentType: false,
     success:function(){
     $('#itemName').val('');
     $('#itemPrice').val('');
+    $('#imageFileChooser').val('');
     $('#successMessage').css('display','block');
     },error:function(){
         alert('Something went wrong');
@@ -149,11 +156,17 @@ $.ajax({
 })
 }
 
+}
+
 $('#btnOk').click(function(){
     $('#successMessage').css('display','none');
 })
 
+function uploadImageFile(input){
+    const file=input.files[0];
+    if(file){
 
+    }
 }
 
 </script>
@@ -172,6 +185,8 @@ $('#btnOk').click(function(){
             <input id="itemName" name="itemName" type="text"/>
             <label for="itemPrice">Price</label>
             <input id="itemPrice" name="itemName" type="text"/>
+            <label for="imageFileChooser">Image</label>
+            <input id="imageFileChooser" name="imageFileChooser" type="file" accept="image/*">
         <!-- </form> -->
         </div>
         <div id="saveDiv">
