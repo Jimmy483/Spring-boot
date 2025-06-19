@@ -51,8 +51,112 @@ table tr td img{
     width: 30px;
 }
 
+#contentAdd{
+    overflow: hidden;
+    z-index: 1;
+    display: none;
+    position: relative;
+    width: 365px;
+    height: 300px;
+    margin-left: 500px;
+    margin-top: -200px;
+    border: 2px solid green;
+    border-radius: 8px;
+    background-color: white;
+}
+ 
+#itemAdd{
+    margin-left: 80px;
+    padding-top: 20px;
+    height: 500px;
+}
+
+#headerName{
+    display: block;
+    font-size: 30px;
+    margin-bottom: 35px;
+}
+
+#options label{
+    display: block;
+}
+
+#options input{
+    margin-left: 5px;
+}
+
+#submitBtn{
+    display: inline;
+    font-size: 11px;
+    border-radius: 3px;
+    margin-left: 50px;
+    width: 45px;
+    height: 35px;
+    border: 0px;
+}
+
+#cancelBtn{
+    margin-left:50px;
+    width: 45px;
+    height: 35px;
+    border: 0px;
+    font-size: 11px;
+    border-radius: 3px;
+}
+
+#options{
+    height: 44%;
+    width: 100%;
+    float: left;
+}
+
+#saveDiv{
+    margin-top: 10px;
+    height: 15%;
+    float: left;
+}
+
+#successMessage{
+    display:none;
+    position:fixed;
+    z-index:2;
+    left:0;
+    top:0;
+    border-radius: 5px;
+    font-size: 20px;
+    width: 100%;
+    height: 100%;
+}
+
+#messageContent{
+    background-color: aliceblue;
+    margin: 17% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    border-radius: 10px;
+    height: 50px;
+    width: 27%;
+}
+
+#messageContent input{
+    margin-left: 180px;
+    margin-top:10px;
+}
+
+#messageContent span{
+    margin-left: 66px;
+}
+
+#btnOk{
+    display: block;
+    border-radius: 4px;
+    border: 1px gray;
+}
 </style>
-<script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+
+ 
 function addEditRestore(action){
     
     let response = confirm('Do you want to '+ action+' the item?');
@@ -60,15 +164,67 @@ function addEditRestore(action){
         alert('Item '+action+'d successfully');
     }
     
-    
 }
+
+function cancelForm(){
+    $('#itemName').val('');
+    $('#itemPrice').val('');
+    $('#imageFileChooser').val('');
+    $('#contentAdd').css('display','none');
+}
+
+function renderItemAdd(){
+$('#contentAdd').css('display','block');
+}
+
+function confirmSave(){
+let response = confirm('Are you sure you want to add the item? Once saved cant be undone.');
+if(response){
+let name=$('#itemName').val();
+let price=$('#itemPrice').val();
+let file=$('#imageFileChooser')[0].files[0];
+
+const formData= new FormData();
+formData.append('name',name);
+formData.append('price',price);
+formData.append('image',file);
+
+$.ajax({
+    url: '/addItem',
+    method:'POST',
+    data: formData,
+    processData: false,
+    contentType: false,
+    success:function(){
+    $('#itemName').val('');
+    $('#itemPrice').val('');
+    $('#imageFileChooser').val('');
+    $('#successMessage').css('display','block');
+    },error:function(){
+        alert('Something went wrong');
+    }
+
+})
+}
+
+}
+
+// $('#btnOk').click(function(){
+//     $('#successMessage').css('display','none');
+// })
+
+function hideBtnOk(){
+    $('#successMessage').css('display','none');
+}
+
+
 </script>
 </head>
 <body>
 
 <div id="content">
     <div id="topContent">
-       <input id="addBtn" type="button" value="+">
+       <input id="addBtn" type="button" value="+" onclick="renderItemAdd()">
     </div>
     <div id="bottomContent">
          <table id="itemTable">
@@ -94,6 +250,33 @@ function addEditRestore(action){
             </tr>
          </table>
     </div>
+</div>
+<div id="contentAdd">
+    <div id="itemAdd">
+        <div id="options">
+        <!-- <form th:action="@{/addItem}" id="formItem" method="GET"> -->
+            <span id="headerName">Add Items</span>
+            <label for="itemName">Item Name</label>
+            <input id="itemName" name="itemName" type="text"/>
+            <label for="itemPrice">Price</label>
+            <input id="itemPrice" name="itemName" type="text"/>
+            <label for="imageFileChooser">Image</label>
+            <input id="imageFileChooser" name="imageFileChooser" type="file" accept="image/*">
+        <!-- </form> -->
+        </div>
+        <div id="saveDiv">
+            <input id="submitBtn" th:class="'colour-' + ${session.themeColour!=null?session.themeColour:'EAE21D'}" type="button" value="Add" onclick="confirmSave()"/>
+            <input id="cancelBtn" th:class="'colour-' + ${session.themeColour!=null?session.themeColour:'EAE21D'}" type="button" value="Cancel" onclick="cancelForm()"/>
+        </div>
+        <div></div>
+    </div>
+
+</div>
+<div id="successMessage">
+<div id="messageContent">
+    <span>You have successfully added an item.</span>
+<input id="btnOk" th:class="'colour-' + ${session.themeColour!=null?session.themeColour:'EAE21D'}" type="button" value="Ok" onclick="hideBtnOk()"/>
+</div>
 </div>
 </body>
 </html>
