@@ -6,7 +6,11 @@ import com.gmi.learn.domain.Food;
 import com.gmi.learn.repository.FoodRepository;
 import jakarta.servlet.http.HttpSession;
 import org.apache.catalina.manager.util.SessionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,30 +24,87 @@ import java.util.stream.Collectors;
 @Service
 public class FoodService {
     private FoodRepository foodRepository;
+
+
     public FoodService(FoodRepository foodRepository){
         this.foodRepository=foodRepository;
+    }
+
+
+    public Map<String, Object> getFood(String sort, String order, int page, String name, int size, String fromPagination){
+        Pageable pageable;
+        Page<Food> food;
+        Sort.Direction direction;
+        Map<String, Object> returnMap= new HashMap<>();
+        System.out.println("page = " + page);
+
+        System.out.println("sort" + sort);
+        if(sort!=null){
+            if (!Arrays.asList("name", "price","lastUpdated").contains(sort)) {
+                sort = "name"; // Default sort column if invalid
+            }
+            System.out.println("sort here = " + sort);
+            if(fromPagination.equals("false")){
+                direction = "desc".equalsIgnoreCase(order) ? Sort.Direction.ASC : Sort.Direction.DESC;
+            }else {
+                direction ="desc".equalsIgnoreCase(order) ? Sort.Direction.DESC : Sort.Direction.ASC;
+            }
+            System.out.println("order here = " + direction);
+            pageable= PageRequest.of(page, size, Sort.by(direction,sort));
+            System.out.println("page first = " + pageable);
+
+        }else {
+            direction = Sort.Direction.ASC;
+            pageable= PageRequest.of(page,size);
+            System.out.println("page scond = " + pageable);
+
+        }
+        System.out.println("name is  = " + name);
+        food= foodRepository.findByNameContainingIgnoreCase(name,pageable);
+        System.out.println("food = " + food);
+        returnMap.put("order",direction);
+        returnMap.put("row",convertDateToDaysAndUpdateFood(food));
+        return returnMap;
     }
 
     public Map<String,Object> convertDateToDaysAndUpdateFood(Page<Food> foodList){
 
         Map<String,Object> response = new HashMap<>();
-        List<Map<String,Object>> foodArrayList=foodList.getContent().stream()
-                .map(food -> {
-                    Map<String,Object> map =new HashMap<>();
-                    map.put("id",food.getId());
-                    map.put("name",food.getName());
-                    map.put("price",food.getPrice());
-                    map.put("image",food.getImage());
-                    map.put("lastUpdated",formatPeriod(DateUtils.getDateDifference(LocalDate.parse(food.getLastUpdated()), LocalDate.now())));
-                    return map;
-                }).collect(Collectors.toList());
+//        if(fromViewItems){
+//            Map<String, Object> foodMap=new HashMap<>();
+//            for(Food food:foodList.getContent()){
+//             foodMap.put("id",food.getId());
+//             foodMap.put("name", food.getName());
+//             foodMap.put("price", food.getPrice());
+//             foodMap.put("lastUpdated", food.getLastUpdated());
+//             foodMap.put("updatedBy", food.getUpdatedBy());
+//             foodMap.put("createdBy", food.getCreatedBy());
+//             response.put("content",foodMap);
+//            }
+//        }else{
+            List<Map<String,Object>> foodArrayList=foodList.getContent().stream()
+                    .map(food -> {
+                        Map<String,Object> map =new HashMap<>();
+                        map.put("id",food.getId());
+                        map.put("name",food.getName());
+                        map.put("price",food.getPrice());
+                        map.put("image",food.getImage());
+                        map.put("updatedBy", food.getUpdatedBy());
+                        map.put("createdBy", food.getCreatedBy());
+                        map.put("lastUpdated",formatPeriod(DateUtils.getDateDifference(LocalDate.parse(food.getLastUpdated()), LocalDate.now())));
+                        return map;
+                    }).collect(Collectors.toList());
 
-        response.put("content",foodArrayList);
+
+            response.put("content",foodArrayList);
+//        }
+
         response.put("pageNumber",foodList.getNumber());
         response.put("totalItems", foodList.getTotalElements());
         response.put("totalPages",foodList.getTotalPages());
         response.put("pageSize",foodList.getSize());
         response.put("sort",foodList.getSort());
+        System.out.println("content = " + response.get("content"));
         return  response;
 
     }
