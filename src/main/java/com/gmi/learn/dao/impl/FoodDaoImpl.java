@@ -49,7 +49,8 @@ public class FoodDaoImpl implements FoodDao {
                             rs.getString("image"),
                             rs.getString("lastUpdated"),
                             rs.getString("createdBy"),
-                            rs.getString("updatedBy")
+                            rs.getString("updatedBy"),
+                            rs.getBoolean("isDeleted")
                     )
             );
 
@@ -72,7 +73,8 @@ public class FoodDaoImpl implements FoodDao {
                         rs.getString("image"),
                         rs.getString("lastUpdated"),
                         rs.getString("createdBy"),
-                        rs.getString("updatedBy")
+                        rs.getString("updatedBy"),
+                        rs.getBoolean("isDeleted")
                 )
         );
 

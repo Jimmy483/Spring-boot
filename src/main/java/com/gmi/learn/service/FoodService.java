@@ -31,7 +31,7 @@ public class FoodService {
     }
 
 
-    public Map<String, Object> getFood(String sort, String order, int page, String name, int size, String fromPagination){
+    public Map<String, Object> getFood(String sort, String order, int page, String name, int size, String fromPagination, Boolean showDeleted){
         Pageable pageable;
         Page<Food> food;
         Sort.Direction direction;
@@ -60,7 +60,12 @@ public class FoodService {
 
         }
         System.out.println("name is  = " + name);
-        food= foodRepository.findByNameContainingIgnoreCase(name,pageable);
+        if(showDeleted){
+            food= foodRepository.findByNameContainingIgnoreCase(name,pageable);
+        }else
+            food = foodRepository.findByNameContainingIgnoreCaseAndIsDeleted(name, false ,pageable);
+//        food= foodRepository.findByNameContainingIgnoreCase(name,pageable);
+
         System.out.println("food = " + food);
         returnMap.put("order",direction);
         returnMap.put("row",convertDateToDaysAndUpdateFood(food));
@@ -70,33 +75,22 @@ public class FoodService {
     public Map<String,Object> convertDateToDaysAndUpdateFood(Page<Food> foodList){
 
         Map<String,Object> response = new HashMap<>();
-//        if(fromViewItems){
-//            Map<String, Object> foodMap=new HashMap<>();
-//            for(Food food:foodList.getContent()){
-//             foodMap.put("id",food.getId());
-//             foodMap.put("name", food.getName());
-//             foodMap.put("price", food.getPrice());
-//             foodMap.put("lastUpdated", food.getLastUpdated());
-//             foodMap.put("updatedBy", food.getUpdatedBy());
-//             foodMap.put("createdBy", food.getCreatedBy());
-//             response.put("content",foodMap);
-//            }
-//        }else{
-            List<Map<String,Object>> foodArrayList=foodList.getContent().stream()
-                    .map(food -> {
-                        Map<String,Object> map =new HashMap<>();
-                        map.put("id",food.getId());
-                        map.put("name",food.getName());
-                        map.put("price",food.getPrice());
-                        map.put("image",food.getImage());
-                        map.put("updatedBy", food.getUpdatedBy());
-                        map.put("createdBy", food.getCreatedBy());
-                        map.put("lastUpdated",formatPeriod(DateUtils.getDateDifference(LocalDate.parse(food.getLastUpdated()), LocalDate.now())));
-                        return map;
-                    }).collect(Collectors.toList());
+        List<Map<String,Object>> foodArrayList=foodList.getContent().stream()
+                .map(food -> {
+                    Map<String,Object> map =new HashMap<>();
+                    map.put("id",food.getId());
+                    map.put("name",food.getName());
+                    map.put("price",food.getPrice());
+                    map.put("image",food.getImage());
+                    map.put("updatedBy", food.getUpdatedBy());
+                    map.put("createdBy", food.getCreatedBy());
+                    map.put("isDeleted", food.getIsDeleted());
+                    map.put("lastUpdated",formatPeriod(DateUtils.getDateDifference(LocalDate.parse(food.getLastUpdated()), LocalDate.now())));
+                    return map;
+                }).collect(Collectors.toList());
 
 
-            response.put("content",foodArrayList);
+        response.put("content",foodArrayList);
 //        }
 
         response.put("pageNumber",foodList.getNumber());
@@ -155,5 +149,27 @@ public class FoodService {
         food.setLastUpdated(lastUpdated);
         food.setCreatedBy(createdBy);
         foodRepository.save(food);
+    }
+
+    public void deleteOrRestoreFood(long itemId, String action){
+        Optional<Food> optionalFood = foodRepository.findById(itemId);
+        if(optionalFood.isPresent()){
+            Food food = optionalFood.get();
+            if(action.equals("delete")){
+                food.setIsDeleted(true);
+            }else{
+                food.setIsDeleted(false);
+            }
+            foodRepository.save(food);
+        }else{
+            System.out.println("Could not find the item");
+        }
+
+
+    }
+
+    public void restoreFood(long itemId){
+        Optional<Food> optionalFood = foodRepository.findById(itemId);
+
     }
 }

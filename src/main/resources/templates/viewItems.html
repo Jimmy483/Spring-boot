@@ -175,13 +175,33 @@ $(document).ready(function(){
     getData(0, false);
 })
  
-function addEditRestore(action){
+function addEditRestore(action, element){
     
     let response = confirm('Do you want to '+ action+' the item?');
     if(response){
-        alert('Item '+action+'d successfully');
+        if(action=='delete' || action=='restore'){
+           ajaxDeleteRestore(element, action); 
+        }
     }
     
+}
+
+function ajaxDeleteRestore(element, action){
+    let id = element.getAttribute('data-id');
+$.ajax({
+    url: '/deleteRestoreFood',
+    method: 'POST',
+    data:{
+        id,
+        action
+    },
+    success:function(data){
+        alert(data);
+    },
+    error:function(){
+        alert('Something went wrong')
+    }
+})
 }
 
 function cancelForm(){
@@ -237,7 +257,8 @@ function getData(page, fromPagination){
 // let sort = $('#sort').val();
 // alert('sort = ' + sort);
 let order = $('#order').val();
-alert('order = ' + order);
+let name = $('#searchText').val();
+// alert('order = ' + order);
     $.ajax({
         url: '/getItem',
         method: 'GET',
@@ -250,13 +271,31 @@ alert('order = ' + order);
         },
         success:function(data){
          $('#page').val(data.row.pageNumber);
-        //  $('#itemTable').html(data);
+        updateTable(page);
+        
+        
+
          renderPagination(data.row);
         },
         error:function(){
             alert('Oops');
         }
     })
+}
+
+function updateTable(page){
+    let name = $('#searchText').val();
+    $('#tbCont').load('/getItemFragment',{
+        page: page, 
+        name: name
+    });
+}
+
+function checkKeyPressed(event){
+
+    if(event.key=='Enter'){
+        getData(0, false);
+    }
 }
 
 function renderPagination(data){
@@ -300,26 +339,29 @@ function renderPagination(data){
 <div id="content">
     <div id="topContent">
        <input id="addBtn" type="button" value="+" onclick="renderItemAdd()">
-       <input id="searchText" type="text" placeholder="Search"/> 
+       <input id="searchText" type="text" placeholder="Search" onkeypress="checkKeyPressed(event)"/> 
     </div>
     <div id="bottomContent">
-         <table id="itemTable">
-            <tr>
+        <div id="tbCont">
+            <table id="itemTable" th:fragment="tableContent">
+                
+         <tr>
                 <th th:each="column : ${columnMap}" th:text="${column.value}"></th>
                 <th>Edit/Delete/Restore</th>
             </tr>
             <tr th:each="row : ${data.row.content}">
                 <td th:each="column : ${columnMap}" th:text="${row[column.key]}"></td>
                 <td> 
-                    <img src="/icons/editIcon.png" onclick="addEditRestore('edit')">
-                    <img src="/icons/restoreIcon.png" onclick="addEditRestore('restore')">
-                    <img src="/icons/deleteIcon.png" onclick="addEditRestore('delete')">
+                    <img src="/icons/editIcon.png" th:attr="data-id=${row.id}" onclick="addEditRestore('edit',this)">
+                    <img src="/icons/restoreIcon.png" th:if="${row.isDeleted}" th:attr="data-id=${row.id}" onclick="addEditRestore('restore',this)">
+                    <img src="/icons/deleteIcon.png" th:if="${!row.isDeleted}" th:attr="data-id=${row.id}" onclick="addEditRestore('delete',this)">
                 </td>
             </tr>
          </table>
+         </div>
          <div id="paginationDiv">
             
-         </div>
+         </div> 
     </div>
 </div>
 <div id="contentAdd">

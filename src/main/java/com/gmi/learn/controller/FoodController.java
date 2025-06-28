@@ -32,7 +32,7 @@ public class FoodController {
     @ResponseBody
     public Map<String, Object> getFoods(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size, @RequestParam(required = false) String name, @RequestParam(required = false) String sort, @RequestParam(required = false) String order, @RequestParam(defaultValue = "false") String fromPagination){
 
-        Map<String, Object> returnMap=foodService.getFood(sort, order, page, name, size, fromPagination);
+        Map<String, Object> returnMap=foodService.getFood(sort, order, page, name, size, fromPagination, false);
         return returnMap;
 
     }

@@ -25,7 +25,7 @@ public class ItemController {
     public String viewItemPage(Model model){
         String templateToRender="viewItems.html";
 //        System.out.println("loading view page = " + name);
-        Map<String, Object> dataMap=foodService.getFood(null, null, 0, "", 2, "false");
+        Map<String, Object> dataMap=foodService.getFood(null, null, 0, "", 2, "false", true);
 //        List<Map.Entry<String, String>> columnMapList = new ArrayList<>(getColumnMap().entrySet());
         model.addAttribute("templateToRender",templateToRender);
         model.addAttribute("columnMap",getColumnMap());
@@ -33,6 +33,20 @@ public class ItemController {
         return "profileGeneric";
     }
 
+    @PostMapping(path="/getItemFragment")
+    public String getItemFragment(Model model, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "2") int size, @RequestParam(required = false) String name, @RequestParam(required = false) String sort, @RequestParam(required = false) String order, @RequestParam(defaultValue = "false") String fromPagination){
+        String templateToRender="viewItems.html";
+//        System.out.println("loading view page = " + name);
+        System.out.println("page = " + page + " size = " + size + " name = " + name + " sort = "+ sort + " order = " + order + " fromPagination = " + fromPagination);
+
+        Map<String, Object> dataMap=foodService.getFood(sort, order, page, name, size, fromPagination, true);
+//        List<Map.Entry<String, String>> columnMapList = new ArrayList<>(getColumnMap().entrySet());
+//        model.addAttribute("templateToRender",templateToRender);
+        model.addAttribute("columnMap",getColumnMap());
+        model.addAttribute("data", dataMap);
+        System.out.println("hi man");
+        return "viewItems :: tableContent";
+    }
     @GetMapping(path="/getItem")
     @ResponseBody
     public Map<String, Object> getItemAjax(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "2") int size, @RequestParam(required = false) String name, @RequestParam(required = false) String sort, @RequestParam(required = false) String order, @RequestParam(defaultValue = "false") String fromPagination){
@@ -47,11 +61,17 @@ public class ItemController {
         System.out.println("page = " + page + " size = " + size + " name = " + name + " sort = "+ sort + " order = " + order + " fromPagination = " + fromPagination);
 
         System.out.println("this is the ajax call");
-        Map<String, Object> returnMap=foodService.getFood(sort, order, page, name, size, fromPagination);
+        Map<String, Object> returnMap=foodService.getFood(sort, order, page, name, size, fromPagination, true);
         returnMap.put("columnMap",getColumnMap());
         return  returnMap;
     }
 
+    @PostMapping(path="/deleteRestoreFood")
+    @ResponseBody
+    public String deleteOrRestoreFood(@RequestParam("id") long itemId, @RequestParam("action") String action){
+        foodService.deleteOrRestoreFood(itemId, action);
+        return "success";
+    }
 
     public Map<String, String> getColumnMap(){
         Map<String, String> columnMap = new HashMap<>();

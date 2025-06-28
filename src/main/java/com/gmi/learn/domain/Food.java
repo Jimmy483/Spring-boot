@@ -35,4 +35,7 @@ public class Food {
 
     @Column(name="lastUpdated")
     String lastUpdated;
+
+    @Column(name="isDeleted")
+    Boolean isDeleted;
 }

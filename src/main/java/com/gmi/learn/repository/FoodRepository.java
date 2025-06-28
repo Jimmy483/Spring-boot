@@ -10,6 +10,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 public interface FoodRepository extends JpaRepository<Food, Long> {
 
     Page<Food> findByNameContainingIgnoreCase(String name,Pageable pageable);
+    Page<Food> findByNameContainingIgnoreCaseAndIsDeleted(String name, Boolean isDeleted, Pageable pageable);
 
 
 }
