@@ -59,7 +59,7 @@ table tr td img{
     width: 365px;
     height: 300px;
     margin-left: 500px;
-    margin-top: -200px;
+    margin-top: -272px;
     border: 2px solid green;
     border-radius: 8px;
     background-color: white;
@@ -71,7 +71,7 @@ table tr td img{
     height: 500px;
 }
 
-#headerName{
+.headerStyle{
     display: block;
     font-size: 30px;
     margin-bottom: 35px;
@@ -85,7 +85,8 @@ table tr td img{
     margin-left: 5px;
 }
 
-#submitBtn{
+.btnStyle{
+    display: none;
     display: inline;
     font-size: 11px;
     border-radius: 3px;
@@ -168,6 +169,24 @@ table tr td img{
 #paginationDiv button:first-of-type{
     margin-left: 70px;
 }
+
+#headerNameEdit{
+    display: none;
+}
+
+#headerNameAdd{
+    display: none;
+}
+
+#successAddMessage{
+    display: none;
+}
+
+#successUpdateMessage{
+    display: none;
+}
+
+
 </style>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" type="text/javascript"></script>
 <script type="text/javascript">
@@ -179,24 +198,39 @@ function addEditRestore(action, element){
     
     let response = confirm('Do you want to '+ action+' the item?');
     if(response){
+        $('#itemId').val('');
         if(action=='delete' || action=='restore'){
-           ajaxDeleteRestore(element, action); 
+           ajaxEditDeleteRestore(element, action); 
+        }else if(action=='edit'){
+            $('#contentAdd').css('display','block');
+            ajaxEditDeleteRestore(element, action);
         }
     }
     
 }
 
-function ajaxDeleteRestore(element, action){
+function ajaxEditDeleteRestore(element, action){
     let id = element.getAttribute('data-id');
 $.ajax({
-    url: '/deleteRestoreFood',
+    url: '/editDeleteRestoreFood',
     method: 'POST',
     data:{
         id,
         action
     },
     success:function(data){
-        alert(data);
+        if(action=='edit'){
+
+            $('#itemId').val(id);
+            $('#itemName').val(data.food.name);
+            $('#itemPrice').val(data.food.price);
+            $('#submitBtnEdit').css('display','inline-block');
+            $('#headerNameEdit').css('display','inline-block');
+            $('#submitBtn').css('display','none');
+            $('#headerNameAdd').css('display','none');
+            $('#successUpdateMessage').css('display','inline-block');
+            $('#successAddMessage').css('display','none');
+        }
     },
     error:function(){
         alert('Something went wrong')
@@ -213,22 +247,31 @@ function cancelForm(){
 
 function renderItemAdd(){
 $('#contentAdd').css('display','block');
+$('#submitBtn').css('display','inline-block');
+$('#headerNameAdd').css('display','inline-block');
+$('#submitBtnEdit').css('display','none');
+$('#headerNameEdit').css('display','none');
 }
 
-function confirmSave(){
-let response = confirm('Are you sure you want to add the item? Once saved cant be undone.');
+function confirmSave(action){
+let response = confirm('Are you sure you want to add/edit the item?');
 if(response){
 let name=$('#itemName').val();
 let price=$('#itemPrice').val();
 let file=$('#imageFileChooser')[0].files[0];
 
+let id=$('#itemId').val();
 const formData= new FormData();
 formData.append('name',name);
 formData.append('price',price);
+formData.append('itemId', BigInt(id));
+formData.append('action', action);
+if(file){
 formData.append('image',file);
+}
 
 $.ajax({
-    url: '/addItem',
+    url: '/addEditItem',
     method:'POST',
     data: formData,
     processData: false,
@@ -237,7 +280,19 @@ $.ajax({
     $('#itemName').val('');
     $('#itemPrice').val('');
     $('#imageFileChooser').val('');
+    if(action=='edit'){
+                alert("action is  " + action)
+
+        $('#successUpdateMessage').css('display','inline-block');
+        $('#successAddMessage').css('display','none');
+    }else if(action=='add'){
+        alert("action is  " + action)
+        $('#successUpdateMessage').css('display','none');
+        $('#successAddMessage').css('display','inline-block');
+    }
     $('#successMessage').css('display','block');
+    
+    $('#contentAdd').css('display','none');
     },error:function(){
         alert('Something went wrong');
     }
@@ -254,11 +309,9 @@ function hideBtnOk(){
 }
 
 function getData(page, fromPagination){
-// let sort = $('#sort').val();
-// alert('sort = ' + sort);
+
 let order = $('#order').val();
 let name = $('#searchText').val();
-// alert('order = ' + order);
     $.ajax({
         url: '/getItem',
         method: 'GET',
@@ -368,7 +421,8 @@ function renderPagination(data){
     <div id="itemAdd">
         <div id="options">
         <!-- <form th:action="@{/addItem}" id="formItem" method="GET"> -->
-            <span id="headerName">Add Items</span>
+            <span id="headerNameAdd" class="headerStyle">Add Items</span>
+            <span id="headerNameEdit" class="headerStyle">Edit Items</span>
             <label for="itemName">Item Name</label>
             <input id="itemName" name="itemName" type="text"/>
             <label for="itemPrice">Price</label>
@@ -378,7 +432,8 @@ function renderPagination(data){
         <!-- </form> -->
         </div>
         <div id="saveDiv">
-            <input id="submitBtn" th:class="'colour-' + ${session.themeColour!=null?session.themeColour:'EAE21D'}" type="button" value="Add" onclick="confirmSave()"/>
+            <input id="submitBtn" th:class="'btnStyle colour-' + ${session.themeColour!=null?session.themeColour:'EAE21D'}" type="button" value="Save" onclick="confirmSave('add')"/>
+            <input id="submitBtnEdit" th:class="'btnStyle colour-' + ${session.themeColour!=null?session.themeColour:'EAE21D'}" type="button" value="Update" onclick="confirmSave('edit')"/>
             <input id="cancelBtn" th:class="'colour-' + ${session.themeColour!=null?session.themeColour:'EAE21D'}" type="button" value="Cancel" onclick="cancelForm()"/>
         </div>
     </div>
@@ -386,12 +441,14 @@ function renderPagination(data){
 </div>
 <div id="successMessage">
 <div id="messageContent">
-    <span>You have successfully added an item.</span>
+    <span id="successAddMessage">You have successfully added an item.</span>
+    <span id="successUpdateMessage">You have successfully updated an item.</span>
 <input id="btnOk" th:class="'colour-' + ${session.themeColour!=null?session.themeColour:'EAE21D'}" type="button" value="Ok" onclick="hideBtnOk()"/>
 </div>
 </div>
 <input type="hidden" id="sort" value=""/>
 <input type="hidden" id="order" value=""/>
 <input type="hidden" id="page" value="0"/>
+<input type="hidden" id="itemId" value=""/>
 </body>
 </html>

@@ -6,27 +6,31 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Entity
-public class UserInfo {
+public class Messages {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    long id;
 
-    @Column(name = "firstName")
-    private String firstName;
+    @Column(name="receiverId")
+    long receiverId;
 
-    @Column(name = "lastName")
-    private String lastName;
+    @Column(name="senderId")
+    long senderId;
 
-    private String username;
 
-    @Column(name = "isAdmin")
-    private Boolean isAdmin;
+    String content;
 
-//    private String passwd;
+    @Column(name="isRead")
+    Boolean isRead;
+
+    @Column(name="lastRead")
+    Date lastRead;
 }

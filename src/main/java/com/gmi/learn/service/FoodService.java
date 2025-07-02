@@ -140,18 +140,40 @@ public class FoodService {
         }
 
     }
-    public void saveFood(String name, String price, String image, String lastUpdated, HttpSession httpSession){
-        String createdBy= SessionUtility.getSessionValue(httpSession, "username").toString();
+    public void saveFood(String name, int price, String image, String lastUpdated, HttpSession httpSession){
+        int createdBy= Integer.parseInt(SessionUtility.getSessionValue(httpSession, "userId").toString());
         Food food=new Food();
         food.setName(name);
-        food.setPrice(Integer.parseInt(price));
-        food.setImage(image);
+        food.setPrice(price);
+        if(!image.equals("")){
+            food.setImage(image);
+        }
         food.setLastUpdated(lastUpdated);
         food.setCreatedBy(createdBy);
+        food.setIsDeleted(false);
         foodRepository.save(food);
     }
 
-    public void deleteOrRestoreFood(long itemId, String action){
+    public void updateFood(String name, int price, String image, String lastUpdated, HttpSession httpSession, long id){
+        int updatedBy = Integer.parseInt(SessionUtility.getSessionValue(httpSession, "userId").toString());
+        Optional<Food> optionalFood = foodRepository.findById(id);
+        if(optionalFood.isPresent()){
+            Food food = optionalFood.get();
+            food.setName(name);
+            food.setPrice(price);
+            if(!image.equals("")){
+                food.setImage(image);
+            }
+            food.setLastUpdated(lastUpdated);
+            food.setUpdatedBy(updatedBy);
+            foodRepository.save(food);
+        }else {
+            System.out.println("row for id not found");
+        }
+    }
+
+    public void deleteOrRestoreFood(long itemId, String action, HttpSession httpSession){
+        int updatedBy= Integer.parseInt(SessionUtility.getSessionValue(httpSession, "userId").toString());
         Optional<Food> optionalFood = foodRepository.findById(itemId);
         if(optionalFood.isPresent()){
             Food food = optionalFood.get();
@@ -160,6 +182,8 @@ public class FoodService {
             }else{
                 food.setIsDeleted(false);
             }
+            food.setLastUpdated(LocalDate.now().toString());
+            food.setUpdatedBy(updatedBy);
             foodRepository.save(food);
         }else{
             System.out.println("Could not find the item");
@@ -168,6 +192,20 @@ public class FoodService {
 
     }
 
+    public Map<String, Object> getReturnMap(long id){
+        Map<String, Object> foodMap = new HashMap<>();
+        Optional<Food> optionalFood=foodRepository.findById(id);
+        if(optionalFood.isPresent()){
+            Food food=optionalFood.get();
+            foodMap.put("id", food.getId());
+            foodMap.put("name", food.getName());
+            foodMap.put("price", food.getPrice());
+            foodMap.put("image", food.getImage());
+        }
+        Map<String, Object> returnMap = new HashMap<>();
+        returnMap.put("food",foodMap);
+        return returnMap;
+    }
     public void restoreFood(long itemId){
         Optional<Food> optionalFood = foodRepository.findById(itemId);
 

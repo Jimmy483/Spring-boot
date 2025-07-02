@@ -36,7 +36,8 @@ public class UserInfoDaoImpl implements UserInfoDao {
                             rs.getLong("id"),
                             rs.getString("firstName"),
                             rs.getString("lastName"),
-                            rs.getString("username")
+                            rs.getString("username"),
+                            rs.getBoolean("isAdmin")
                     )
             );
             System.out.println("result = " + users);

@@ -48,10 +48,15 @@ public class InitalizeRequests{
         System.out.println("userid = " + userId);
         String toReturn;
         if(userId==0){
-            toReturn="#FFFFF";
+            toReturn="FFFFF";
         }else{
             userSetting=userSettingRepository.findByUserId(userId);
-            toReturn=userSetting.getTheme();
+            if(userSetting!=null){
+                toReturn=userSetting.getTheme()!=null?userSetting.getTheme():"FFA07A";
+
+            }else{
+                toReturn="FFA07A";
+            }
         }
         System.out.println("theme colour = " + toReturn);
         return toReturn;

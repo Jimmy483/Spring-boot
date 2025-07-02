@@ -37,21 +37,7 @@ public class FoodController {
 
     }
 
-    @PostMapping(path="/addItem")
-    @ResponseBody
-    public String saveItem(@RequestParam("name") String itemName, @RequestParam("price") String price, @RequestParam("image") MultipartFile image, HttpSession httpSession){
-        if(image.isEmpty()){
-            return "No image selected";
-        }
-        System.out.println("Success la");
-//        String fileName='/' + image.getOriginalFilename();
 
-        String fileName = foodService.uploadImage(image);
-        System.out.println("image name = " + fileName);
-        foodService.saveFood(itemName, price, fileName, LocalDate.now().toString(), httpSession);
-
-        return "success";
-    }
 
 
 }

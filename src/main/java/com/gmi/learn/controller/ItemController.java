@@ -1,6 +1,7 @@
 package com.gmi.learn.controller;
 
 import com.gmi.learn.service.FoodService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -66,10 +68,42 @@ public class ItemController {
         return  returnMap;
     }
 
-    @PostMapping(path="/deleteRestoreFood")
+    @PostMapping(path="/editDeleteRestoreFood")
     @ResponseBody
-    public String deleteOrRestoreFood(@RequestParam("id") long itemId, @RequestParam("action") String action){
-        foodService.deleteOrRestoreFood(itemId, action);
+    public Map<String, Object> editDeleteOrRestoreFood(@RequestParam("id") long itemId, @RequestParam("action") String action, HttpSession httpSession){
+        if(action.equals("edit")){
+            return foodService.getReturnMap(itemId);
+        }else{
+            foodService.deleteOrRestoreFood(itemId, action, httpSession);
+            return null;
+        }
+
+    }
+
+    @PostMapping(path="/addEditItem")
+    @ResponseBody
+    public String saveUpdateItem(@RequestParam("name") String itemName, @RequestParam("price") int price, @RequestParam(value = "image", required = false) MultipartFile image, HttpSession httpSession, @RequestParam("action") String addOrUpdate, @RequestParam("itemId") long id){
+
+        System.out.println("Success la");
+//        String fileName='/' + image.getOriginalFilename();
+        String fileName;
+        if(image!=null){
+            System.out.println("inside first");
+            fileName = foodService.uploadImage(image);
+        }else{
+            fileName="";
+        }
+
+        System.out.println("fileName = " + fileName);
+//        System.out.println("image name = " + fileName);
+//        System.out.println("image name = " + fileName.isEmpty());
+        System.out.println("id = " + id);
+
+        if(addOrUpdate.equals("edit")){
+            foodService.updateFood(itemName, price, fileName, LocalDate.now().toString(), httpSession, id);
+        }else {
+            foodService.saveFood(itemName, price, fileName, LocalDate.now().toString(), httpSession);
+        }
         return "success";
     }
 
