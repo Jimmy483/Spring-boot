@@ -28,5 +28,7 @@ public class UserInfo {
     @Column(name = "isAdmin")
     private Boolean isAdmin;
 
+    @Column(name = "displayPicture")
+    private String displayPicture;
 //    private String passwd;
 }

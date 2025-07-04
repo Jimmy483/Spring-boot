@@ -128,10 +128,6 @@ public class MainController {
         }
     }
 
-    @GetMapping(path="/messages")
-    public String goToMessages(){
-        return "messages";
-    }
 
     @GetMapping(path = "/profile")
     public String goToProfile(HttpSession httpSession, Model model){

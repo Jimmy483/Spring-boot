@@ -4,6 +4,8 @@ import com.gmi.learn.domain.UserInfo;
 import com.gmi.learn.repository.UserInfoRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class UserService {
 
@@ -15,5 +17,15 @@ public class UserService {
 
     public UserInfo getAdminInfo(){
         return userInfoRepository.findByIsAdminTrue();
+    }
+
+    public UserInfo getUserInfo(long id){
+        Optional<UserInfo> userInfoOptional= userInfoRepository.findById(id);
+        if(userInfoOptional.isPresent()){
+            UserInfo userInfo = userInfoOptional.get();
+            return userInfo;
+        }else{
+            return null;
+        }
     }
 }

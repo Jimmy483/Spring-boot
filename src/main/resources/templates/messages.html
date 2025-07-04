@@ -59,6 +59,52 @@ body{
     height: 78vh;
     overflow-y: auto;
 }
+
+#senderContent > span:first-child{
+    display: inline-block;
+    margin-left: 10px;
+    font-size: 30px;
+}
+
+#senderContent > span:nth-child(2){
+    opacity: 0.7 !important;
+    display: block;
+    margin-left: 10px;
+}
+
+.eachMessage{
+    display: block;
+    width: 390px;
+    overflow: hidden;
+    transition: background-color 0.3s ease; 
+
+}
+
+
+.eachMessage :hover{
+    background-color: bisque;
+}
+
+.displayImage{
+    height: 60px;
+    width: 60px;
+    display: inline-block;
+    border-radius: 50%;
+}
+
+#senderImage{
+    padding-left: 10px;
+    float:left;
+    height: 100%;
+}
+
+#senderContent{
+    padding-left: 10px;
+    float: left;
+    height: 100%;
+}
+
+
 </style>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" type="text/javascript"></script>
 <script type="text/javascript">
@@ -71,8 +117,18 @@ body{
 <div id="mainDiv">
 
 <div id="leftDiv">
-<span id="messageLabel">Message from users</span>
+<span id="messageLabel">Chat</span>
 <div id="messageList">
+        <div th:each="message : ${messageList.allMessage}" class="eachMessage">
+            <div id="senderImage">
+                <img class="displayImage" th:src="${message.senderPicture}" th:alt="${message.senderName}"/>
+            </div>
+            <div id="senderContent">
+                <span th:text="${message.senderName}"></span>
+                <span th:text="${message.content}"></span>
+            </div>
+        
+        </div>
 </div>
 </div>
 <div id="viewMessage"></div>

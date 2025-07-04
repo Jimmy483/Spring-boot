@@ -25,6 +25,7 @@ public class InitalizeRequests{
         SessionUtil.storeSessionValue(sessionAttributes,"username",userInfo.get(0).getUsername());
         SessionUtil.storeSessionValue(sessionAttributes,"userId",userInfo.get(0).getId());
         SessionUtil.storeSessionValue(sessionAttributes,"themeColour",getUserThemeColor(userInfo.get(0).getId()));
+//        SessionUtil.storeSessionValue(sessionAttributes,"userRole",getUserThemeColor(userInfo.get(0).getId()));
     }
 
     @GetMapping("/get-session")
