@@ -2,7 +2,9 @@ package com.gmi.learn;
 import com.gmi.learn.repository.UserSettingRepository;
 import com.gmi.learn.domain.UserInfo;
 import com.gmi.learn.domain.UserSetting;
+import com.gmi.learn.service.UserRoleService;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
@@ -14,6 +16,8 @@ import java.util.List;
 public class InitalizeRequests{
     UserSettingRepository userSettingRepository;
 
+    @Autowired
+    UserRoleService userRoleService;
     public InitalizeRequests(UserSettingRepository userSettingRepository){
         this.userSettingRepository=userSettingRepository;
     }
@@ -25,7 +29,8 @@ public class InitalizeRequests{
         SessionUtil.storeSessionValue(sessionAttributes,"username",userInfo.get(0).getUsername());
         SessionUtil.storeSessionValue(sessionAttributes,"userId",userInfo.get(0).getId());
         SessionUtil.storeSessionValue(sessionAttributes,"themeColour",getUserThemeColor(userInfo.get(0).getId()));
-//        SessionUtil.storeSessionValue(sessionAttributes,"userRole",getUserThemeColor(userInfo.get(0).getId()));
+        SessionUtil.storeSessionValue(sessionAttributes,"userRole",userRoleService.getCurrentUserRole(userInfo.get(0)));
+        System.out.println("role is " + userRoleService.getCurrentUserRole(userInfo.get(0)));
     }
 
     @GetMapping("/get-session")
