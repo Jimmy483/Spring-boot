@@ -28,4 +28,14 @@ public class UserService {
             return null;
         }
     }
+
+    public UserInfo getUserInfoByUserName(String username){
+        Optional<UserInfo> userInfoOptional = userInfoRepository.findByUsername(username);
+        if(userInfoOptional.isPresent()){
+            UserInfo userInfo=userInfoOptional.get();
+            return userInfo;
+        }else {
+            return null;
+        }
+    }
 }

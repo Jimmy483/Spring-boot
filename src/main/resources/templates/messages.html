@@ -38,11 +38,11 @@ body{
 
 #viewMessage{
     float: left;
-    min-width: 61%;
+    width: 61%;
     margin-top: 20px;
     margin-left: 20px;
     border-radius: 8px;
-    min-height: 95%;
+    height: 95%;
     background-color: #FFFFFF;
 }
 
@@ -111,6 +111,13 @@ body{
     border-bottom: 1px gray solid;
 }
 
+#viewMessageBody{
+    float:left;
+    width: 100%;
+    height:85%;
+
+}
+
 .headerDisplayImage{
     height: 40px;
     width: 40px;
@@ -125,6 +132,41 @@ body{
     float: left;
 }
 
+#chatBody{
+    float:left;
+    width: 100%;
+    height: 95%;
+    border-bottom: 1px gray solid;
+    overflow-y: scroll;
+}
+
+#chatOptions{
+    float:left;
+    width: 100%;
+    height: 5%;
+
+}
+
+#messageText{
+    width:76%;
+    float:left;
+    height:100%;
+    margin-left: 18px;
+    margin-top:18px;
+    border-radius: 10%;
+    border: none;
+    background-color: bisque;
+}
+
+#sendMessageBtn{
+    width: 15%;
+    float: left;
+    height: 100%;
+    margin-left: 18px;
+    color: #FFFFFF;
+    margin-top:18px;
+    border-radius: 10%;
+}
 
 </style>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" type="text/javascript"></script>
@@ -138,8 +180,7 @@ body{
 //     imageSrc.src=event.
 // })
 
-function senderContentClick(image, senderName){
-    alert("image name = " + image);
+function senderContentClick(image, senderName, currentUserId){
        const chatHeader = document.getElementById('viewMessageHeader');
        chatHeader.innerHTML = '';
 
@@ -152,6 +193,64 @@ function senderContentClick(image, senderName){
        span.textContent=senderName;
        span.className='headerName';
        chatHeader.appendChild(span);
+
+       renderViewMessageBody(senderName, currentUserId);
+}
+
+function renderViewMessageBody(name, currentUserId){
+    $.ajax({
+        url: '/getMessageBetweenUsers',
+        method: 'GET',
+        data:{
+            name:name
+        },
+        success:function(data){
+            const chatBody = document.getElementById('chatBody');
+            chatBody.innerHTML='';
+            console.log("data = " + data);
+
+            let marginCount = 2;
+            // for(const [key, value] of data.entries()){
+            Object.entries(data).forEach(([key, value])=> {
+                const outsideChatDiv = document.createElement('div');
+                outsideChatDiv.style.width='100%';
+                outsideChatDiv.style.display='block';
+                outsideChatDiv.style.float='left';
+                // outsideChatDiv.style.marginTop=''
+                chatBody.appendChild(outsideChatDiv);
+                const chatDiv = document.createElement('div');
+                chatDiv.style.borderRadius='5%';
+                chatDiv.style.display='inline-block';
+                chatDiv.style.marginTop='5px';
+                chatDiv.style.maxWidth='48%';
+                chatDiv.style.overflowWrap='break-word';
+                chatDiv.style.whiteSpace = 'normal';
+                // chatDiv.style.marginTop= marginCount+'px';
+                // const messageSpan = document.createElement('span');
+                // messageSpan.textContent="hi"
+                // for(const [k, v] of value){
+                Object.entries(value).forEach(([k, v])=> {
+                    let index = k.indexOf("Id");
+                    let subId = k.substring(0,index);
+                    if(subId==currentUserId){
+                        chatDiv.style.textAlign= 'right';
+                        chatDiv.style.backgroundColor="#2e8dd1"
+                        chatDiv.style.color = '#FFFFFF'
+                        chatDiv.style.float = 'right';
+                    }else{
+                        chatDiv.style.textAlign= 'left';
+                        chatDiv.style.backgroundColor = '#a39ea2';
+                        chatDiv.style.color = '#000000';
+                        chatDiv.style.float = 'left';
+                    }
+                    chatDiv.textContent=v;
+                });               
+                outsideChatDiv.appendChild(chatDiv);
+            });
+                
+            // }
+        }
+    })
 }
 </script>
 <script src="/js/commonjs.js" type="text/javascript"></script>
@@ -163,13 +262,19 @@ function senderContentClick(image, senderName){
 <div id="leftDiv">
 <span id="messageLabel">Chat</span>
 <div id="messageList">
-        <div th:each="message : ${messageList.allMessage}" class="eachMessage">
+        <div th:each="message : ${messageList}" class="eachMessage">
             <div id="senderImage">
-                <img class="displayImage" th:src="${message.senderPicture}" th:alt="${message.senderName}"/>
+                <img class="displayImage" th:src="${message.value.senderPicture}" th:alt="${message.value.senderName}"/>
             </div>
-            <div id="senderContent" th:attr="data-sender-picture=${message.senderPicture}, data-sender=${message.senderName}" onclick="senderContentClick(this.dataset.senderPicture, this.dataset.sender)">
-                <span th:text="${message.senderName}"></span>
-                <span th:text="${message.content}"></span>
+            <div id="senderContent" th:attr="data-sender-picture=${message.value.senderPicture}, data-sender=${message.value.senderName}, data-current-user-id=${session.userId}" onclick="senderContentClick(this.dataset.senderPicture, this.dataset.sender, this.dataset.currentUserId)">
+                <span th:text="${message.value.senderName}"></span>
+                <th:block th:each="entry, iter : ${message.value.allMessages.entrySet()}" >
+                    <th:block th:if="${iter.index==0}" th:each="messageEntry : ${entry.value.entrySet()}">
+                        <span th:text="${messageEntry.value}"></span>
+                    </th:block>
+                        <!-- <span th:if="${iter.index==0}" th:text="${entry.value}"></span> -->
+                </th:block>
+                <!-- <span th:text="${message.value.allMessages.value}"></span> -->
             </div>
         
         </div>
@@ -177,8 +282,13 @@ function senderContentClick(image, senderName){
 </div>
 <div id="viewMessage">
     <div id="viewMessageHeader">
-        <!-- <img src="" class="headerDisplayImage"/>
-        <span id=""></span> -->
+    </div>
+    <div id="viewMessageBody">
+        <div id="chatBody"></div>
+        <div id="chatOptions">
+            <input type="text" placeholder="Message" id="messageText"/>
+            <input type="button" value="Send" id="sendMessageBtn" th:class="${'colour-' + (session.themeColour!=null?session.themeColour:'EAE21D')}" onclick="sendMessage()"/>
+        </div>
     </div>
 </div>
 <div th:replace="menu.html"></div>

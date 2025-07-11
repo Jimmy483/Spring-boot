@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -40,6 +41,14 @@ public class MessageController {
         Map<String, Object> messagesMapList = messageService.getAllUserMessage(httpSession);
         model.addAttribute("messageList", messagesMapList);
         return "messages";
+    }
+
+    @ResponseBody
+    @GetMapping(path="/getMessageBetweenUsers")
+    public Map<LocalDateTime , Object> getAllMessagesBetweenUsers(HttpSession httpSession, Model model, @RequestParam("name") String senderName){
+        Map<LocalDateTime, Object> messageMap = messageService.getMessageBetweenUsers(httpSession, senderName);
+        System.out.println("m map = " + messageMap);
+        return messageMap;
     }
 
 }
