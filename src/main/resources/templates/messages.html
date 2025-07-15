@@ -12,6 +12,7 @@ html, body{
     height: 100%;
     padding: 0;
     margin: 0;
+    overflow: hidden;
 }
 body{
     display: flex;
@@ -28,11 +29,11 @@ body{
     /* flex:auto; */
     flex-direction: column;
     float: left;
-    min-width: 35%;
+    width: 35%;
     border-radius: 8px;
     margin-left: 20px;
     margin-top: 20px;
-    min-height: 95%;
+    height: 590px;
     background-color: #FFFFFF;
 }
 
@@ -42,7 +43,7 @@ body{
     margin-top: 20px;
     margin-left: 20px;
     border-radius: 8px;
-    height: 95%;
+    height: 590px;
     background-color: #FFFFFF;
 }
 
@@ -172,6 +173,16 @@ body{
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" type="text/javascript"></script>
 <script type="text/javascript">
 
+setInterval(()=>{
+    if($('#messageText').val()==''){
+       let currentUserId = $('#currentUserId').val();
+       let currentChatUser = $('#currentChatUser').val();
+       let maxMessageId = $('#maxMessageId').val();
+
+       renderViewMessageBody(currentChatUser, currentUserId, maxMessageId);
+    }
+    
+},3000);
 // $('#senderContent').click(function(event){
 //     const chatHeader = document.getElementById('viewMessageHeader');
 //     chatHeader.innerHTML = '';
@@ -194,24 +205,32 @@ function senderContentClick(image, senderName, currentUserId){
        span.className='headerName';
        chatHeader.appendChild(span);
 
-       renderViewMessageBody(senderName, currentUserId);
+       renderViewMessageBody(senderName, currentUserId, null);
 }
 
-function renderViewMessageBody(name, currentUserId){
+function renderViewMessageBody(name, currentUserId, messageId){
+    // let maxId = 0;
     $.ajax({
         url: '/getMessageBetweenUsers',
         method: 'GET',
         data:{
-            name:name
+            name:name,
+            messageId: messageId!=null?BigInt(messageId):null
         },
         success:function(data){
+            $('#maxMessageId').val(data.maxId);
+
+            // alert('inside id = ' + maxId)
             const chatBody = document.getElementById('chatBody');
-            chatBody.innerHTML='';
+            if(messageId==null){
+                chatBody.innerHTML='';
+            }
+            
             console.log("data = " + data);
 
             let marginCount = 2;
             // for(const [key, value] of data.entries()){
-            Object.entries(data).forEach(([key, value])=> {
+            Object.entries(data.row).forEach(([key, value])=> {
                 const outsideChatDiv = document.createElement('div');
                 outsideChatDiv.style.width='100%';
                 outsideChatDiv.style.display='block';
@@ -219,17 +238,14 @@ function renderViewMessageBody(name, currentUserId){
                 // outsideChatDiv.style.marginTop=''
                 chatBody.appendChild(outsideChatDiv);
                 const chatDiv = document.createElement('div');
-                chatDiv.style.borderRadius='5%';
+                chatDiv.style.borderRadius='8%';
                 chatDiv.style.display='inline-block';
                 chatDiv.style.marginTop='5px';
                 chatDiv.style.maxWidth='48%';
                 chatDiv.style.overflowWrap='break-word';
                 chatDiv.style.whiteSpace = 'normal';
-                // chatDiv.style.marginTop= marginCount+'px';
-                // const messageSpan = document.createElement('span');
-                // messageSpan.textContent="hi"
-                // for(const [k, v] of value){
-                Object.entries(value).forEach(([k, v])=> {
+                chatDiv.style.padding = '10px';
+                Object.entries(value).forEach(([k, v])=> {  
                     let index = k.indexOf("Id");
                     let subId = k.substring(0,index);
                     if(subId==currentUserId){
@@ -237,11 +253,13 @@ function renderViewMessageBody(name, currentUserId){
                         chatDiv.style.backgroundColor="#2e8dd1"
                         chatDiv.style.color = '#FFFFFF'
                         chatDiv.style.float = 'right';
+                        chatDiv.style.marginRight = '6px';
                     }else{
                         chatDiv.style.textAlign= 'left';
-                        chatDiv.style.backgroundColor = '#a39ea2';
+                        chatDiv.style.backgroundColor = '#d9dbde';
                         chatDiv.style.color = '#000000';
                         chatDiv.style.float = 'left';
+                        chatDiv.style.marginLeft='6px';
                     }
                     chatDiv.textContent=v;
                 });               
@@ -251,6 +269,69 @@ function renderViewMessageBody(name, currentUserId){
             // }
         }
     })
+    // alert('max id = ' + maxId);
+    $('#currentChatUser').val(name);
+    $('#currentUserId').val(currentUserId);
+
+}
+
+function sendMessage(){
+    let message = $('#messageText').val();
+    if(message==''){
+        return;
+    }
+    let receiver = $('#currentChatUser').val()
+    $.ajax({
+        url:'/sendMessage',
+        method: 'POST',
+        data:{
+            message,
+            receiver
+        },
+        success:function(){
+            // renderViewMessageBody(name,)
+            appendChatDiv(message, 'success');
+
+
+        },
+        error:function(){
+            appendChatDiv(message, 'fail');
+        }
+    })
+}
+
+function appendChatDiv(message, result){
+        const chatBodyDiv = document.getElementById('chatBody');
+        const outsideChatDiv = document.createElement('div');
+        outsideChatDiv.style.width='100%';
+        outsideChatDiv.style.display='block';
+        outsideChatDiv.style.float='left';
+        chatBodyDiv.appendChild(outsideChatDiv);
+
+        const chatDiv = document.createElement('div');
+        chatDiv.style.borderRadius='8%';
+        chatDiv.style.display='inline-block';
+        chatDiv.style.marginTop='5px';
+        chatDiv.style.maxWidth='48%';
+        chatDiv.style.overflowWrap='break-word';
+        chatDiv.style.whiteSpace = 'normal';
+        chatDiv.style.textAlign= 'right';
+        chatDiv.style.backgroundColor="#2e8dd1"
+        chatDiv.style.marginRight = '6px';
+        chatDiv.style.padding = '10px';
+        if(result=='fail'){
+            chatDiv.style.color='#de1b31';
+        }else{
+            chatDiv.style.color = '#FFFFFF'
+        }
+        chatDiv.style.float = 'right';
+        chatDiv.textContent = message;
+        outsideChatDiv.appendChild(chatDiv);
+        $('#messageText').val('');
+
+        
+
+
 }
 </script>
 <script src="/js/commonjs.js" type="text/javascript"></script>
@@ -291,6 +372,10 @@ function renderViewMessageBody(name, currentUserId){
         </div>
     </div>
 </div>
+<input type="hidden" name="currentChatUser" id="currentChatUser" value=""/>
+<input type="hidden" name="currentChatUserId" id="currentChatUserId" value=""/>
+<input type="hidden" name="currentUserId" id="currentUserId" value=""/>
+<input type="hidden" name="maxMessageId" id="maxMessageId" value=""/>
 <div th:replace="menu.html"></div>
 </div>
 </body>

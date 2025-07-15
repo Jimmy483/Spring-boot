@@ -45,10 +45,17 @@ public class MessageController {
 
     @ResponseBody
     @GetMapping(path="/getMessageBetweenUsers")
-    public Map<LocalDateTime , Object> getAllMessagesBetweenUsers(HttpSession httpSession, Model model, @RequestParam("name") String senderName){
-        Map<LocalDateTime, Object> messageMap = messageService.getMessageBetweenUsers(httpSession, senderName);
+    public Map<String , Object> getAllMessagesBetweenUsers(HttpSession httpSession, Model model, @RequestParam("name") String senderName,@RequestParam(value = "messageId", required = false) Long messageId){
+        Map<String, Object> messageMap = messageService.getMessageBetweenUsers(httpSession, senderName, messageId);
         System.out.println("m map = " + messageMap);
         return messageMap;
+    }
+
+    @PostMapping(path="/sendMessage")
+    @ResponseBody
+    public String sendMessage(HttpSession httpSession, @RequestParam("message") String message, @RequestParam("receiver") String receiver){
+        messageService.sendMessage(httpSession, message, receiver);
+        return "success";
     }
 
 }

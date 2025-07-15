@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpSession;
 import org.apache.catalina.manager.util.SessionUtils;
 import org.aspectj.bridge.Message;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -110,24 +111,40 @@ public class MessageService {
 
     }
 
-    public Map<LocalDateTime, Object> getMessageBetweenUsers(HttpSession httpSession, String senderName){
+    public Map<String, Object> getMessageBetweenUsers(HttpSession httpSession, String senderName, Long messageId){
         System.out.println("sender user name = " + senderName);
+        System.out.println("messageId = " + messageId);
+        long maxId=0L;
         UserInfo userInfo = userService.getUserInfoByUserName(senderName);
+        List<Messages> messageBySender=new ArrayList<>();
+        List<Messages> messagesByCurrentUser = new ArrayList<>();
         long currentUserId = Long.parseLong(SessionUtility.getSessionValue(httpSession, "userId").toString());
-        List<Messages> messagesByCurrentUser = messageRepository.findAllByReceiverIdAndSenderId(userInfo.getId(), currentUserId);
+        if(messageId!=null){
+            messageBySender = messageRepository.findAllByReceiverIdAndSenderIdAndIdGreaterThan(currentUserId, userInfo.getId(), messageId);
+        }else{
+            messagesByCurrentUser = messageRepository.findAllByReceiverIdAndSenderId(userInfo.getId(), currentUserId);
+            messageBySender = messageRepository.findAllByReceiverIdAndSenderId(currentUserId, userInfo.getId());
+        }
+
         System.out.println("messages by current  = " + messagesByCurrentUser);
-        List<Messages> messageBySender = messageRepository.findAllByReceiverIdAndSenderId(currentUserId, userInfo.getId());
+
         System.out.println("messages by sender = " + messageBySender);
         Comparator<LocalDateTime> comparator = Comparator.naturalOrder();
         Map<String, String> senderIdWithMessageMapOfSender = new HashMap<>();
         Map<String, String> senderIdWithMessageMapOfCurrentUser = new HashMap<>();
         Map<LocalDateTime, Object> allMessages = new TreeMap<>(comparator);
 
-        for(Messages message: messagesByCurrentUser){
-            senderIdWithMessageMapOfCurrentUser.put(message.getSenderId()+"Id" + message.getId(), message.getContent());
-            allMessages.put(message.getSentDate(),new HashMap<>(senderIdWithMessageMapOfCurrentUser));
-            senderIdWithMessageMapOfCurrentUser.clear();
+        if(messageId==null){
+            for(Messages message: messagesByCurrentUser){
+                senderIdWithMessageMapOfCurrentUser.put(message.getSenderId()+"Id" + message.getId(), message.getContent());
+                allMessages.put(message.getSentDate(),new HashMap<>(senderIdWithMessageMapOfCurrentUser));
+                senderIdWithMessageMapOfCurrentUser.clear();
+                if(message.getId()>maxId){
+                    maxId=message.getId();
+                }
+            }
         }
+
         System.out.println("all messages before = " + allMessages);
         for(Messages messages: messageBySender){
             senderIdWithMessageMapOfSender.put(messages.getSenderId()+"Id" + messages.getId(), messages.getContent());
@@ -135,11 +152,36 @@ public class MessageService {
 //            allMessages.put(messages.getSentDate(),senderIdWithMessageMapOfSender);
             allMessages.put(messages.getSentDate(),new HashMap<>(senderIdWithMessageMapOfSender));
             senderIdWithMessageMapOfSender.clear();
+            if(messages.getId()>maxId){
+                maxId=messages.getId();
+            }
             System.out.println("last = " + allMessages);
         }
+        if(messageId!=null){
+            if(maxId==0){
+                maxId= messageId;
+            }
+        }
         System.out.println("all messages after = " + allMessages);
+        System.out.println("maxId = " + maxId);
+        Map<String, Object> returnMap = new HashMap<>();
+        returnMap.put("row",allMessages);
+        returnMap.put("maxId", maxId);
 
-        return  allMessages;
+        return  returnMap;
 
+    }
+
+    public void sendMessage(HttpSession httpSession, String message, String receiver){
+        long receiverId = userService.getUserInfoByUserName(receiver).getId();
+        long currentUserId = Long.parseLong(SessionUtility.getSessionValue(httpSession, "userId").toString());
+        Messages messages = new Messages();
+        messages.setSenderId(currentUserId);
+        messages.setReceiverId(receiverId);
+        messages.setContent(message);
+        messages.setLastRead(null);
+        messages.setIsRead(false);
+        messages.setSentDate(LocalDateTime.now());
+        messageRepository.save(messages);
     }
 }
