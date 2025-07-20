@@ -38,7 +38,7 @@ public class MessageController {
     @GetMapping(path="/messages")
     public String goToMessages(HttpSession httpSession, Model model){
 
-        Map<String, Object> messagesMapList = messageService.getAllUserMessage(httpSession);
+        Map<Long, Object> messagesMapList = messageService.getAllUserMessage(httpSession);
         model.addAttribute("messageList", messagesMapList);
         return "messages";
     }

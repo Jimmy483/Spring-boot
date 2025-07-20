@@ -78,6 +78,7 @@ body{
     width: 390px;
     overflow: hidden;
     transition: background-color 0.3s ease; 
+    padding: 10px;
 
 }
 
@@ -103,6 +104,10 @@ body{
     padding-left: 10px;
     float: left;
     height: 100%;
+    width: 250px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 #viewMessageHeader{
@@ -152,8 +157,8 @@ body{
     width:76%;
     float:left;
     height:100%;
-    margin-left: 18px;
-    margin-top:18px;
+    margin-left: 75px;
+    margin-top:16px;
     border-radius: 10%;
     border: none;
     background-color: bisque;
@@ -171,16 +176,32 @@ body{
 
 </style>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" type="text/javascript"></script>
-<script type="text/javascript">
+<script type="text/javascript" th:inline="javascript">
+
+$(document).ready(function(){
+    const dataMap = /*[[${messageList}]]*/ '[]';
+    const keys= Object.keys(dataMap);
+    const firstKey = keys[0]
+    const userInfo = dataMap[firstKey];
+    console.log('user info = ' + userInfo);
+
+    const image = userInfo.senderPicture;
+    const senderName = userInfo.senderName;
+    const senderId = userInfo.senderId;
+    console.log('picture from ready = ' + image);
+    const sessionId = /*[[${session.userId}]]*/ '';
+    senderContentClick(image, senderName, sessionId, senderId);
+})
 
 setInterval(()=>{
-    if($('#messageText').val()==''){
+    // if($('#messageText').val()==''){
        let currentUserId = $('#currentUserId').val();
        let currentChatUser = $('#currentChatUser').val();
        let maxMessageId = $('#maxMessageId').val();
+       let senderId = $('#currentChatUserId').val();
 
-       renderViewMessageBody(currentChatUser, currentUserId, maxMessageId);
-    }
+       renderViewMessageBody(currentChatUser, currentUserId, maxMessageId, senderId);
+    // }
     
 },3000);
 // $('#senderContent').click(function(event){
@@ -191,10 +212,11 @@ setInterval(()=>{
 //     imageSrc.src=event.
 // })
 
-function senderContentClick(image, senderName, currentUserId){
+function senderContentClick(image, senderName, currentUserId, senderId){
        const chatHeader = document.getElementById('viewMessageHeader');
        chatHeader.innerHTML = '';
 
+       console.log('image below = ' + image);
        const imageSrc = document.createElement('img');
        imageSrc.src=image;
        imageSrc.className='headerDisplayImage';
@@ -205,10 +227,10 @@ function senderContentClick(image, senderName, currentUserId){
        span.className='headerName';
        chatHeader.appendChild(span);
 
-       renderViewMessageBody(senderName, currentUserId, null);
+       renderViewMessageBody(senderName, currentUserId, null, senderId);
 }
 
-function renderViewMessageBody(name, currentUserId, messageId){
+function renderViewMessageBody(name, currentUserId, messageId, senderId){
     // let maxId = 0;
     $.ajax({
         url: '/getMessageBetweenUsers',
@@ -231,6 +253,7 @@ function renderViewMessageBody(name, currentUserId, messageId){
             let marginCount = 2;
             // for(const [key, value] of data.entries()){
             Object.entries(data.row).forEach(([key, value])=> {
+                console.log('first line');
                 const outsideChatDiv = document.createElement('div');
                 outsideChatDiv.style.width='100%';
                 outsideChatDiv.style.display='block';
@@ -245,9 +268,11 @@ function renderViewMessageBody(name, currentUserId, messageId){
                 chatDiv.style.overflowWrap='break-word';
                 chatDiv.style.whiteSpace = 'normal';
                 chatDiv.style.padding = '10px';
-                Object.entries(value).forEach(([k, v])=> {  
-                    let index = k.indexOf("Id");
-                    let subId = k.substring(0,index);
+                Object.entries(value).forEach(([k, v], index, array)=> {
+                    console.log('second line');
+                    let indexOfId = k.indexOf("Id");
+                    let subId = k.substring(0,indexOfId);
+                    
                     if(subId==currentUserId){
                         chatDiv.style.textAlign= 'right';
                         chatDiv.style.backgroundColor="#2e8dd1"
@@ -261,11 +286,19 @@ function renderViewMessageBody(name, currentUserId, messageId){
                         chatDiv.style.float = 'left';
                         chatDiv.style.marginLeft='6px';
                     }
-                    chatDiv.textContent=v;
+                    console.log("value of  v = " + v);
+                    console.log("value of value = " + v.value);
+                    chatDiv.textContent=Object.values(v)[0];
+
+                    if(index == array.length-1 && messageId!=null){
+                        document.querySelector(`.id-${subId} span:nth-child(2)`).textContent = Object.values(v)[0]
+                    }  
                 });               
                 outsideChatDiv.appendChild(chatDiv);
             });
-                
+            $('#currentChatUserId').val(senderId);
+
+        
             // }
         }
     })
@@ -275,19 +308,21 @@ function renderViewMessageBody(name, currentUserId, messageId){
 
 }
 
-function sendMessage(){
-    let message = $('#messageText').val();
-    if(message==''){
-        return;
-    }
-    let receiver = $('#currentChatUser').val()
-    $.ajax({
-        url:'/sendMessage',
-        method: 'POST',
-        data:{
-            message,
-            receiver
-        },
+function sendMessage(event){
+    console.log('event key = ' + event.key);
+    if(event.key=='Enter'){
+        let message = $('#messageText').val();
+        if(message==''){
+          return;
+        }
+        let receiver = $('#currentChatUser').val()
+        $.ajax({
+            url:'/sendMessage',
+            method: 'POST',
+            data:{
+               message,
+               receiver
+            },
         success:function(){
             // renderViewMessageBody(name,)
             appendChatDiv(message, 'success');
@@ -298,6 +333,8 @@ function sendMessage(){
             appendChatDiv(message, 'fail');
         }
     })
+    }
+    
 }
 
 function appendChatDiv(message, result){
@@ -329,7 +366,9 @@ function appendChatDiv(message, result){
         outsideChatDiv.appendChild(chatDiv);
         $('#messageText').val('');
 
-        
+        let subId = $('#currentChatUserId').val();
+        document.querySelector(`.id-${subId} span:nth-child(2)`).textContent = message;
+
 
 
 }
@@ -347,15 +386,13 @@ function appendChatDiv(message, result){
             <div id="senderImage">
                 <img class="displayImage" th:src="${message.value.senderPicture}" th:alt="${message.value.senderName}"/>
             </div>
-            <div id="senderContent" th:attr="data-sender-picture=${message.value.senderPicture}, data-sender=${message.value.senderName}, data-current-user-id=${session.userId}" onclick="senderContentClick(this.dataset.senderPicture, this.dataset.sender, this.dataset.currentUserId)">
+            <div id="senderContent" th:class="'id-'+${message.value.senderId}" th:attr="data-sender-picture=${message.value.senderPicture}, data-sender=${message.value.senderName}, data-current-user-id=${session.userId}, data-sender-id=${message.value.senderId}" onclick="senderContentClick(this.dataset.senderPicture, this.dataset.sender, this.dataset.currentUserId, this.dataset.senderId)">
                 <span th:text="${message.value.senderName}"></span>
                 <th:block th:each="entry, iter : ${message.value.allMessages.entrySet()}" >
-                    <th:block th:if="${iter.index==0}" th:each="messageEntry : ${entry.value.entrySet()}">
+                    <th:block th:if="${iter.last}" th:each="messageEntry : ${entry.value.entrySet()}">
                         <span th:text="${messageEntry.value}"></span>
                     </th:block>
-                        <!-- <span th:if="${iter.index==0}" th:text="${entry.value}"></span> -->
                 </th:block>
-                <!-- <span th:text="${message.value.allMessages.value}"></span> -->
             </div>
         
         </div>
@@ -367,8 +404,7 @@ function appendChatDiv(message, result){
     <div id="viewMessageBody">
         <div id="chatBody"></div>
         <div id="chatOptions">
-            <input type="text" placeholder="Message" id="messageText"/>
-            <input type="button" value="Send" id="sendMessageBtn" th:class="${'colour-' + (session.themeColour!=null?session.themeColour:'EAE21D')}" onclick="sendMessage()"/>
+            <input type="text" placeholder="Message" id="messageText" onkeydown="sendMessage(event)"/>
         </div>
     </div>
 </div>
