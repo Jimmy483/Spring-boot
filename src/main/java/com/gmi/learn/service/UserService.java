@@ -4,7 +4,7 @@ import com.gmi.learn.domain.UserInfo;
 import com.gmi.learn.repository.UserInfoRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -37,5 +37,21 @@ public class UserService {
         }else {
             return null;
         }
+    }
+
+
+    public List<Map<String, Object>> getAllUserBySearchName(String search){
+
+        List<UserInfo> userInfoList = userInfoRepository.findAllByUsernameContaining(search);
+        List<Map<String, Object>> newUserList=new ArrayList<>();
+        for(UserInfo userInfo : userInfoList){
+            Map<String, Object> userInfoMap = new HashMap<>();
+            userInfoMap.put("id", userInfo.getId());
+            userInfoMap.put("username", userInfo.getUsername());
+            userInfoMap.put("image", userInfo.getDisplayPicture());
+            newUserList.add(userInfoMap);
+        }
+        System.out.println("all list of maps = " + newUserList );
+        return newUserList;
     }
 }

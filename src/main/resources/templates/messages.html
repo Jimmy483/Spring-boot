@@ -83,7 +83,7 @@ body{
 }
 
 
-.eachMessage :hover{
+.eachMessage:hover{
     background-color: bisque;
 }
 
@@ -172,6 +172,64 @@ body{
     color: #FFFFFF;
     margin-top:18px;
     border-radius: 10%;
+}
+
+#searchDiv{
+    margin-top: 5vh;
+    height: 40px;
+}
+
+#fullSearchWidth{
+    float: left;
+    padding: 5px;
+    margin-top: 3px;
+    width: 460px;
+    margin-left: 30px;
+    border-radius: 10px;
+}
+
+#searchUser{
+    float: left;
+    padding: 5px;
+    margin-top: 3px;
+    width: 350px;
+    margin-left: 40px;
+    border-radius: 10px;
+}
+
+#backSearch{
+    float: left;
+    margin-top: 3px;
+    width: 45px;
+    height: 31px;
+    border-radius: 50%;
+    margin-left: 30px;
+}
+
+#searchBody{
+    margin-top: 5vh;
+    height: 78vh;
+    overflow-y: auto;
+    z-index: 1;
+    display: none;
+}
+
+.searchHeader{
+    margin-top: 20px;
+    margin-left: 1px;
+    float: left;
+    width:100px;
+    font-size: 20px;
+    color: cadetblue;
+}
+
+#searchResult{
+    margin-top: 90px;
+    margin-left: 74px;
+}
+
+.backColour:hover{
+    background-color: #FFE4C4;
 }
 
 </style>
@@ -372,6 +430,62 @@ function appendChatDiv(message, result){
 
 
 }
+
+function showSearchBody(){
+    $('#searchBody').css('display','block');
+}
+
+function hideSearchBody(){
+    $('#searchBody').css('display','none');
+}
+let debounceTimer;
+function populateUsers(searchValue){
+    clearTimeout(debounceTimer);
+    debounceTimer= setTimeout(()=>{
+        $.ajax({
+        url:'getAllUserByName',
+        method: 'GET',
+        data:{
+            search: searchValue
+        },
+        success: function(data){
+            const searchDiv = document.getElementById('searchResult');
+            searchDiv.innerText='';
+            let currentUserId = /*[[${session.userId}]]*/ ''
+            data.forEach(function(user, index){
+                
+                const userDiv = document.createElement('div');
+                userDiv.className=user.id + ' backColour';
+                userDiv.display='block';
+                userDiv.style.padding='5px';
+                userDiv.style.height = '50px';
+                userDiv.onclick = ()=>senderContentClick(user.image, user.username, currentUserId, user.id)
+                searchDiv.appendChild(userDiv);
+
+                const displayImage = document.createElement('img');
+                displayImage.style.float= 'left';
+                displayImage.style.height = '50px';
+                displayImage.style.width= '60px';
+                displayImage.src = user.image;
+                displayImage.style.borderRadius='50%';
+                userDiv.appendChild(displayImage);
+
+                const userName = document.createElement('span');
+                userName.textContent = user.username;
+                userName.style.float = 'left';
+                userName.style.marginLeft= '10px';
+                userName.style.marginTop = '16px';
+                userDiv.appendChild(userName);
+            })
+        },
+        error: function(){
+            alert("Something went wrong please try later")
+        }
+    })
+    },300);
+    
+}
+
 </script>
 <script src="/js/commonjs.js" type="text/javascript"></script>
 <link href="/css/common.css?v=123" rel="stylesheet" type="text/css">
@@ -381,7 +495,17 @@ function appendChatDiv(message, result){
 
 <div id="leftDiv">
 <span id="messageLabel">Chat</span>
+<!-- <div id="searchDiv"> -->
+    <!-- <input type="button" value="&lt;" id="backSearch"/> -->
+<!-- </div> -->
+<div id="searchBody">
+    <input type="button" value="&lt;" id="backSearch" onclick="hideSearchBody()"/>
+    <input type="text" placeholder="Search People" id="searchUser" oninput="populateUsers(this.value)"/>
+    <div class="searchHeader"><span>Users</span></div>
+    <div id="searchResult"></div>
+</div>
 <div id="messageList">
+        <input type="text" placeholder="Search People" id="fullSearchWidth" onclick="showSearchBody()"/>
         <div th:each="message : ${messageList}" class="eachMessage">
             <div id="senderImage">
                 <img class="displayImage" th:src="${message.value.senderPicture}" th:alt="${message.value.senderName}"/>
