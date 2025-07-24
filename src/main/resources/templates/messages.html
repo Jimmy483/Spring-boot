@@ -251,24 +251,16 @@ $(document).ready(function(){
     senderContentClick(image, senderName, sessionId, senderId);
 })
 
-// setInterval(()=>{
-//     // if($('#messageText').val()==''){
-//        let currentUserId = $('#currentUserId').val();
-//        let currentChatUser = $('#currentChatUser').val();
-//        let maxMessageId = $('#maxMessageId').val();
-//        let senderId = $('#currentChatUserId').val();
+setInterval(()=>{
+       let currentUserId = $('#currentUserId').val();
+       let currentChatUser = $('#currentChatUser').val();
+       let maxMessageId = $('#maxMessageId').val();
+       let senderId = $('#currentChatUserId').val();
 
-//        renderViewMessageBody(currentChatUser, currentUserId, maxMessageId, senderId);
-//     // }
+       renderViewMessageBody(currentChatUser, currentUserId, maxMessageId, senderId);
     
-// },3000);
-// $('#senderContent').click(function(event){
-//     const chatHeader = document.getElementById('viewMessageHeader');
-//     chatHeader.innerHTML = '';
+},3000);
 
-//     const imageSrc = document.createElement('img');
-//     imageSrc.src=event.
-// })
 
 function senderContentClick(image, senderName, currentUserId, senderId){
        const chatHeader = document.getElementById('viewMessageHeader');
@@ -289,7 +281,6 @@ function senderContentClick(image, senderName, currentUserId, senderId){
 }
 
 function renderViewMessageBody(name, currentUserId, messageId, senderId){
-    // let maxId = 0;
     $.ajax({
         url: '/getMessageBetweenUsers',
         method: 'GET',
@@ -300,7 +291,6 @@ function renderViewMessageBody(name, currentUserId, messageId, senderId){
         success:function(data){
             $('#maxMessageId').val(data.maxId);
 
-            // alert('inside id = ' + maxId)
             const chatBody = document.getElementById('chatBody');
             if(messageId==null){
                 chatBody.innerHTML='';
@@ -309,14 +299,12 @@ function renderViewMessageBody(name, currentUserId, messageId, senderId){
             console.log("data = " + data);
 
             let marginCount = 2;
-            // for(const [key, value] of data.entries()){
             Object.entries(data.row).forEach(([key, value])=> {
                 console.log('first line');
                 const outsideChatDiv = document.createElement('div');
                 outsideChatDiv.style.width='100%';
                 outsideChatDiv.style.display='block';
                 outsideChatDiv.style.float='left';
-                // outsideChatDiv.style.marginTop=''
                 chatBody.appendChild(outsideChatDiv);
                 const chatDiv = document.createElement('div');
                 chatDiv.style.borderRadius='8%';
@@ -357,10 +345,8 @@ function renderViewMessageBody(name, currentUserId, messageId, senderId){
             $('#currentChatUserId').val(senderId);
 
         
-            // }
         }
     })
-    // alert('max id = ' + maxId);
     $('#currentChatUser').val(name);
     $('#currentUserId').val(currentUserId);
 
@@ -382,7 +368,6 @@ function sendMessage(event){
                receiver
             },
         success:function(){
-            // renderViewMessageBody(name,)
             appendChatDiv(message, 'success');
 
 
@@ -495,9 +480,6 @@ function populateUsers(searchValue){
 
 <div id="leftDiv">
 <span id="messageLabel">Chat</span>
-<!-- <div id="searchDiv"> -->
-    <!-- <input type="button" value="&lt;" id="backSearch"/> -->
-<!-- </div> -->
 <div id="searchBody">
     <input type="button" value="&lt;" id="backSearch" onclick="hideSearchBody()"/>
     <input type="text" placeholder="Search People" id="searchUser" oninput="populateUsers(this.value)"/>
