@@ -2,6 +2,7 @@ package com.gmi.learn.controller;
 
 import com.gmi.learn.service.FoodService;
 import jakarta.servlet.http.HttpSession;
+import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,7 +25,7 @@ public class ItemController {
     private FoodService foodService;
 
     @GetMapping(path="/viewItem")
-    public String viewItemPage(Model model){
+    public String viewItemPage(Model model, HttpSession httpSession){
         String templateToRender="viewItems.html";
 //        System.out.println("loading view page = " + name);
         Map<String, Object> dataMap=foodService.getFood(null, null, 0, "", 2, "false", true);

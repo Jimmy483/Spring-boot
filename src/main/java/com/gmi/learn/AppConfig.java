@@ -16,20 +16,20 @@ public class AppConfig {
     private JdbcTemplate jdbcTemplate;
 
 
-    @Bean
-    public BookDaoImpl bookDaoImpl(){
-        return new BookDaoImpl(jdbcTemplate);
-    }
+//    @Bean
+//    public BookDaoImpl bookDaoImpl(){
+//        return new BookDaoImpl(jdbcTemplate);
+//    }
 
-    @Bean
-    public UserInfoDaoImpl userInfoDao(){
-        return new UserInfoDaoImpl(jdbcTemplate);
-    }
+//    @Bean
+//    public UserInfoDaoImpl userInfoDao(){
+//        return new UserInfoDaoImpl(jdbcTemplate);
+//    }
 
-    @Bean
-    public FoodDaoImpl foodDao(){
-        return new FoodDaoImpl(jdbcTemplate);
-    }
+//    @Bean
+//    public FoodDaoImpl foodDao(){
+//        return new FoodDaoImpl(jdbcTemplate);
+//    }
 
 //    @Bean
 //    public FoodService foodService(){return new FoodService();}

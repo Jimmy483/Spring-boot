@@ -4,6 +4,7 @@ import com.gmi.learn.dao.FoodDao;
 import com.gmi.learn.domain.Food;
 import com.gmi.learn.domain.UserInfo;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
 import java.sql.Date;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@Repository
 public class FoodDaoImpl implements FoodDao {
 
     private JdbcTemplate jdbcTemplate;

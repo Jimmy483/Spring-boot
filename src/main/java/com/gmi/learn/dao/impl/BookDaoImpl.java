@@ -3,7 +3,9 @@ package com.gmi.learn.dao.impl;
 import com.gmi.learn.dao.BookDao;
 import com.gmi.learn.domain.Book;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class BookDaoImpl implements BookDao {
 
     private final JdbcTemplate jdbcTemplate;

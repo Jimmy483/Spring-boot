@@ -13,12 +13,12 @@ import java.util.List;
 
 @Controller
 @SessionAttributes("username")
-public class InitalizeRequests{
+public class InitializeRequests {
     UserSettingRepository userSettingRepository;
 
     @Autowired
     UserRoleService userRoleService;
-    public InitalizeRequests(UserSettingRepository userSettingRepository){
+    public InitializeRequests(UserSettingRepository userSettingRepository){
         this.userSettingRepository=userSettingRepository;
     }
 
@@ -35,12 +35,15 @@ public class InitalizeRequests{
 
     @GetMapping("/get-session")
     public Boolean getSessionAttributes(HttpSession sessionAttributes) {
+        if(sessionAttributes==null){
+            return false;
+        }
         String username = (String) SessionUtil.getSessionValue(sessionAttributes, "username");
         Long userId = (Long) SessionUtil.getSessionValue(sessionAttributes, "userId");
 
         System.out.println("username = " + username);
         System.out.println("userId = " + userId);
-        if(!username.isEmpty() && userId!=null){
+        if(username!=null && userId!=null){
             return true;
         }else{
             return false;

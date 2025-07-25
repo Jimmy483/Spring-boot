@@ -6,6 +6,7 @@ import com.gmi.learn.dao.impl.UserInfoDaoImpl;
 import com.gmi.learn.domain.Food;
 import com.gmi.learn.domain.UserInfo;
 import jakarta.servlet.http.HttpSession;
+import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,8 +23,6 @@ public class MainController {
 
     File file=new File("src\\main\\resources\\templates\\dashboard.html");
 
-//    @Autowired
-//    private BookDaoImpl underTest;
 
     @Autowired
     private UserInfoDaoImpl userInfoDao;
@@ -31,51 +30,12 @@ public class MainController {
     @Autowired
     private FoodDaoImpl foodDao;
 
-//    private FoodController foodController=new FoodController();
-
-//    public HelloWorldController(UserInfoDaoImpl userInfoDao){
-//        this.userInfoDao=userInfoDao;
-//    }
-
-
-
-//    @Autowired
-//    private final JdbcTemplate jdbcTemplate;
 
 
 
 
-    //    byte[] content = Files.readAllBytes(name);
-    @GetMapping(path = "/login")
-    public String loginPage(Model model, HttpSession httpSession){
-
-        System.out.println("userid login = " + SessionUtility.getSessionValue(httpSession,"userId"));
-        if(SessionUtility.getSessionValue(httpSession,"userId")!=null){
-            model.addAttribute("name", httpSession.getAttribute("username"));  // You can pass more model attributes if necessary
-            return "dashboard";
-
-        }
-//        StringBuilder html=new StringBuilder();
-//
-//
-//        try{
-//            BufferedReader bf= new BufferedReader(new FileReader(file.getAbsolutePath()));
-//            String line;
-//
-//            while((line=bf.readLine())!=null){
-//                html.append(line);
-//                html.append(System.lineSeparator());
-//            }
-//        }catch (IOException e){
-//
-//            System.out.println(e);
-//        }
 
 
-        return "loginPage";
-    }
-
-//        @PostMapping("/dashboard")  // Ensure you're using POST and not GET
         @RequestMapping(value = "/dashboard", method = {RequestMethod.GET, RequestMethod.POST})
         public String dashboard(Model model, HttpSession httpSession) {
             model.addAttribute("name", httpSession.getAttribute("username"));
@@ -101,29 +61,20 @@ public class MainController {
         System.out.println("name  = " + name);
         System.out.println("sort = " + sort);
         System.out.println("order = " + order);
-//        List<Food> foodList=foodDao.fetchWithSortOrder(name,sort,order);
         List<Food> foodList=new ArrayList<>();
-//        System.out.println("food list = " + foodList);
         return foodList;
     }
 
-    //    @PostMapping("/home")  // Ensure you're using POST and not GET
     @RequestMapping(value = "/home", method = RequestMethod.POST)
     @ResponseBody
     public String checkUsernameAndPassword(HttpSession sessionAttributes, Model model, @RequestParam("username") String name, @RequestParam("password") String password) {
-        // Process the username and password here
-        System.out.println("Username: " + name);
-        System.out.println("Password: " + password);
-
-//        model.addAttribute("name", name);  // You can pass more model attributes if necessary
 
         UserInfo user=new UserInfo();
-
 
         if(userInfoDao.fetch(sessionAttributes, name,password)!=null) {
             return "true";
         }else {
-            return "Incorrect Username or Password";  // Return the view name, like a Thymeleaf template
+            return "Incorrect Username or Password";
 
         }
     }
@@ -138,18 +89,7 @@ public class MainController {
         return "profileGeneric";
     }
 
-    @GetMapping(path = "/logout")
-    public String logoutUser(HttpSession httpSession){
-        httpSession.invalidate();
-        return "loginPage";
-    }
 
-//    responsBody to return as a string instead of a template
-    @ResponseBody
-    @GetMapping(path="/underConst")
-    public String pageYetToExist(){
-        return "Feature Does Not Exist Yet";
-    }
 
     @GetMapping(path="/error")
     public String errorPage(){

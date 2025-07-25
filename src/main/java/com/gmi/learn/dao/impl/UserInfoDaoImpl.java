@@ -1,22 +1,24 @@
 package com.gmi.learn.dao.impl;
 
-import com.gmi.learn.InitalizeRequests;
+import com.gmi.learn.InitializeRequests;
 import com.gmi.learn.dao.UserInfoDao;
 import com.gmi.learn.domain.UserInfo;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
 public class UserInfoDaoImpl implements UserInfoDao {
 
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
-    InitalizeRequests requests;
+    InitializeRequests requests;
 
     public UserInfoDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -59,8 +61,4 @@ public class UserInfoDaoImpl implements UserInfoDao {
 
     }
 
-//    public String callFetch(String username, String password){
-//        String user=fetch(username, password);
-//        return user;
-//    }
 }

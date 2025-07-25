@@ -5,6 +5,7 @@ import com.gmi.learn.model.Theme;
 import com.gmi.learn.service.SettingService;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
+import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
