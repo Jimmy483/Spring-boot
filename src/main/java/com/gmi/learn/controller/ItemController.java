@@ -37,7 +37,7 @@ public class ItemController {
     }
 
     @PostMapping(path="/getItemFragment")
-    public String getItemFragment(Model model, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "2") int size, @RequestParam(required = false) String name, @RequestParam(required = false) String sort, @RequestParam(required = false) String order, @RequestParam(defaultValue = "false") String fromPagination){
+    public String getItemFragment(HttpSession httpSession, Model model, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "2") int size, @RequestParam(required = false) String name, @RequestParam(required = false) String sort, @RequestParam(required = false) String order, @RequestParam(defaultValue = "false") String fromPagination){
         String templateToRender="viewItems.html";
 //        System.out.println("loading view page = " + name);
         System.out.println("page = " + page + " size = " + size + " name = " + name + " sort = "+ sort + " order = " + order + " fromPagination = " + fromPagination);
@@ -52,12 +52,8 @@ public class ItemController {
     }
     @GetMapping(path="/getItem")
     @ResponseBody
-    public Map<String, Object> getItemAjax(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "2") int size, @RequestParam(required = false) String name, @RequestParam(required = false) String sort, @RequestParam(required = false) String order, @RequestParam(defaultValue = "false") String fromPagination){
-//        try{
-//            Thread.sleep(5000);
-//        }catch (InterruptedException e){
-//            e.printStackTrace();
-//        }
+    public Map<String, Object> getItemAjax(HttpSession httpSession, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "2") int size, @RequestParam(required = false) String name, @RequestParam(required = false) String sort, @RequestParam(required = false) String order, @RequestParam(defaultValue = "false") String fromPagination){
+
         if(sort.equals("")){
             sort=null;
         }
@@ -86,7 +82,6 @@ public class ItemController {
     public String saveUpdateItem(@RequestParam("name") String itemName, @RequestParam("price") int price, @RequestParam(value = "image", required = false) MultipartFile image, HttpSession httpSession, @RequestParam("action") String addOrUpdate, @RequestParam("itemId") long id){
 
         System.out.println("Success la");
-//        String fileName='/' + image.getOriginalFilename();
         String fileName;
         if(image!=null){
             System.out.println("inside first");
@@ -96,8 +91,7 @@ public class ItemController {
         }
 
         System.out.println("fileName = " + fileName);
-//        System.out.println("image name = " + fileName);
-//        System.out.println("image name = " + fileName.isEmpty());
+
         System.out.println("id = " + id);
 
         if(addOrUpdate.equals("edit")){

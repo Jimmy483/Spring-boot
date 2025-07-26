@@ -28,10 +28,10 @@ public class Food {
     String image;
 
     @Column(name="createdBy")
-    Integer createdBy;
+    Long createdBy;
 
     @Column(name="updatedBy")
-    Integer updatedBy;
+    Long updatedBy;
 
     @Column(name="lastUpdated")
     String lastUpdated;

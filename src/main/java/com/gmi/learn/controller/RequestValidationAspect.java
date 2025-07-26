@@ -26,7 +26,7 @@ InitializeRequests initializeRequests;
     @Around("controllerMethods()")
     public Object checkAuthentication(ProceedingJoinPoint point) throws Throwable{
         HttpSession httpSession = null;
-        List<String> methodsNotAllowedForGuest = new ArrayList<>(Arrays.asList("goToProfile"));
+        List<String> methodsNotAllowedForGuest = new ArrayList<>(Arrays.asList("goToProfile","getItemAjax"));
         List<String> controllersNotAllowedForGuest = new ArrayList<>(Arrays.asList("MessageController","ItemController", "SettingsController"));
 
         String controllerName = point.getTarget().getClass().getSimpleName();
@@ -45,6 +45,7 @@ InitializeRequests initializeRequests;
         }
 
         System.out.println("http session = " + httpSession);
+        System.out.println("method name = " + methodName);
         System.out.println("!isUserLoggedIn(httpSession) = " + !isUserLoggedIn(httpSession));
         System.out.println("controller name = " + controllerName);
         if((!isUserLoggedIn(httpSession)) ){

@@ -3,7 +3,9 @@ package com.gmi.learn.service;
 import com.gmi.learn.DateUtils;
 import com.gmi.learn.SessionUtility;
 import com.gmi.learn.domain.Food;
+import com.gmi.learn.domain.UserInfo;
 import com.gmi.learn.repository.FoodRepository;
+import com.gmi.learn.repository.UserInfoRepository;
 import jakarta.servlet.http.HttpSession;
 import org.apache.catalina.manager.util.SessionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,9 @@ import java.util.stream.Collectors;
 public class FoodService {
     private FoodRepository foodRepository;
 
+    @Autowired
+    private UserInfoRepository userInfoRepository;
+
 
     public FoodService(FoodRepository foodRepository){
         this.foodRepository=foodRepository;
@@ -36,35 +41,27 @@ public class FoodService {
         Page<Food> food;
         Sort.Direction direction;
         Map<String, Object> returnMap= new HashMap<>();
-        System.out.println("page = " + page);
 
-        System.out.println("sort" + sort);
         if(sort!=null){
             if (!Arrays.asList("name", "price","lastUpdated").contains(sort)) {
                 sort = "name"; // Default sort column if invalid
             }
-            System.out.println("sort here = " + sort);
             if(fromPagination.equals("false")){
                 direction = "desc".equalsIgnoreCase(order) ? Sort.Direction.ASC : Sort.Direction.DESC;
             }else {
                 direction ="desc".equalsIgnoreCase(order) ? Sort.Direction.DESC : Sort.Direction.ASC;
             }
-            System.out.println("order here = " + direction);
             pageable= PageRequest.of(page, size, Sort.by(direction,sort));
-            System.out.println("page first = " + pageable);
 
         }else {
             direction = Sort.Direction.ASC;
             pageable= PageRequest.of(page,size);
-            System.out.println("page scond = " + pageable);
 
         }
-        System.out.println("name is  = " + name);
         if(showDeleted){
             food= foodRepository.findByNameContainingIgnoreCase(name,pageable);
         }else
             food = foodRepository.findByNameContainingIgnoreCaseAndIsDeleted(name, false ,pageable);
-//        food= foodRepository.findByNameContainingIgnoreCase(name,pageable);
 
         System.out.println("food = " + food);
         returnMap.put("order",direction);
@@ -77,13 +74,15 @@ public class FoodService {
         Map<String,Object> response = new HashMap<>();
         List<Map<String,Object>> foodArrayList=foodList.getContent().stream()
                 .map(food -> {
+                    String updatedByUserName = food.getUpdatedBy()!=null?getFoodRelatedUserName(food.getUpdatedBy()):null;
+                    String createdByUserName = food.getCreatedBy()!=null?getFoodRelatedUserName(food.getCreatedBy()):null;
                     Map<String,Object> map =new HashMap<>();
                     map.put("id",food.getId());
                     map.put("name",food.getName());
                     map.put("price",food.getPrice());
                     map.put("image",food.getImage());
-                    map.put("updatedBy", food.getUpdatedBy());
-                    map.put("createdBy", food.getCreatedBy());
+                    map.put("updatedBy", updatedByUserName);
+                    map.put("createdBy", createdByUserName);
                     map.put("isDeleted", food.getIsDeleted());
                     map.put("lastUpdated",formatPeriod(DateUtils.getDateDifference(LocalDate.parse(food.getLastUpdated()), LocalDate.now())));
                     return map;
@@ -91,16 +90,22 @@ public class FoodService {
 
 
         response.put("content",foodArrayList);
-//        }
-
         response.put("pageNumber",foodList.getNumber());
         response.put("totalItems", foodList.getTotalElements());
         response.put("totalPages",foodList.getTotalPages());
         response.put("pageSize",foodList.getSize());
         response.put("sort",foodList.getSort());
-        System.out.println("content = " + response.get("content"));
         return  response;
 
+    }
+
+    public String getFoodRelatedUserName(Long id){
+        Optional<UserInfo> optionalUpdatedByUser = userInfoRepository.findById(id);
+        if(optionalUpdatedByUser.isPresent()){
+            return optionalUpdatedByUser.get().getUsername();
+        }else{
+            return null;
+        }
     }
 
     private String formatPeriod(Period period) {
@@ -141,7 +146,7 @@ public class FoodService {
 
     }
     public void saveFood(String name, int price, String image, String lastUpdated, HttpSession httpSession){
-        int createdBy= Integer.parseInt(SessionUtility.getSessionValue(httpSession, "userId").toString());
+        Long createdBy= Long.parseLong(SessionUtility.getSessionValue(httpSession, "userId").toString());
         Food food=new Food();
         food.setName(name);
         food.setPrice(price);
@@ -155,7 +160,7 @@ public class FoodService {
     }
 
     public void updateFood(String name, int price, String image, String lastUpdated, HttpSession httpSession, long id){
-        int updatedBy = Integer.parseInt(SessionUtility.getSessionValue(httpSession, "userId").toString());
+        Long updatedBy = Long.parseLong(SessionUtility.getSessionValue(httpSession, "userId").toString());
         Optional<Food> optionalFood = foodRepository.findById(id);
         if(optionalFood.isPresent()){
             Food food = optionalFood.get();
@@ -173,7 +178,7 @@ public class FoodService {
     }
 
     public void deleteOrRestoreFood(long itemId, String action, HttpSession httpSession){
-        int updatedBy= Integer.parseInt(SessionUtility.getSessionValue(httpSession, "userId").toString());
+        Long updatedBy= Long.parseLong(SessionUtility.getSessionValue(httpSession, "userId").toString());
         Optional<Food> optionalFood = foodRepository.findById(itemId);
         if(optionalFood.isPresent()){
             Food food = optionalFood.get();
@@ -206,8 +211,5 @@ public class FoodService {
         returnMap.put("food",foodMap);
         return returnMap;
     }
-    public void restoreFood(long itemId){
-        Optional<Food> optionalFood = foodRepository.findById(itemId);
 
-    }
 }

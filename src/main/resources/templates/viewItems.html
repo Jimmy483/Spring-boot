@@ -347,7 +347,7 @@ function updateTable(page){
 function checkKeyPressed(event){
 
     if(event.key=='Enter'){
-        getData(0, false);
+        getData(0, 'false');
     }
 }
 
@@ -363,7 +363,7 @@ function renderPagination(data){
     previousBtn.innerText = 'Previous';
     previousBtn.disabled = currentPage===0;
     previousBtn.className = 'pageBtn';
-    previousBtn.onclick=()=>{getData(currentPage-1, true)};
+    previousBtn.onclick=()=>{getData(currentPage-1, 'true')};
     pagination.append(previousBtn);
 
     for(let i=0;i<totalPage;i++){
@@ -371,7 +371,7 @@ function renderPagination(data){
         button.innerText = i+1;
         button.disabled =currentPage === i;
         button.className = 'pageBtn';
-        button.onclick = ()=>{getData(i,true)};
+        button.onclick = ()=>{getData(i,'true')};
         pagination.append(button);
     }
 
@@ -379,7 +379,7 @@ function renderPagination(data){
     nextBtn.innerText = 'Next';
     nextBtn.disabled = (currentPage + 1) === totalPage;
     nextBtn.className = 'pageBtn';
-    nextBtn.onclick = () =>{getData(currentPage+1, true)};
+    nextBtn.onclick = () =>{getData(currentPage+1, 'true')};
     pagination.append(nextBtn);
 
 }
