@@ -26,16 +26,6 @@ public class MessageController {
     @Autowired
     MessageService messageService;
 
-    @ResponseBody
-    @PostMapping(path = "/messageToAdmin")
-    public String sendMessageToAdmin(@RequestParam("content") String content, HttpSession httpSession){
-
-        long adminId = userService.getAdminInfo().getId();
-        messageService.saveMessage(adminId,content, false, null, httpSession);
-
-        return "Message was sent to the Admin";
-    }
-
     @GetMapping(path="/messages")
     public String goToMessages(HttpSession httpSession, Model model){
 

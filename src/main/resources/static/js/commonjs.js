@@ -33,23 +33,7 @@ $(document).ready(function(){
         }
     }
 
-    function sendMessageToAdmin(){
-        let content=$('#messageContent').val();
-
-        $.ajax({
-            url: '/messageToAdmin',
-            method: 'POST',
-            data:{
-                content:content
-            },
-            success:function(data){
-                alert(data);
-            },
-            error:function(){
-                alert("Ooops something went wrong please try again later");
-            }
-        })
-    }
+    
 
     function menu(menuItem) {
         if(menuItem =='About'){

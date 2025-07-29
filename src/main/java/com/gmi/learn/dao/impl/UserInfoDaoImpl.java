@@ -27,8 +27,6 @@ public class UserInfoDaoImpl implements UserInfoDao {
     @Override
     public UserInfo fetch(HttpSession sessionAttributes, String username, String password) {
 
-        System.out.println("username = " + username);
-        System.out.println("password = " + password);
         List<UserInfo> users=new ArrayList<>();
         try{
             users = jdbcTemplate.query(
@@ -39,8 +37,8 @@ public class UserInfoDaoImpl implements UserInfoDao {
                             rs.getString("firstName"),
                             rs.getString("lastName"),
                             rs.getString("username"),
-                            rs.getBoolean("isAdmin"),
-                            rs.getString("displayPicture")
+                            rs.getString("displayPicture"),
+                            rs.getString("passwd")
                     )
             );
             System.out.println("result = " + users);

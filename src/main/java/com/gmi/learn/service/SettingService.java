@@ -1,21 +1,26 @@
 package com.gmi.learn.service;
 
 import com.gmi.learn.SessionUtility;
+import com.gmi.learn.domain.UserCreateStatus;
 import com.gmi.learn.domain.UserSetting;
 import com.gmi.learn.repository.SettingRepository;
+import com.gmi.learn.repository.UserCreateStatusRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class SettingService {
 
 
 
-SettingRepository settingRepository;
+private SettingRepository settingRepository;
+
+@Autowired
+private UserCreateStatusRepository userStatusRepository;
 
 public SettingService(SettingRepository settingRepository){
     this.settingRepository=settingRepository;
@@ -40,5 +45,18 @@ public SettingService(SettingRepository settingRepository){
 
 //        query here
 
+    }
+
+    public List<Map<String, Object>> getAllUserRequestsUrl(){
+        List<UserCreateStatus> userCreateStatusList = userStatusRepository.findAll();
+        List<Map<String, Object>> updatedStatusList= new ArrayList<>();
+        for(UserCreateStatus status:userCreateStatusList){
+            Map<String, Object> statusMap = new HashMap<>();
+            statusMap.put("id", status.getId());
+            statusMap.put("url", status.getUrl());
+            statusMap.put("status", status.getStatus());
+            updatedStatusList.add(statusMap);
+        }
+        return updatedStatusList;
     }
 }

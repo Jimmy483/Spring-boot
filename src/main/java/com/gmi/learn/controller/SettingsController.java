@@ -3,6 +3,8 @@ package com.gmi.learn.controller;
 import com.gmi.learn.SessionUtility;
 import com.gmi.learn.model.Theme;
 import com.gmi.learn.service.SettingService;
+import com.gmi.learn.service.UserCreateStatusService;
+import com.gmi.learn.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import org.aspectj.lang.annotation.Pointcut;
@@ -20,6 +22,10 @@ public class SettingsController {
     @Autowired
     SettingService settingService;
 
+
+    @Autowired
+    UserCreateStatusService statusService;
+
     private final String DEFAULT_THEME = "EAE21D";
 
     @GetMapping(path = "/loadSetting")
@@ -30,6 +36,21 @@ public class SettingsController {
         return "settings";
 
     }
+
+    @GetMapping(path="/createUserLInk")
+    public String loadRequestForm(Model model, HttpSession httpSession){
+        String templateToRender="createUserRequest";
+        List<Map<String, Object>> returnMap = settingService.getAllUserRequestsUrl();
+        model.addAttribute("data", returnMap);
+        model.addAttribute("templateToRender", templateToRender);
+        return "profileGeneric";
+    }
+
+    @GetMapping(path="/createLink")
+    public Boolean createLinkForNewUser(HttpSession httpSession){
+        return statusService.createStatusUrl();
+    }
+
 
     public Map<String, String> getThemeColours(){
         Map<String,String> themeColours = new HashMap<>();

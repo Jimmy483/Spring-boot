@@ -5,7 +5,6 @@
     <ul class="navbar">
         <li><a href="/dashboard">Home</a></li>
         <li th:if="${#lists.contains({'Admin', 'Moderator'}, session.userRole)}"><a href="/messages">Messages</a></li>
-        <li th:if="${!#lists.contains({'Admin', 'Moderator'}, session.userRole)}"><a href="#contact" onclick="menu('Contact')">Contact</a></li>
         <li><a href="#about" onclick="menu('About')">About</a></li>
     </ul>
     <ul th:with="userLoggedIn=${session.userId!=null?true:false}" class="profile">

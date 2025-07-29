@@ -1,0 +1,87 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Requests</title>
+</head>
+<style>
+    #requests{
+        width:100%;
+        height: 100%;
+        margin-top: 174px;
+        margin-left: 370px;
+    }
+    table tr{
+        width: 1000px;
+    }
+
+    .status{
+        width: 150px;
+        display: inline-block; ;
+    }
+
+    .requestStatus{
+        display: inline-block;
+        width: 135px;
+        margin-left: 10px;
+        text-align: center;
+    }
+
+    .revoke{
+        display: inline-block;
+        width:200px;
+        margin-left: 10px;
+    }
+
+    .pending{
+        background-color: #fcba03;
+    }
+
+    .completed{
+        background-color: #247a1d;
+    }
+
+    .revoked{
+        background-color: #b51212;
+    }
+
+
+    .headerRequest{
+        margin-left:190px
+    }
+
+    .tableData{
+        margin-top: 5px;
+    }
+
+    .tab{
+        max-height:200px;
+        overflow: scroll;
+        width: 580px;
+    }
+    
+
+</style>
+<body>
+
+<div id="requests">
+    <span class="headerRequest">All Requests</span>
+    <div class="tab">
+    <table>
+        <tr th:each="userStatus: ${data}">
+            <td class="tableData">
+                <input id="url" type="text" th:value="${userStatus.url}" disabled class="status"/>
+                <div th:class="'requestStatus ' + ${userStatus.status}">
+                    <span th:text="${userStatus.status}"></span>
+                </div>
+                <input id="revokeBtn" type="button" class="revoke" value="revoke" th:disabled="${userStatus.status!='pending'}"/>
+            </td>
+        </tr>
+    </table>
+    </div>
+</div>
+</body>
+</html>
