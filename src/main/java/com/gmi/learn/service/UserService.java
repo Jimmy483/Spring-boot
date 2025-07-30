@@ -30,6 +30,8 @@ public class UserService {
         }
     }
 
+
+
     public UserInfo getUserInfoByUserName(String username){
         Optional<UserInfo> userInfoOptional = userInfoRepository.findByUsername(username);
         if(userInfoOptional.isPresent()){
@@ -59,13 +61,17 @@ public class UserService {
         return newUserList;
     }
 
-    public void createUser(String firstName, String lastName, String username, String password){
-        UserInfo userInfo = new UserInfo();
-        userInfo.setFirstName(firstName);
-        userInfo.setLastName(lastName);
-        userInfo.setUsername(username);
-        userInfo.setPasswd(password);
-        userInfoRepository.save(userInfo);
+//    public void createUser(String firstName, String lastName, String username, String password){
+//        UserInfo userInfo = new UserInfo();
+//        userInfo.setFirstName(firstName);
+//        userInfo.setLastName(lastName);
+//        userInfo.setUsername(username);
+//        userInfo.setPasswd(password);
+//        userInfoRepository.save(userInfo);
+//
+//    }
 
+    public void createUser(UserInfo userInfo){
+        userInfoRepository.save(userInfo);
     }
 }

@@ -13,5 +13,7 @@ public interface UserCreateStatusRepository extends JpaRepository<UserCreateStat
 
     Optional<UserCreateStatus> findByStatus(String status);
 
+    Optional<UserCreateStatus> findByUrlAndStatus(String url, String status);
+
     List<UserCreateStatus> findAll();
 }

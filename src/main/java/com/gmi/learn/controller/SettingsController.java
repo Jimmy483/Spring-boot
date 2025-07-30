@@ -46,9 +46,10 @@ public class SettingsController {
         return "profileGeneric";
     }
 
-    @GetMapping(path="/createLink")
-    public Boolean createLinkForNewUser(HttpSession httpSession){
-        return statusService.createStatusUrl();
+    @ResponseBody
+    @PostMapping(path="/createLink")
+    public void createLinkForNewUser(HttpSession httpSession){
+        statusService.createStatusUrl();
     }
 
 

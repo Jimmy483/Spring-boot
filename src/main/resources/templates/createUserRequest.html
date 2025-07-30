@@ -62,9 +62,31 @@
         overflow: scroll;
         width: 580px;
     }
+    #addBtn{
+        margin-left:205px;
+        margin-top: 10px;
+    }
     
 
 </style>
+<script>
+    function createLink(){
+        let respone = confirm('Are you sure you want to add a new one?');
+        if(respone){
+            $.ajax({
+            url:'createLink',
+            method:'POST',
+            success:function(){
+                window.location.href='/createUserLInk';
+            },
+            error:function(){
+                alert("Something went wrong. Please try again later.")
+            }
+        })
+        }
+        
+    }
+</script>
 <body>
 
 <div id="requests">
@@ -73,7 +95,7 @@
     <table>
         <tr th:each="userStatus: ${data}">
             <td class="tableData">
-                <input id="url" type="text" th:value="${userStatus.url}" disabled class="status"/>
+                <input id="requestUrl" type="text" th:value="|http://localhost:7071/createUserForm?request=${userStatus.url}|" disabled class="status"/>
                 <div th:class="'requestStatus ' + ${userStatus.status}">
                     <span th:text="${userStatus.status}"></span>
                 </div>
@@ -81,6 +103,9 @@
             </td>
         </tr>
     </table>
+    </div>
+    <div id="addRequest">
+        <input id="addBtn" type="button" value="Add New" onclick="createLink()"/>
     </div>
 </div>
 </body>

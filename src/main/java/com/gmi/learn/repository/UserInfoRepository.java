@@ -13,6 +13,7 @@ public interface UserInfoRepository extends JpaRepository<UserInfo, Long> {
 
     List<UserInfo> findAllByUsernameContaining(String search);
 
-    @Query("Select Max(id) from UserInfo")
-    long findMaxId();
+
+//    @Query("Select Max(id) from UserInfo")
+//    long findMaxId();
 }
