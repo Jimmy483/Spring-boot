@@ -1,6 +1,7 @@
 package com.gmi.learn.controller;
 
 import com.gmi.learn.InitializeRequests;
+import com.gmi.learn.SessionUtility;
 import jakarta.servlet.http.HttpSession;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
@@ -28,7 +29,7 @@ InitializeRequests initializeRequests;
         HttpSession httpSession = null;
         List<String> methodsNotAllowedForGuest = new ArrayList<>(Arrays.asList("goToProfile","getItemAjax"));
         List<String> controllersNotAllowedForGuest = new ArrayList<>(Arrays.asList("MessageController","ItemController", "SettingsController"));
-
+        List<String> methodsNotAllowedForModerator = new ArrayList<>(Arrays.asList("loadRequestForm"));
         String controllerName = point.getTarget().getClass().getSimpleName();
         String methodName = point.getSignature().getName();
 
@@ -48,13 +49,15 @@ InitializeRequests initializeRequests;
         System.out.println("method name = " + methodName);
         System.out.println("!isUserLoggedIn(httpSession) = " + !isUserLoggedIn(httpSession));
         System.out.println("controller name = " + controllerName);
-        if((!isUserLoggedIn(httpSession)) ){
+        if((!isUserLoggedIn(httpSession)) || SessionUtility.getSessionValue(httpSession,"userRole").toString().isEmpty() ){
             if(controllersNotAllowedForGuest.contains(controllerName) || methodsNotAllowedForGuest.contains(methodName)){
                 return "redirect:/dashboard";
-            }else {
-                return point.proceed();
             }
+            return point.proceed();
         }else{
+            if(methodsNotAllowedForModerator.contains(methodName) && SessionUtility.getSessionValue(httpSession,"userRole").toString().equals("Moderator")){
+                return "redirect:/dashboard";
+            }
             return point.proceed();
         }
 

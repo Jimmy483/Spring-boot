@@ -27,15 +27,6 @@ public class UserCreateStatusService {
         createUserStatusRequest(System.currentTimeMillis()+"");
     }
 
-    public Boolean checkIfExistingRequest(){
-        Optional<UserCreateStatus> userCreateStatus = userCreateStatusRepository.findByStatus("Pending");
-        if(userCreateStatus.isPresent()){
-            return true;
-        }else{
-            return false;
-        }
-    }
-
     public Boolean checkIfRequestExist(String url){
         Optional<UserCreateStatus> status = userCreateStatusRepository.findByUrlAndStatus(url, "pending");
         return status.isPresent();
@@ -56,6 +47,18 @@ public class UserCreateStatusService {
             UserCreateStatus status = statusOptional.get();
             status.setStatus("completed");
             userCreateStatusRepository.save(status);
+        }
+    }
+
+    public Boolean revokeRequest(String requestId){
+        Optional<UserCreateStatus> statusOptional = userCreateStatusRepository.findByUrlAndStatus(requestId, "pending");
+        if(statusOptional.isPresent()){
+            UserCreateStatus status = statusOptional.get();
+            status.setStatus("revoked");
+            userCreateStatusRepository.save(status);
+            return true;
+        }else{
+            return false;
         }
     }
 }

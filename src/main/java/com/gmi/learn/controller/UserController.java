@@ -29,19 +29,6 @@ public class UserController {
         return userService.getAllUserBySearchName(search);
     }
 
-    @GetMapping(path="/createUserForm")
-    public String createUserForm(@RequestParam("request") String request, HttpSession httpSession, Model model){
-        if(SessionUtility.getSessionValue(httpSession,"userId")!=null){
-            return "dashboard";
-        }
-        if(userStatus.checkIfRequestExist(request)){
-            model.addAttribute("user", new UserInfo());
-            model.addAttribute("requestId",request);
-            return "createUser";
-        }else{
-            return "invalidLink";
-        }
-    }
 
     @PostMapping(path="/createUser")
     public String createUser(@ModelAttribute UserInfo userinfo, @RequestParam("requestId") String requestId){
