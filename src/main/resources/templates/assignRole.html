@@ -1,0 +1,76 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Assign Role</title>
+</head>
+<style>
+
+#roleTab{
+    width:100%;
+    height: 100%;
+    margin-top: 174px;
+    margin-left: 370px;
+}
+
+table{
+    border-spacing: 10px;
+}
+</style>
+<script>
+    function changeRole(userId){
+        let respone = confirm("Are you sure you want to assign the corresponding user with the new role?");
+        if(respone){
+            let role=$('select[id="dropdown-'+ userId +'"]').val();
+            $.ajax({
+                url:'/applyRoleForUser',
+                method: 'POST',
+                data:{
+                    role: role,
+                    userId : BigInt(userId)
+                },
+                success:function(data){
+                    if(data=='Success'){
+                        window.location.href='roleAssign';
+                    }
+                }
+            })
+        }
+    }
+</script>
+<body>
+
+    <div id="roleTab">
+        <table>
+            <tr>
+                <th>
+                    Username
+                </th>
+                <th>
+                    Role
+                </th>
+                <th>
+                    Option
+                </th>
+            </tr>
+            <tr th:each="user: ${row.userList}">
+                <td>
+                    <span th:text="${user.userName}"></span>
+                </td>
+                <td>
+                    <select th:id="|dropdown-${user.userId}|" name="dropDown">
+                        <option th:each="role: ${row.roleList}" th:value="${role}" th:text="${role}" th:selected="${role==user.userRole}"></option>
+                    </select>
+                </td>
+                <td>
+                    <input type="button" value="Apply" th:attr="data-user-id=${user.userId}" onclick="changeRole(this.dataset.userId)"/>
+                </td>
+
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

@@ -29,7 +29,7 @@ InitializeRequests initializeRequests;
         HttpSession httpSession = null;
         List<String> methodsNotAllowedForGuest = new ArrayList<>(Arrays.asList("goToProfile","getItemAjax"));
         List<String> controllersNotAllowedForGuest = new ArrayList<>(Arrays.asList("MessageController","ItemController", "SettingsController"));
-        List<String> methodsNotAllowedForModerator = new ArrayList<>(Arrays.asList("loadRequestForm"));
+        List<String> methodsNotAllowedForModerator = new ArrayList<>(Arrays.asList("loadRequestForm","roleAssign","applyRoleForUser"));
         String controllerName = point.getTarget().getClass().getSimpleName();
         String methodName = point.getSignature().getName();
 

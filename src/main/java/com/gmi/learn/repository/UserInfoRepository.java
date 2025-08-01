@@ -13,7 +13,7 @@ public interface UserInfoRepository extends JpaRepository<UserInfo, Long> {
 
     List<UserInfo> findAllByUsernameContaining(String search);
 
+    @Query("select u from UserInfo u where u.id not in(select r.id from UserRole r where r.role='Admin')")
+    List<UserInfo> findAllExceptAdminRole();
 
-//    @Query("Select Max(id) from UserInfo")
-//    long findMaxId();
 }

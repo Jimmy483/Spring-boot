@@ -25,4 +25,13 @@ public class UserRoleService {
        }
     }
 
+    public void changeUserRole(UserInfo userInfo, String role){
+        Optional<UserRole> getUserOptional= userRoleRepository.findByUserInfo(userInfo);
+        if(getUserOptional.isPresent()){
+            UserRole userRole = getUserOptional.get();
+            userRole.setRole(role);
+            userRoleRepository.save(userRole);
+        }
+    }
+
 }

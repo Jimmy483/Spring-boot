@@ -3,6 +3,7 @@ package com.gmi.learn.service;
 import com.gmi.learn.domain.UserCreateStatus;
 import com.gmi.learn.domain.UserInfo;
 import com.gmi.learn.repository.UserInfoRepository;
+import com.gmi.learn.repository.UserRoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,9 @@ public class UserService {
 
     @Autowired
     private UserCreateStatusService userCreateStatusService;
+
+    @Autowired
+    private UserRoleService userRoleService;
 
     public UserService(UserInfoRepository userInfoRepository){
         this.userInfoRepository=userInfoRepository;
@@ -43,6 +47,26 @@ public class UserService {
     }
 
 
+    public Map<String, Object> getAllUserMap(){
+        List<UserInfo> userInfoList = userInfoRepository.findAllExceptAdminRole();
+        Map<String, Object> retMap = new HashMap<>();
+        List<Map<String, Object>> newUserList = new ArrayList<>();
+        for(UserInfo userInfo: userInfoList){
+            Map<String, Object> userMap = new HashMap<>();
+            userMap.put("userId", userInfo.getId());
+            userMap.put("userName",userInfo.getUsername());
+            userMap.put("userRole",userRoleService.getCurrentUserRole(userInfo));
+            newUserList.add(userMap);
+        }
+        retMap.put("userList", newUserList);
+        retMap.put("roleList", getAllRoleExceptAdmin());
+
+        return retMap;
+    }
+
+    public List<String> getAllRoleExceptAdmin(){
+        return new ArrayList<>(Arrays.asList("Moderator", "Guest"));
+    }
 
 
 
@@ -70,6 +94,10 @@ public class UserService {
 //        userInfoRepository.save(userInfo);
 //
 //    }
+
+    public void updateUserRole(String role, Long userId){
+        userRoleService.changeUserRole(getUserInfo(userId),role);
+    }
 
     public void createUser(UserInfo userInfo){
         userInfoRepository.save(userInfo);
