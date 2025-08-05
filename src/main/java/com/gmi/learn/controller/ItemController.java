@@ -27,9 +27,7 @@ public class ItemController {
     @GetMapping(path="/viewItem")
     public String viewItemPage(Model model, HttpSession httpSession){
         String templateToRender="viewItems.html";
-//        System.out.println("loading view page = " + name);
         Map<String, Object> dataMap=foodService.getFood(null, null, 0, "", 2, "false", true);
-//        List<Map.Entry<String, String>> columnMapList = new ArrayList<>(getColumnMap().entrySet());
         model.addAttribute("templateToRender",templateToRender);
         model.addAttribute("columnMap",getColumnMap());
         model.addAttribute("data", dataMap);
@@ -38,13 +36,7 @@ public class ItemController {
 
     @PostMapping(path="/getItemFragment")
     public String getItemFragment(HttpSession httpSession, Model model, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "2") int size, @RequestParam(required = false) String name, @RequestParam(required = false) String sort, @RequestParam(required = false) String order, @RequestParam(defaultValue = "false") String fromPagination){
-        String templateToRender="viewItems.html";
-//        System.out.println("loading view page = " + name);
-        System.out.println("page = " + page + " size = " + size + " name = " + name + " sort = "+ sort + " order = " + order + " fromPagination = " + fromPagination);
-
         Map<String, Object> dataMap=foodService.getFood(sort, order, page, name, size, fromPagination, true);
-//        List<Map.Entry<String, String>> columnMapList = new ArrayList<>(getColumnMap().entrySet());
-//        model.addAttribute("templateToRender",templateToRender);
         model.addAttribute("columnMap",getColumnMap());
         model.addAttribute("data", dataMap);
         System.out.println("hi man");
@@ -89,10 +81,6 @@ public class ItemController {
         }else{
             fileName="";
         }
-
-        System.out.println("fileName = " + fileName);
-
-        System.out.println("id = " + id);
 
         if(addOrUpdate.equals("edit")){
             foodService.updateFood(itemName, price, fileName, LocalDate.now().toString(), httpSession, id);

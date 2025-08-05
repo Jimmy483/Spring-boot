@@ -27,11 +27,16 @@ public class UserRoleService {
 
     public void changeUserRole(UserInfo userInfo, String role){
         Optional<UserRole> getUserOptional= userRoleRepository.findByUserInfo(userInfo);
-        if(getUserOptional.isPresent()){
-            UserRole userRole = getUserOptional.get();
+        UserRole userRole;
+        if(getUserOptional.isPresent()){;
+            userRole = getUserOptional.get();
             userRole.setRole(role);
-            userRoleRepository.save(userRole);
+        }else{
+            userRole = new UserRole();
+            userRole.setUserInfo(userInfo);
+            userRole.setRole(role);
         }
+        userRoleRepository.save(userRole);
     }
 
 }

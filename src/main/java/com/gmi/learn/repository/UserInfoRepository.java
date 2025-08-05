@@ -16,4 +16,6 @@ public interface UserInfoRepository extends JpaRepository<UserInfo, Long> {
     @Query("select u from UserInfo u where u.id not in(select r.id from UserRole r where r.role='Admin')")
     List<UserInfo> findAllExceptAdminRole();
 
+    Optional<UserInfo> findByIdAndPasswd(Long userId, String password);
+
 }

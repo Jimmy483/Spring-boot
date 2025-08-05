@@ -14,7 +14,7 @@
         .imageDiv{
             border: 2px solid black;
             width: 30%;
-            height: 300px;
+            height: 160px;
             float: left;
         }
         .details{
@@ -23,7 +23,7 @@
             float: left;
         }
         .profile h2{
-            margin-left: 450px;
+            margin-left: 280px;
             white-space: nowrap;
         }
         .details label{
@@ -34,19 +34,74 @@
             width: 100%;
             height: 100%;
         }
+
+        .details input[type='text']{
+            border-radius: 10px;
+            margin-bottom: 3px;
+            border-color: #307a35;
+        }
+
+        #submitBtn{
+            margin-top: 10px;
+            margin-left: 100px;
+            border-radius: 10px;
+            background-color: #30989c;
+        }
+
+        #ïmageChooser{
+            border-radius: 10px;
+            background-color: #30989c;
+        }
     </style>
+    <script>
+        function updateUserInfo(){
+            let response = confirm("Are you sure you want to make the changes?");
+            if(response){
+            let fName= $('#fName').val();
+            let lName= $('#lName').val();
+            if(fName=='' || lName==''){
+                alert("Fields cannot be empty.")
+                return;
+            }
+            let file = $('#imageChooser')[0].files[0]
+            const formData = new FormData();
+            formData.append('fName', fName);
+            formData.append('lName', lName);
+            if(file)
+            formData.append('image', file);
+            $.ajax({
+                url:'/updateUser',
+                method: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success:function(){
+                    window.location.href='/profile';
+                },
+                error:function(){
+                    alert('Something went wrong. Please try again later.');
+                }
+            })
+            }
+            
+            
+        }
+    </script>
 </head>
 <body>
 <div class="profile">
         <h2>Profile Details</span></h2>
         <form>
         <div class="imageDiv">
-            <img class="profilePic" src="/profilePics/whoAmI.jpg"/>
+            <img class="profilePic" th:src="${data.get('displayPic')}"/>
         </div>
         <div class="details">
-            <label for="userTxt">Username</label><input type="text" th:value="${username}" id="userTxt"/>
-            <label for="fName">First Name</label><input type="text" id="fName" value="Jimmy"/>
-            <label for="lName">Last Name</label><input type="text" id="lName" value="Sherpa"/>
+            <label for="userTxt">Username</label><input type="text" th:value="${data.get('lastName')}" id="userTxt" disabled/>
+            <label for="fName">First Name</label><input type="text" id="fName" th:value="${data.get('firstName')}"/>
+            <label for="lName">Last Name</label><input type="text" id="lName" th:value="${data.get('lastName')}"/>
+            <label for="imageChooser">Choose Image</label>
+            <input id="imageChooser" name="ïmageChooser" type="file" accept="image/*"/>
+            <input type="button" value="Update" id="submitBtn" onclick="updateUserInfo()"/>
         </div>
         </form>
     </div>

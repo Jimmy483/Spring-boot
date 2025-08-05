@@ -27,7 +27,7 @@ InitializeRequests initializeRequests;
     @Around("controllerMethods()")
     public Object checkAuthentication(ProceedingJoinPoint point) throws Throwable{
         HttpSession httpSession = null;
-        List<String> methodsNotAllowedForGuest = new ArrayList<>(Arrays.asList("goToProfile","getItemAjax"));
+        List<String> methodsNotAllowedForGuest = new ArrayList<>(Arrays.asList("goToProfile","getItemAjax","roleAssign"));
         List<String> controllersNotAllowedForGuest = new ArrayList<>(Arrays.asList("MessageController","ItemController", "SettingsController"));
         List<String> methodsNotAllowedForModerator = new ArrayList<>(Arrays.asList("loadRequestForm","roleAssign","applyRoleForUser"));
         String controllerName = point.getTarget().getClass().getSimpleName();
@@ -50,12 +50,16 @@ InitializeRequests initializeRequests;
         System.out.println("!isUserLoggedIn(httpSession) = " + !isUserLoggedIn(httpSession));
         System.out.println("controller name = " + controllerName);
         if((!isUserLoggedIn(httpSession)) || SessionUtility.getSessionValue(httpSession,"userRole").toString().isEmpty() ){
+            System.out.println("first check");
             if(controllersNotAllowedForGuest.contains(controllerName) || methodsNotAllowedForGuest.contains(methodName)){
                 return "redirect:/dashboard";
             }
             return point.proceed();
         }else{
+            System.out.println("last check = " +SessionUtility.getSessionValue(httpSession,"userRole").toString().equals("Moderator"));
+            System.out.println("last check check = " +SessionUtility.getSessionValue(httpSession,"userRole"));
             if(methodsNotAllowedForModerator.contains(methodName) && SessionUtility.getSessionValue(httpSession,"userRole").toString().equals("Moderator")){
+                System.out.println("last inside check");
                 return "redirect:/dashboard";
             }
             return point.proceed();
@@ -65,7 +69,6 @@ InitializeRequests initializeRequests;
 
 
     public Boolean isUserLoggedIn(HttpSession session){
-        Boolean isFound= initializeRequests.getSessionAttributes(session);
-        return isFound;
+        return initializeRequests.getSessionAttributes(session);
     }
 }

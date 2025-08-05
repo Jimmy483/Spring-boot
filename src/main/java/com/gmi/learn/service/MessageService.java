@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class MessageService {
 
     private final MessageRepository messageRepository;
-    private final String defaultUserImage="/profilePics/whoAmI.jpg";
+    private final String defaultUserImage="/profilePics/defaultDP.jpg";
 
     @Autowired
     private UserService userService;
@@ -48,6 +48,7 @@ public class MessageService {
         Map<Long, Map<String, Object>> toReturnMap = new HashMap<>();
         Map<LocalDateTime, Map<Long, String>> messageBetweenUsers = new TreeMap<>();
         List<Messages> messagesList = messageRepository.findAllByReceiverId(userId);
+//        List<Messages> messagesByCurrentUser = messageRepository.findAllBySenderId(userId);
         Map<Long, LocalDateTime> userLastDateMap = new HashMap<>();
         for(Messages message: messagesList){
 
@@ -59,6 +60,7 @@ public class MessageService {
             String senderName = userInfo.getUsername();
             String senderPicture = userInfo.getDisplayPicture()!=null?userInfo.getDisplayPicture():defaultUserImage;
             List<Messages> messagesByCurrentUser = messageRepository.findAllByReceiverIdAndSenderId(message.getSenderId(), userId);
+            System.out.println("messages by current user = " + messagesByCurrentUser);
 
             Object root = toReturnMap.get(message.getSenderId());
             Map<String, Object> existingMessageDetail = new HashMap<>();

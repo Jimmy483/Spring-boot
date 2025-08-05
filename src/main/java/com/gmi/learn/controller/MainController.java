@@ -5,6 +5,7 @@ import com.gmi.learn.dao.impl.FoodDaoImpl;
 import com.gmi.learn.dao.impl.UserInfoDaoImpl;
 import com.gmi.learn.domain.Food;
 import com.gmi.learn.domain.UserInfo;
+import com.gmi.learn.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 @Controller
@@ -30,13 +32,16 @@ public class MainController {
     @Autowired
     private FoodDaoImpl foodDao;
 
+    @Autowired
+    private UserService userService;
 
 
 
 
 
 
-        @RequestMapping(value = "/dashboard", method = {RequestMethod.GET, RequestMethod.POST})
+
+        @RequestMapping(path = "/dashboard", method = {RequestMethod.GET, RequestMethod.POST})
         public String dashboard(Model model, HttpSession httpSession) {
             model.addAttribute("name", httpSession.getAttribute("username"));
             model.addAttribute("loggedIn",httpSession.getAttribute("username")!=null);
@@ -83,8 +88,8 @@ public class MainController {
     @GetMapping(path = "/profile")
     public String goToProfile(HttpSession httpSession, Model model){
         String templateToRender="profile.html";
-        model.addAttribute("id",SessionUtility.getSessionValue(httpSession,"userId"));
-        model.addAttribute("username",SessionUtility.getSessionValue(httpSession,"username"));
+        Map<String, Object> retMap = userService.getUserInfoMap(httpSession);
+        model.addAttribute("data",retMap);
         model.addAttribute("templateToRender",templateToRender);
         return "profileGeneric";
     }

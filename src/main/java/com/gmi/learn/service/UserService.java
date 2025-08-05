@@ -1,12 +1,18 @@
 package com.gmi.learn.service;
 
+import com.gmi.learn.SessionUtility;
 import com.gmi.learn.domain.UserCreateStatus;
 import com.gmi.learn.domain.UserInfo;
 import com.gmi.learn.repository.UserInfoRepository;
 import com.gmi.learn.repository.UserRoleRepository;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 @Service
@@ -19,6 +25,8 @@ public class UserService {
 
     @Autowired
     private UserRoleService userRoleService;
+
+    private final String defaultDisplayImage = "/profilePics/defaultDP.jpg";
 
     public UserService(UserInfoRepository userInfoRepository){
         this.userInfoRepository=userInfoRepository;
@@ -47,6 +55,48 @@ public class UserService {
     }
 
 
+    public Boolean updateUserInfo(HttpSession httpSession, String firstName, String lastName,MultipartFile file){
+        String image=null;
+        Long userId = Long.parseLong(SessionUtility.getSessionValue(httpSession, "userId").toString());
+        if(file!=null){
+            image = uploadImage(file);
+            if(image==null){
+                return false;
+            }
+        }
+        Optional<UserInfo> userInfoOptional = userInfoRepository.findById(userId);
+        if(userInfoOptional.isPresent()){
+            UserInfo userInfo = userInfoOptional.get();
+            userInfo.setFirstName(firstName);
+            userInfo.setLastName(lastName);
+            if(image!=null){
+                userInfo.setDisplayPicture(image);
+            }
+            userInfoRepository.save(userInfo);
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public String uploadImage(MultipartFile file) {
+        try{
+            String staticDir = new File("src/main/resources/static/profilePics").getAbsolutePath();
+            File dir = new File(staticDir);
+            if (!dir.exists()) {
+                dir.mkdir();
+            }
+            String fileName = file.getOriginalFilename();
+            File destination = new File(dir, fileName);
+            file.transferTo(destination);
+            return "/profilePics/"+fileName;
+        }catch (IOException e){
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+
     public Map<String, Object> getAllUserMap(){
         List<UserInfo> userInfoList = userInfoRepository.findAllExceptAdminRole();
         Map<String, Object> retMap = new HashMap<>();
@@ -65,7 +115,7 @@ public class UserService {
     }
 
     public List<String> getAllRoleExceptAdmin(){
-        return new ArrayList<>(Arrays.asList("Moderator", "Guest"));
+        return new ArrayList<>(Arrays.asList("None","Moderator", "Guest"));
     }
 
 
@@ -78,28 +128,57 @@ public class UserService {
             Map<String, Object> userInfoMap = new HashMap<>();
             userInfoMap.put("id", userInfo.getId());
             userInfoMap.put("username", userInfo.getUsername());
-            userInfoMap.put("image", userInfo.getDisplayPicture());
+            userInfoMap.put("image", userInfo.getDisplayPicture()!=null?userInfo.getDisplayPicture():defaultDisplayImage);
             newUserList.add(userInfoMap);
         }
-        System.out.println("all list of maps = " + newUserList );
         return newUserList;
     }
 
-//    public void createUser(String firstName, String lastName, String username, String password){
-//        UserInfo userInfo = new UserInfo();
-//        userInfo.setFirstName(firstName);
-//        userInfo.setLastName(lastName);
-//        userInfo.setUsername(username);
-//        userInfo.setPasswd(password);
-//        userInfoRepository.save(userInfo);
-//
-//    }
+    public Map<String, Object> getUserInfoMap(HttpSession httpSession){
+        Long userId = Long.parseLong(SessionUtility.getSessionValue(httpSession, "userId").toString());
+        Optional<UserInfo> userInfoOptional = userInfoRepository.findById(userId);
+        Map<String, Object> userMap = new HashMap<>();
+        if(userInfoOptional.isPresent()){
+            UserInfo userInfo=userInfoOptional.get();
+            userMap.put("firstName",userInfo.getFirstName());
+            userMap.put("lastName",userInfo.getLastName());
+            userMap.put("username", userInfo.getUsername());
+            userMap.put("displayPic", userInfo.getDisplayPicture()!=null?userInfo.getDisplayPicture():defaultDisplayImage);
+        }
+        return userMap;
+    }
 
     public void updateUserRole(String role, Long userId){
+        System.out.println("userId = " + userId);
+        System.out.println("role = " + role);
         userRoleService.changeUserRole(getUserInfo(userId),role);
     }
 
     public void createUser(UserInfo userInfo){
         userInfoRepository.save(userInfo);
+    }
+
+    public Boolean checkPassword(HttpSession httpSession, String password){
+        System.out.println("password = " + password);
+        long userId = Long.parseLong(SessionUtility.getSessionValue(httpSession, "userId").toString());
+        System.out.println("user id = " + userId);
+        Optional<UserInfo> userInfoOptional = userInfoRepository.findByIdAndPasswd(userId, password);
+        System.out.println("userInfo = " + userInfoOptional);
+        if(userInfoOptional.isPresent()){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public void changePassword(UserInfo userInfo){
+        System.out.println("userInfo change =" +userInfo);
+
+        Optional<UserInfo> userInfoOptional= userInfoRepository.findById(userInfo.getId());
+        if(userInfoOptional.isPresent()){
+            UserInfo userInfo1 = userInfoOptional.get();
+            userInfo1.setPasswd(userInfo.getPasswd());
+            userInfoRepository.save(userInfo1);
+        }
     }
 }

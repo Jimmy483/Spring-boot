@@ -12,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -48,10 +50,37 @@ public class UserController {
     }
 
     @ResponseBody
+    @PostMapping(path="/updateUser")
+    public Boolean updateUser(HttpSession httpSession, @RequestParam("fName") String firstName, @RequestParam("lName") String lName, @RequestParam(value = "image",required = false)  MultipartFile file){
+        return userService.updateUserInfo(httpSession, firstName, lName, file);
+    }
+
+    @ResponseBody
     @PostMapping(path="applyRoleForUser")
     public String applyRoleForUser(HttpSession httpSession, @RequestParam("role") String role, @RequestParam("userId") Long userId){
         userService.updateUserRole(role, userId);
         return "Success";
     }
 
+
+    @ResponseBody
+    @GetMapping(path="checkPassword")
+    public Boolean checkPassword(HttpSession httpSession, @RequestParam("password") String password){
+        System.out.println("check checkPass");
+        return userService.checkPassword(httpSession, password);
+    }
+
+    @PostMapping(path="changePassword")
+    public String changePassword(HttpSession httpSession, Model model, @ModelAttribute("userInfo") UserInfo userInfo){
+        userService.changePassword(userInfo);
+        return "redirect:/profile";
+    }
+
+    @GetMapping(path="goToPasswordForm")
+    public String goToPasswordForm(HttpSession httpSession, Model model){
+        String templateToRender="changePassword";
+        model.addAttribute("templateToRender", templateToRender);
+        model.addAttribute("userInfo", userService.getUserInfo(Long.parseLong(SessionUtility.getSessionValue(httpSession, "userId").toString())));
+        return "profileGeneric";
+    }
 }

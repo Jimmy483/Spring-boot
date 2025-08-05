@@ -4,14 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Error Page</title>
-    <!-- Add your CSS styles and other assets here -->
 </head>
 <body>
 <div>
     <h1>Oops! Something went wrong</h1>
     <p>We apologize for the inconvenience. The requested page is not available at the moment.</p>
-    <p><a th:href="@{/home(username=${'Gmi'})}">GO to home page</a></p>
-    <!-- You can add more helpful information or links to guide users -->
+    <p><a th:href="@{/dashboard(username=${'Gmi'})}">GO to home page</a></p>
 </div>
 </body>
 </html>
