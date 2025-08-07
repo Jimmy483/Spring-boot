@@ -1,12 +1,15 @@
 package com.gmi.learn.service;
 
+import com.gmi.learn.InitializeRequests;
 import com.gmi.learn.SessionUtility;
 import com.gmi.learn.domain.UserCreateStatus;
 import com.gmi.learn.domain.UserInfo;
 import com.gmi.learn.repository.UserInfoRepository;
 import com.gmi.learn.repository.UserRoleRepository;
 import jakarta.servlet.http.HttpSession;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,7 +29,13 @@ public class UserService {
     @Autowired
     private UserRoleService userRoleService;
 
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
     private final String defaultDisplayImage = "/profilePics/defaultDP.jpg";
+
+    @Autowired
+    InitializeRequests requests;
 
     public UserService(UserInfoRepository userInfoRepository){
         this.userInfoRepository=userInfoRepository;
@@ -115,7 +124,7 @@ public class UserService {
     }
 
     public List<String> getAllRoleExceptAdmin(){
-        return new ArrayList<>(Arrays.asList("None","Moderator", "Guest"));
+        return new ArrayList<>(Arrays.asList("None","Moderator", "Assistant"));
     }
 
 
@@ -155,16 +164,27 @@ public class UserService {
     }
 
     public void createUser(UserInfo userInfo){
-        userInfoRepository.save(userInfo);
+        System.out.println("user pass = " + userInfo.getPasswd());
+        System.out.println("user hashed pass = " + passwordEncoder.encode(userInfo.getPasswd()));
+        UserInfo newUserInfo = new UserInfo();
+        newUserInfo.setFirstName(userInfo.getFirstName());
+        newUserInfo.setLastName(userInfo.getLastName());
+        newUserInfo.setUsername(userInfo.getUsername());
+        newUserInfo.setPasswd(passwordEncoder.encode(userInfo.getPasswd()));
+        userInfoRepository.save(newUserInfo);
     }
 
     public Boolean checkPassword(HttpSession httpSession, String password){
         System.out.println("password = " + password);
         long userId = Long.parseLong(SessionUtility.getSessionValue(httpSession, "userId").toString());
         System.out.println("user id = " + userId);
-        Optional<UserInfo> userInfoOptional = userInfoRepository.findByIdAndPasswd(userId, password);
+        Optional<UserInfo> userInfoOptional = userInfoRepository.findById(userId);
         System.out.println("userInfo = " + userInfoOptional);
         if(userInfoOptional.isPresent()){
+            UserInfo userInfo = userInfoOptional.get();
+            if(!passwordEncoder.matches(password,userInfo.getPasswd())){
+                return false;
+            }
             return true;
         }else{
             return false;
@@ -173,12 +193,36 @@ public class UserService {
 
     public void changePassword(UserInfo userInfo){
         System.out.println("userInfo change =" +userInfo);
-
+        String hashedPass = passwordEncoder.encode(userInfo.getPasswd());
         Optional<UserInfo> userInfoOptional= userInfoRepository.findById(userInfo.getId());
         if(userInfoOptional.isPresent()){
             UserInfo userInfo1 = userInfoOptional.get();
-            userInfo1.setPasswd(userInfo.getPasswd());
+            userInfo1.setPasswd(hashedPass);
             userInfoRepository.save(userInfo1);
         }
+    }
+
+    public Boolean checkLoginInfo(String username, String password, HttpSession httpSession){
+        System.out.println("password first " + password);
+        System.out.println("password hased = " + passwordEncoder.encode(password));
+        Optional<UserInfo> userInfoOptional = userInfoRepository.findByUsername(username);
+        if(userInfoOptional.isPresent()){
+            UserInfo userInfo = userInfoOptional.get();
+            if(!passwordEncoder.matches(password,userInfo.getPasswd())){
+                return false;
+            }
+            requests.setSessionAttributes(httpSession, userInfo);
+            return true;
+        }
+        return false;
+
+    }
+
+    public Boolean checkIfUserExists(String username){
+        Optional<UserInfo> userInfoOptional = userInfoRepository.findByUsername(username);
+        if(userInfoOptional.isPresent()){
+            return  true;
+        }
+        return false;
     }
 }

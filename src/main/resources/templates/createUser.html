@@ -16,11 +16,13 @@ function submitForm(event){
     let lastName=$('#lastName').val();
     let username=$('#username').val();
 
-    $('#passwd').css("border-color","#e81a0c");
-    $('#confirmPassword').css("border-color","#e81a0c");
-    $('#firstName').css("border-color","#e81a0c");
-    $('#lastName').css("border-color","#e81a0c");
-    $('#username').css("border-color","#e81a0c");
+    $('#passwd').css("border-color","initial");
+    $('#confirmPassword').css("border-color","initial");
+    $('#firstName').css("border-color","initial");
+    $('#lastName').css("border-color","initial");
+    $('#username').css("border-color","initial");
+    $('#usernameError').css("display","none");
+    document.getElementById('passwordError').textContent='';
 
     if(passwd==''){
         $('#passwd').css("border-color","#e81a0c");
@@ -53,13 +55,32 @@ function submitForm(event){
 
 
     if(passwd!=cPasswd){
-        $('#confirmPassword').val();
         errorDiv.textContent="Passwords do not match";
         event.preventDefault();
         return;
     }
 
-    $('#userForm').submit();
+    event.preventDefault();
+    $.ajax({
+        url:'/checkForExistingUsername',
+        method:'GET',
+        data:{
+            username
+        },
+        success:function(userExists){
+            if(userExists){
+                
+                $('#usernameError').css('display','inline-block');
+                return;
+            }
+            $('#userForm').submit();
+        },
+        error:function(){
+            alert("Something went wrong");
+        }
+    })
+
+    
 
 }
 </script>
@@ -78,7 +99,16 @@ function submitForm(event){
 
     .passwordErr{
         color: #e81a0c;
+        margin-left: 300px;
     }
+
+    #usernameError{
+        color: #e81a0c;
+        display: none;
+        margin-left: 300px;
+    }
+
+
 </style>
 <body>
 <div id="form">
@@ -86,6 +116,7 @@ function submitForm(event){
     <input th:field="*{firstName}" type="text" placeholder="First Name"/>
     <input th:field="*{lastName}" type="text" placeholder="Last Name"/>
     <input th:field="*{username}" type="text" placeholder="Username"/>
+    <div id="usernameError">Username already exists</div>
     <input th:field="*{passwd}" type="password" placeholder="password"/>
     <input id="confirmPassword" type="password" placeholder="password"/>
     <div id="passwordError" class="passwordErr">

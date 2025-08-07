@@ -27,6 +27,9 @@ public class UserController {
     @Autowired
     UserCreateStatusService userStatus;
 
+    @Autowired
+    UserRoleService userRoleService;
+
     @GetMapping(path="/getAllUserByName")
     @ResponseBody
     public List<Map<String, Object>> getUserByName(@RequestParam("search") String search){
@@ -37,11 +40,12 @@ public class UserController {
     @PostMapping(path="/createUser")
     public String createUser(@ModelAttribute UserInfo userinfo, @RequestParam("requestId") String requestId){
         userService.createUser(userinfo);
+        userRoleService.changeUserRole(userService.getUserInfoByUserName(userinfo.getUsername()), "Assistant");
         userStatus.updateUserStatusRequest(requestId);
-        return "dashboard";
+        return "redirect:/login";
     }
 
-    @GetMapping(path="roleAssign")
+    @GetMapping(path="/roleAssign")
     public String roleAssign(HttpSession httpSession, Model model){
         Map<String, Object> retMap = userService.getAllUserMap();
         model.addAttribute("row",retMap);
@@ -56,7 +60,7 @@ public class UserController {
     }
 
     @ResponseBody
-    @PostMapping(path="applyRoleForUser")
+    @PostMapping(path="/applyRoleForUser")
     public String applyRoleForUser(HttpSession httpSession, @RequestParam("role") String role, @RequestParam("userId") Long userId){
         userService.updateUserRole(role, userId);
         return "Success";
@@ -64,23 +68,30 @@ public class UserController {
 
 
     @ResponseBody
-    @GetMapping(path="checkPassword")
+    @GetMapping(path="/checkPassword")
     public Boolean checkPassword(HttpSession httpSession, @RequestParam("password") String password){
         System.out.println("check checkPass");
         return userService.checkPassword(httpSession, password);
     }
 
-    @PostMapping(path="changePassword")
+    @PostMapping(path="/changePassword")
     public String changePassword(HttpSession httpSession, Model model, @ModelAttribute("userInfo") UserInfo userInfo){
         userService.changePassword(userInfo);
         return "redirect:/profile";
     }
 
-    @GetMapping(path="goToPasswordForm")
+    @GetMapping(path="/goToPasswordForm")
     public String goToPasswordForm(HttpSession httpSession, Model model){
         String templateToRender="changePassword";
         model.addAttribute("templateToRender", templateToRender);
         model.addAttribute("userInfo", userService.getUserInfo(Long.parseLong(SessionUtility.getSessionValue(httpSession, "userId").toString())));
         return "profileGeneric";
+    }
+
+
+    @ResponseBody
+    @GetMapping(path="/checkForExistingUsername")
+    public Boolean checkIfUserExists(HttpSession httpSession, @RequestParam("username") String username){
+        return userService.checkIfUserExists(username);
     }
 }

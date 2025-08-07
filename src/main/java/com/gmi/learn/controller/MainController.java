@@ -2,12 +2,9 @@ package com.gmi.learn.controller;
 
 import com.gmi.learn.SessionUtility;
 import com.gmi.learn.dao.impl.FoodDaoImpl;
-import com.gmi.learn.dao.impl.UserInfoDaoImpl;
 import com.gmi.learn.domain.Food;
-import com.gmi.learn.domain.UserInfo;
 import com.gmi.learn.service.UserService;
 import jakarta.servlet.http.HttpSession;
-import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,18 +24,10 @@ public class MainController {
 
 
     @Autowired
-    private UserInfoDaoImpl userInfoDao;
-
-    @Autowired
     private FoodDaoImpl foodDao;
 
     @Autowired
     private UserService userService;
-
-
-
-
-
 
 
         @RequestMapping(path = "/dashboard", method = {RequestMethod.GET, RequestMethod.POST})
@@ -60,31 +49,6 @@ public class MainController {
             return foodList;
         }
 
-    @RequestMapping(value="/sort")
-    @ResponseBody
-    public List<Food> sortTable(@RequestParam("name") String name, @RequestParam("sort") String sort, @RequestParam("order") String order){
-        System.out.println("name  = " + name);
-        System.out.println("sort = " + sort);
-        System.out.println("order = " + order);
-        List<Food> foodList=new ArrayList<>();
-        return foodList;
-    }
-
-    @RequestMapping(value = "/home", method = RequestMethod.POST)
-    @ResponseBody
-    public String checkUsernameAndPassword(HttpSession sessionAttributes, Model model, @RequestParam("username") String name, @RequestParam("password") String password) {
-
-        UserInfo user=new UserInfo();
-
-        if(userInfoDao.fetch(sessionAttributes, name,password)!=null) {
-            return "true";
-        }else {
-            return "Incorrect Username or Password";
-
-        }
-    }
-
-
     @GetMapping(path = "/profile")
     public String goToProfile(HttpSession httpSession, Model model){
         String templateToRender="profile.html";
@@ -94,8 +58,6 @@ public class MainController {
         return "profileGeneric";
     }
 
-
-
     @GetMapping(path="/error")
     public String errorPage(){
         return "error";
@@ -103,6 +65,3 @@ public class MainController {
 
 
 }
-
-
-// create a platform where people can check the average prices for stuffs

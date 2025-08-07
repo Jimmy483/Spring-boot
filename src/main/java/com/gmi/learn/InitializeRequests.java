@@ -23,14 +23,11 @@ public class InitializeRequests {
     }
 
     @GetMapping("/set-session")
-    public void setSessionAttributes(HttpSession sessionAttributes, List<UserInfo> userInfo){
-//        model.addAttribute("username","Jimmy");
-        System.out.println("test this");
-        SessionUtil.storeSessionValue(sessionAttributes,"username",userInfo.get(0).getUsername());
-        SessionUtil.storeSessionValue(sessionAttributes,"userId",userInfo.get(0).getId());
-        SessionUtil.storeSessionValue(sessionAttributes,"themeColour",getUserThemeColor(userInfo.get(0).getId()));
-        SessionUtil.storeSessionValue(sessionAttributes,"userRole",userRoleService.getCurrentUserRole(userInfo.get(0)));
-        System.out.println("role is " + userRoleService.getCurrentUserRole(userInfo.get(0)));
+    public void setSessionAttributes(HttpSession sessionAttributes, UserInfo userInfo){
+        SessionUtil.storeSessionValue(sessionAttributes,"username",userInfo.getUsername());
+        SessionUtil.storeSessionValue(sessionAttributes,"userId",userInfo.getId());
+        SessionUtil.storeSessionValue(sessionAttributes,"themeColour",getUserThemeColor(userInfo.getId()));
+        SessionUtil.storeSessionValue(sessionAttributes,"userRole",userRoleService.getCurrentUserRole(userInfo));
     }
 
     @GetMapping("/get-session")
@@ -52,9 +49,7 @@ public class InitializeRequests {
     }
 
     public String getUserThemeColor(Long userId){
-//        Long userid
         UserSetting userSetting;
-        System.out.println("userid = " + userId);
         String toReturn;
         if(userId==0){
             toReturn="FFFFF";
@@ -67,7 +62,6 @@ public class InitializeRequests {
                 toReturn="FFA07A";
             }
         }
-        System.out.println("theme colour = " + toReturn);
         return toReturn;
 
     }

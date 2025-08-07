@@ -26,13 +26,14 @@ InitializeRequests initializeRequests;
 
     @Around("controllerMethods()")
     public Object checkAuthentication(ProceedingJoinPoint point) throws Throwable{
+
         HttpSession httpSession = null;
-        List<String> methodsNotAllowedForGuest = new ArrayList<>(Arrays.asList("goToProfile","getItemAjax","roleAssign"));
+        List<String> methodsNotAllowedForGuest = new ArrayList<>(Arrays.asList("goToProfile","getItemAjax","roleAssign", "goToPasswordForm", "changePassword", "viewItemPage"));
         List<String> controllersNotAllowedForGuest = new ArrayList<>(Arrays.asList("MessageController","ItemController", "SettingsController"));
         List<String> methodsNotAllowedForModerator = new ArrayList<>(Arrays.asList("loadRequestForm","roleAssign","applyRoleForUser"));
+        List<String> methodsNotAllowedForAssistant = new ArrayList<>(Arrays.asList("getItemAjax","roleAssign", "loadRequestForm","roleAssign","applyRoleForUser", "viewItemPage"));
         String controllerName = point.getTarget().getClass().getSimpleName();
         String methodName = point.getSignature().getName();
-
         if(controllerName.equals("InitializeRequests")){
             return point.proceed();
         }
@@ -46,6 +47,11 @@ InitializeRequests initializeRequests;
         }
 
         System.out.println("http session = " + httpSession);
+
+        if(Arrays.asList("loginPage","logoutUser").contains(methodName) && SessionUtility.getSessionValue(httpSession, "userId")!=null){
+            return "redirect:/dashboard";
+        }
+
         System.out.println("method name = " + methodName);
         System.out.println("!isUserLoggedIn(httpSession) = " + !isUserLoggedIn(httpSession));
         System.out.println("controller name = " + controllerName);
@@ -58,7 +64,8 @@ InitializeRequests initializeRequests;
         }else{
             System.out.println("last check = " +SessionUtility.getSessionValue(httpSession,"userRole").toString().equals("Moderator"));
             System.out.println("last check check = " +SessionUtility.getSessionValue(httpSession,"userRole"));
-            if(methodsNotAllowedForModerator.contains(methodName) && SessionUtility.getSessionValue(httpSession,"userRole").toString().equals("Moderator")){
+            if((methodsNotAllowedForModerator.contains(methodName) && SessionUtility.getSessionValue(httpSession,"userRole").toString().equals("Moderator")) ||
+                    (methodsNotAllowedForAssistant.contains(methodName) && SessionUtility.getSessionValue(httpSession, "userRole").toString().equals("Assistant"))){
                 System.out.println("last inside check");
                 return "redirect:/dashboard";
             }

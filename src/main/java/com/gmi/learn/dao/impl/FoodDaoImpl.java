@@ -39,7 +39,6 @@ public class FoodDaoImpl implements FoodDao {
             sort = "name"; // Default sort column if invalid
         }
         String query="Select id, name, price, image, DATE_FORMAT(lastUpdated,'%d-%m-%Y') as lastUpdated from food where name like ? order by " + sort + " " + order;
-//        String query="Select * from food where name like ? order by name asc";
         System.out.println("query sort = " + query);
 
         try{

@@ -1,13 +1,10 @@
 package com.gmi.learn;
 
-import com.gmi.learn.dao.impl.BookDaoImpl;
-import com.gmi.learn.dao.impl.FoodDaoImpl;
-import com.gmi.learn.dao.impl.UserInfoDaoImpl;
-import com.gmi.learn.service.FoodService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Configuration
 public class AppConfig {
@@ -34,6 +31,11 @@ public class AppConfig {
 //    @Bean
 //    public FoodService foodService(){return new FoodService();}
 
+
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
+    }
 
 
 }
