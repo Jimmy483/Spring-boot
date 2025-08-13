@@ -29,14 +29,20 @@ public class MessageController {
     @GetMapping(path="/messages")
     public String goToMessages(HttpSession httpSession, Model model){
 
-        Map<Long, Map<String, Object>> messagesMapList = messageService.getAllUserMessage(httpSession);
-        model.addAttribute("messageList", messagesMapList);
+
         return "messages";
     }
 
+
+//    @GetMapping(path="/fetchAllChat")
+//    public String fetchAllChat(HttpSession httpSession, Model model){
+//        Map<Long, Map<String, Object>> messagesMapList = messageService.getAllUserMessage(httpSession);
+//        model.addAttribute("messageList", messagesMapList);
+//    }
     @ResponseBody
     @GetMapping(path="/getMessageBetweenUsers")
     public Map<String , Object> getAllMessagesBetweenUsers(HttpSession httpSession, Model model, @RequestParam("name") String senderName,@RequestParam(value = "messageId", required = false) Long messageId){
+        System.out.println("sender Name = " + senderName);
         Map<String, Object> messageMap = messageService.getMessageBetweenUsers(httpSession, senderName, messageId);
         System.out.println("m map = " + messageMap);
         return messageMap;

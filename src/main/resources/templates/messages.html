@@ -57,7 +57,7 @@ body{
 #messageList{
     /* flex: 1; */
     margin-top: 5vh;
-    height: 78vh;
+    height: 70vh;
     overflow-y: auto;
 }
 
@@ -208,7 +208,7 @@ body{
 
 #searchBody{
     margin-top: 5vh;
-    height: 78vh;
+    height: 70vh;
     overflow-y: auto;
     z-index: 10;
     display: none;
@@ -238,6 +238,7 @@ body{
 
 $(document).ready(function(){
     const dataMap = /*[[${messageList}]]*/ '[]';
+    loadMessageList();
     const keys= Object.keys(dataMap);
     const firstKey = keys[0]
     const userInfo = dataMap[firstKey];
@@ -274,6 +275,8 @@ function senderContentClick(image, senderName, currentUserId, senderId){
 
        const span = document.createElement('span');
        span.textContent=senderName;
+       span.style.marginLeft= '8px';
+       span.style.marginTop= '20px';
        span.className='headerName';
        chatHeader.appendChild(span);
 
@@ -418,10 +421,12 @@ function appendChatDiv(message, result){
 
 function showSearchBody(){
     $('#searchBody').css('display','block');
+    $('#messageList').css('display','none');
 }
 
 function hideSearchBody(){
     $('#searchBody').css('display','none');
+    $('#messageList').css('display','block');
 }
 let debounceTimer;
 function populateUsers(searchValue){
@@ -471,6 +476,74 @@ function populateUsers(searchValue){
     
 }
 
+function loadMessageList(){
+
+    // $.ajax({
+    //     url:'/fetchAllChat',
+    //     method: 'POST',
+    //     success:function(dataArray){
+
+    //     }
+    // })
+    const dataArray = /*[[${messageList}]]*/ '[]';
+    const dataMap = new Map(Object.entries(dataArray));
+    const listDiv = document.getElementById('messageList');
+    listDiv.innerText='';
+
+    const searchUser = document.createElement('input');
+    searchUser.type ='text';
+    searchUser.placeholder = 'Search People';
+    searchUser.id= 'fullSearchWidth';
+    searchUser.onclick = ()=>showSearchBody();
+    listDiv.appendChild(searchUser);
+
+    alert('data map = ' + dataMap);
+    dataMap.forEach(function(v, k, map){
+        console.log('test');
+        const eachMessageDiv = document.createElement('div');
+        eachMessageDiv.className = 'eachMessage';
+        
+        const senderImageDiv = document.createElement('div');
+        senderImageDiv.style.float = 'left';
+        
+        const displayImage = document.createElement('img');
+        displayImage.className = 'displayImage';
+        displayImage.src= v.senderPicture;
+        displayImage.alt = v.senderName;
+
+        senderImageDiv.appendChild(displayImage);
+
+        eachMessageDiv.appendChild(senderImageDiv);
+
+
+        const userId = /*[[${session.userId}]]*/ '';
+
+        const senderContent = document.createElement('div');
+        senderContent.id = 'senderContent';
+        senderContent.className = 'id-' + v.senderId;
+        senderContent.onclick = ()=>senderContentClick(v.senderPicture, v.senderName, userId, v.senderId);
+
+        const spanSenderName = document.createElement('span');
+        spanSenderName.textContent = v.senderName;
+        senderContent.appendChild(spanSenderName);
+
+        // const messageEntries = Array.from(v.allMessages.entries());
+        // for(const [innerKey, innerValue] of v.allMessages.entries())
+
+
+        const messageMap = new Map(Object.entries(v.allMessages));
+        const entryF = messageMap.entries().next().value;
+
+        const spanMessage = document.createElement('span');
+        spanMessage.textContent = entryF[1];
+        senderContent.appendChild(spanMessage);
+
+        eachMessageDiv.appendChild(senderContent);
+        listDiv.appendChild(eachMessageDiv);
+
+    })
+}
+
 </script>
 <script src="/js/commonjs.js" type="text/javascript"></script>
 <link href="/css/common.css?v=123" rel="stylesheet" type="text/css">
@@ -487,21 +560,6 @@ function populateUsers(searchValue){
     <div id="searchResult"></div>
 </div>
 <div id="messageList">
-        <input type="text" placeholder="Search People" id="fullSearchWidth" onclick="showSearchBody()"/>
-        <div th:each="message : ${messageList}" class="eachMessage">
-            <div id="senderImage">
-                <img class="displayImage" th:src="${message.value.senderPicture}" th:alt="${message.value.senderName}"/>
-            </div>
-            <div id="senderContent" th:class="'id-'+${message.value.senderId}" th:attr="data-sender-picture=${message.value.senderPicture}, data-sender=${message.value.senderName}, data-current-user-id=${session.userId}, data-sender-id=${message.value.senderId}" onclick="senderContentClick(this.dataset.senderPicture, this.dataset.sender, this.dataset.currentUserId, this.dataset.senderId)">
-                <span th:text="${message.value.senderName}"></span>
-                <th:block th:each="entry, iter : ${message.value.allMessages.entrySet()}" >
-                    <th:block th:if="${iter.last}" th:each="messageEntry : ${entry.value.entrySet()}">
-                        <span th:text="${messageEntry.value}"></span>
-                    </th:block>
-                </th:block>
-            </div>
-        
-        </div>
 </div>
 </div>
 <div id="viewMessage">

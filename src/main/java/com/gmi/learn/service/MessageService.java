@@ -46,97 +46,97 @@ public class MessageService {
         long userId = Long.parseLong(SessionUtility.getSessionValue(httpSession, "userId").toString());
         List<Long> listOfAccumulatedUniqueSenders = new ArrayList<>();
         Map<Long, Map<String, Object>> toReturnMap = new HashMap<>();
-        Map<LocalDateTime, Map<Long, String>> messageBetweenUsers = new TreeMap<>();
-        List<Messages> messagesList = messageRepository.findAllByReceiverId(userId);
-//        List<Messages> messagesByCurrentUser = messageRepository.findAllBySenderId(userId);
-        Map<Long, LocalDateTime> userLastDateMap = new HashMap<>();
-        for(Messages message: messagesList){
+        Map<LocalDateTime, String> messageBetweenUsers = new TreeMap<>();
+        List<Messages> received = messageRepository.findAllByReceiverId(userId);
+        List<Messages> sent = messageRepository.findAllBySenderId(userId);
 
-            Map<Long, String> senderAndMessageMap = new HashMap<>();
-            Map<Long, String> senderAndMessageCurrentUserMap = new HashMap<>();
+        List<Messages> allMessages = new ArrayList<>();
+        allMessages.addAll(received);
+        allMessages.addAll(sent);
+        int loopCount = 0;
+
+
+        Map<Long, LocalDateTime> userLastDateMap = new HashMap<>();
+        for(Messages message: allMessages){
+            loopCount++;
+            System.out.println(" count  = " + loopCount);
+
+            long otherId = message.getSenderId()==userId?message.getReceiverId():message.getSenderId();
+
+//            Map<Long, String> senderAndMessageMap = new HashMap<>();
             Map<String, Object> senderDetailMap = new HashMap<>();
-            Map<String, Object> messageDetails = new HashMap<>();
-            UserInfo userInfo = userService.getUserInfo(message.getSenderId());
+            UserInfo userInfo = userService.getUserInfo(otherId);
             String senderName = userInfo.getUsername();
             String senderPicture = userInfo.getDisplayPicture()!=null?userInfo.getDisplayPicture():defaultUserImage;
-            List<Messages> messagesByCurrentUser = messageRepository.findAllByReceiverIdAndSenderId(message.getSenderId(), userId);
-            System.out.println("messages by current user = " + messagesByCurrentUser);
-
-            Object root = toReturnMap.get(message.getSenderId());
-            Map<String, Object> existingMessageDetail = new HashMap<>();
+            System.out.println("first return map = " + toReturnMap);
+            System.out.println("other id = " + otherId);
+            Object root = toReturnMap.get(otherId);
 
 
+            System.out.println("root loop no : " + loopCount + " , value = " + root);
 
-            if(listOfAccumulatedUniqueSenders.contains(message.getSenderId())){
-                if(userLastDateMap.get(message.getSenderId()).isBefore(message.getSentDate())){
+            if(listOfAccumulatedUniqueSenders.contains(otherId)){
+                if(userLastDateMap.get(otherId).isBefore(message.getSentDate())){
                     senderDetailMap.put("lastMessageDate",message.getSentDate());
                     userLastDateMap.put(message.getSenderId(),message.getSentDate());
                 }else if(senderDetailMap.isEmpty()){
-                    senderDetailMap.put("lastMessageDate", userLastDateMap.get(message.getSenderId()));
+                    senderDetailMap.put("lastMessageDate", userLastDateMap.get(otherId));
                 }
             }else{
                 senderDetailMap.put("lastMessageDate", message.getSentDate());
-                userLastDateMap.put(message.getSenderId(),message.getSentDate());
+                userLastDateMap.put(otherId,message.getSentDate());
             }
 
             senderDetailMap.put("senderName", senderName);
             senderDetailMap.put("senderPicture", senderPicture);
-            senderDetailMap.put("senderId", message.getSenderId());
+            senderDetailMap.put("senderId", otherId);
 
-            messageDetails.put("id", message.getId());
-            messageDetails.put("senderName",senderName);
-            messageDetails.put("lastRead",message.getLastRead());
-            messageDetails.put("sentDate",message.getSentDate());
-            messageDetails.put("isRead",message.getIsRead());
-            messageDetails.put("content",message.getContent());
 
-            if(listOfAccumulatedUniqueSenders.contains(message.getSenderId())){
-                if(root instanceof Map<?, ?>){
-                    Map<String, Object> firstLevelMap = (Map<String, Object>) root;
-                    for(Map.Entry<String, Object> messageEntry : firstLevelMap.entrySet() ){
-                        if(messageEntry.getKey().startsWith(senderName)){
-                            existingMessageDetail = (Map<String, Object>)messageEntry.getValue();
-                            senderDetailMap.put(senderName + existingMessageDetail.get("id"),existingMessageDetail);
-                        }
-                    }
-                }
-            }
-            senderDetailMap.put(senderName + message.getId(),messageDetails);
-            senderAndMessageMap.put(message.getSenderId(),message.getContent());
-            messageBetweenUsers.put(message.getSentDate(),new HashMap<>(senderAndMessageMap));
+//            senderAndMessageMap.put(otherId,message.getContent());
+//            senderAndMessageMap.put(message.getSenderId(),message.getContent());
 
-            if(listOfAccumulatedUniqueSenders.contains(message.getSenderId())){
+
+
+            if(listOfAccumulatedUniqueSenders.contains(otherId)){
+                System.out.println("first ");
                 if(root instanceof Map<?, ?>){
                     Map<String, Object> senderMap = (Map<String, Object>) root;
-                    Map<LocalDateTime, Map<Long, String>> allMMap = (Map<LocalDateTime, Map<Long, String>>) senderMap.get("allMessages");
-                    for(Map.Entry<LocalDateTime, Map<Long, String>> entryAllMap :allMMap.entrySet()){
-                        messageBetweenUsers.put(entryAllMap.getKey(),new HashMap<>(entryAllMap.getValue()));
+                    System.out.println("all messages map = " + senderMap);
+                    Map<LocalDateTime, String> allMMap = (Map<LocalDateTime, String>) senderMap.get("allMessages");
+                    System.out.println("before all map = " + allMMap);
+                    for(Map.Entry<LocalDateTime, String> entryAllMap :allMMap.entrySet()){
+                        System.out.println("check all map = " + entryAllMap);
+                        if(entryAllMap.getKey().isBefore(message.getSentDate())){
+                            System.out.println("true first la");
+                            messageBetweenUsers.put(message.getSentDate(), message.getContent());
+                        }else{
+                            messageBetweenUsers.put(entryAllMap.getKey(),entryAllMap.getValue());
+                        }
+                        senderDetailMap.put("allMessages", new HashMap<>(messageBetweenUsers));
+//                        messageBetweenUsers.put(entryAllMap.getKey(),new HashMap<>(entryAllMap.getValue()));
                     }
+                    System.out.println("after all = " + allMMap);
                 }
+            }else{
+                System.out.println("second ");
+                messageBetweenUsers.put(message.getSentDate(), message.getContent());
+                senderDetailMap.put("allMessages", new HashMap<>(messageBetweenUsers));
             }
 
-//            for collecting all the message from the current user sent to the related user
-            if(!listOfAccumulatedUniqueSenders.contains(message.getSenderId())){
-                for(Messages userMessage: messagesByCurrentUser){
-                    if(userMessage.getSentDate().isAfter((userLastDateMap.get(message.getSenderId())!=null?(userLastDateMap.get(message.getSenderId())):LocalDateTime.of(0,1,1,0,0,0)))){
-                        senderDetailMap.put("lastMessageDate",userMessage.getSentDate());
-                        userLastDateMap.put(message.getSenderId(),userMessage.getSentDate());
-                    }
-                    senderAndMessageCurrentUserMap.put(userId, userMessage.getContent());
-                    messageBetweenUsers.put(userMessage.getSentDate(),new HashMap<>(senderAndMessageCurrentUserMap));
-                }
-            }
 
-            senderDetailMap.put("allMessages",new TreeMap<>(messageBetweenUsers));
+
+//            senderDetailMap.put("allMessages", senderAndMessageMap);
             messageBetweenUsers.clear();
 
+            System.out.println("after end = " + root);
+            System.out.println("end return map = " + toReturnMap);
 
-            toReturnMap.put(message.getSenderId(),senderDetailMap);
+            toReturnMap.put(otherId,senderDetailMap);
+            System.out.println("after end ret = " + toReturnMap);
 
-            if(!listOfAccumulatedUniqueSenders.contains(message.getSenderId())){
-                listOfAccumulatedUniqueSenders.add(message.getSenderId());
+            if(!listOfAccumulatedUniqueSenders.contains(otherId)){
+                listOfAccumulatedUniqueSenders.add(otherId);
             }
-
 
 
         }
