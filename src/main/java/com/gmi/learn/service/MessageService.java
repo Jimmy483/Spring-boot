@@ -59,21 +59,15 @@ public class MessageService {
         Map<Long, LocalDateTime> userLastDateMap = new HashMap<>();
         for(Messages message: allMessages){
             loopCount++;
-            System.out.println(" count  = " + loopCount);
 
             long otherId = message.getSenderId()==userId?message.getReceiverId():message.getSenderId();
 
-//            Map<Long, String> senderAndMessageMap = new HashMap<>();
             Map<String, Object> senderDetailMap = new HashMap<>();
             UserInfo userInfo = userService.getUserInfo(otherId);
             String senderName = userInfo.getUsername();
             String senderPicture = userInfo.getDisplayPicture()!=null?userInfo.getDisplayPicture():defaultUserImage;
-            System.out.println("first return map = " + toReturnMap);
-            System.out.println("other id = " + otherId);
+
             Object root = toReturnMap.get(otherId);
-
-
-            System.out.println("root loop no : " + loopCount + " , value = " + root);
 
             if(listOfAccumulatedUniqueSenders.contains(otherId)){
                 if(userLastDateMap.get(otherId).isBefore(message.getSentDate())){
@@ -91,48 +85,30 @@ public class MessageService {
             senderDetailMap.put("senderPicture", senderPicture);
             senderDetailMap.put("senderId", otherId);
 
-
-//            senderAndMessageMap.put(otherId,message.getContent());
-//            senderAndMessageMap.put(message.getSenderId(),message.getContent());
-
-
-
             if(listOfAccumulatedUniqueSenders.contains(otherId)){
-                System.out.println("first ");
                 if(root instanceof Map<?, ?>){
                     Map<String, Object> senderMap = (Map<String, Object>) root;
-                    System.out.println("all messages map = " + senderMap);
                     Map<LocalDateTime, String> allMMap = (Map<LocalDateTime, String>) senderMap.get("allMessages");
-                    System.out.println("before all map = " + allMMap);
                     for(Map.Entry<LocalDateTime, String> entryAllMap :allMMap.entrySet()){
-                        System.out.println("check all map = " + entryAllMap);
                         if(entryAllMap.getKey().isBefore(message.getSentDate())){
-                            System.out.println("true first la");
                             messageBetweenUsers.put(message.getSentDate(), message.getContent());
                         }else{
                             messageBetweenUsers.put(entryAllMap.getKey(),entryAllMap.getValue());
                         }
                         senderDetailMap.put("allMessages", new HashMap<>(messageBetweenUsers));
-//                        messageBetweenUsers.put(entryAllMap.getKey(),new HashMap<>(entryAllMap.getValue()));
                     }
-                    System.out.println("after all = " + allMMap);
                 }
             }else{
-                System.out.println("second ");
                 messageBetweenUsers.put(message.getSentDate(), message.getContent());
                 senderDetailMap.put("allMessages", new HashMap<>(messageBetweenUsers));
             }
 
 
 
-//            senderDetailMap.put("allMessages", senderAndMessageMap);
             messageBetweenUsers.clear();
 
-            System.out.println("after end = " + root);
-            System.out.println("end return map = " + toReturnMap);
 
             toReturnMap.put(otherId,senderDetailMap);
-            System.out.println("after end ret = " + toReturnMap);
 
             if(!listOfAccumulatedUniqueSenders.contains(otherId)){
                 listOfAccumulatedUniqueSenders.add(otherId);
@@ -156,8 +132,6 @@ public class MessageService {
                 LinkedHashMap::new
         ));
 
-        System.out.println("all message toReturnMap " + toReturnMap);
-        System.out.println("all message newReturnMap " + newReturnMap);
         return  newReturnMap;
 
     }

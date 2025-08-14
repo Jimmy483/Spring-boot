@@ -40,12 +40,9 @@ public class UserCreateStatusService {
     }
 
     public void updateUserStatusRequest(String url){
-        System.out.println("url = " + url);
         Optional<UserCreateStatus> statusOptional = userCreateStatusRepository.findByUrlAndStatus(url,"pending");
         if(statusOptional.isPresent()){
-            System.out.println("status = " + statusOptional.get());
             UserCreateStatus status = statusOptional.get();
-            status.setStatus("completed");
             userCreateStatusRepository.save(status);
         }
     }

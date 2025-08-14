@@ -19,7 +19,6 @@
         margin-left: 515px;
         margin-top: 225px;
         border-radius: 11px;
-        border: 2px solid white;
         background: transparent;
     }
 
@@ -54,14 +53,17 @@
     }
 
     span{
-        margin-left: 205px;
-        font-size: 40px;
+        margin-left: 214px;
+        font-size: 35px;
         color: #FFFFFF;
     }
 
     #headerDiv{
         margin-top: 49px;
         display: inline-block;
+    }
+    .formInput{
+        margin-top: 45px;
     }
 
 </style>
@@ -105,9 +107,11 @@
             <div id="headerDiv">
                 <span>Login</span>
             </div>
-            <input type="text" id="username" placeholder="Username" onkeydown="if(event.key=='Enter'){checkLoginInfo()}"/>
-            <input type="password" id="password" placeholder="Password" onkeydown="if(event.key=='Enter'){checkLoginInfo()}"/>
+            <div class="formInput">
+            <input type="text" id="username" placeholder="Username" autocomplete="off" onkeydown="if(event.key=='Enter'){checkLoginInfo()}"/>
+            <input type="password" id="password" placeholder="Password" autocomplete="off" onkeydown="if(event.key=='Enter'){checkLoginInfo()}"/>
             <input type="button" value="Login" id="loginBtn" onclick="checkLoginInfo()"/>
+            </div>
         </div>
 </body>
 </html>

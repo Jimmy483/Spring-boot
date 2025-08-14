@@ -34,8 +34,6 @@ public class MainController {
         public String dashboard(Model model, HttpSession httpSession) {
             model.addAttribute("name", httpSession.getAttribute("username"));
             model.addAttribute("loggedIn",httpSession.getAttribute("username")!=null);
-            System.out.println("model = " + model);
-            System.out.println("theme name " + SessionUtility.getSessionValue(httpSession, "themeColour"));
             return "dashboard";
         }
 
@@ -43,9 +41,7 @@ public class MainController {
         @RequestMapping(value="/search")
         @ResponseBody
         public List<Food> getFoodWithSearch(@RequestParam("name") String name){
-            System.out.println("name params = " + name);
             List<Food> foodList=foodDao.fetch(name);
-            System.out.println("food list = " + foodList);
             return foodList;
         }
 

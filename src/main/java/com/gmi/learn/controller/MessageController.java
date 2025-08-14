@@ -13,8 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.time.LocalDateTime;
-import java.util.List;
+
 import java.util.Map;
 
 @Controller
@@ -28,24 +27,19 @@ public class MessageController {
 
     @GetMapping(path="/messages")
     public String goToMessages(HttpSession httpSession, Model model){
-
-
         return "messages";
     }
 
 
-//    @GetMapping(path="/fetchAllChat")
-//    public String fetchAllChat(HttpSession httpSession, Model model){
-//        Map<Long, Map<String, Object>> messagesMapList = messageService.getAllUserMessage(httpSession);
-//        model.addAttribute("messageList", messagesMapList);
-//    }
+    @ResponseBody
+    @GetMapping(path="/fetchAllChat")
+    public Map<Long, Map<String, Object>> fetchAllChat(HttpSession httpSession, Model model){
+        return messageService.getAllUserMessage(httpSession);
+    }
     @ResponseBody
     @GetMapping(path="/getMessageBetweenUsers")
     public Map<String , Object> getAllMessagesBetweenUsers(HttpSession httpSession, Model model, @RequestParam("name") String senderName,@RequestParam(value = "messageId", required = false) Long messageId){
-        System.out.println("sender Name = " + senderName);
-        Map<String, Object> messageMap = messageService.getMessageBetweenUsers(httpSession, senderName, messageId);
-        System.out.println("m map = " + messageMap);
-        return messageMap;
+        return messageService.getMessageBetweenUsers(httpSession, senderName, messageId);
     }
 
     @PostMapping(path="/sendMessage")
