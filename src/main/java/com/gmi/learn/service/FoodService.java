@@ -27,12 +27,12 @@ import java.util.stream.Collectors;
 public class FoodService {
     private FoodRepository foodRepository;
 
-    @Autowired
     private UserInfoRepository userInfoRepository;
 
 
-    public FoodService(FoodRepository foodRepository){
+    public FoodService(FoodRepository foodRepository, UserInfoRepository userInfoRepository){
         this.foodRepository=foodRepository;
+        this.userInfoRepository = userInfoRepository;
     }
 
 
@@ -108,7 +108,7 @@ public class FoodService {
         }
     }
 
-    private String formatPeriod(Period period) {
+    protected String formatPeriod(Period period) {
         if (period.getYears() > 0) {
             if(period.getYears()==1)
                 return "A year ago";
