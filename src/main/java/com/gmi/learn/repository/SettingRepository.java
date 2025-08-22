@@ -5,5 +5,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface SettingRepository extends JpaRepository<UserSetting, Long> {
 
-//    UserSetting findById(Long id);
 }

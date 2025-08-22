@@ -90,7 +90,7 @@ public class UserService {
 
     public String uploadImage(MultipartFile file) {
         try{
-            String staticDir = new File("src/main/resources/static/profilePics").getAbsolutePath();
+            String staticDir = System.getProperty("user.home") + "/uploads/profilePics/";
             File dir = new File(staticDir);
             if (!dir.exists()) {
                 dir.mkdir();
@@ -98,7 +98,7 @@ public class UserService {
             String fileName = file.getOriginalFilename();
             File destination = new File(dir, fileName);
             file.transferTo(destination);
-            return "/profilePics/"+fileName;
+            return "/uploads/profilePics/"+fileName;
         }catch (IOException e){
             e.printStackTrace();
             return null;

@@ -124,7 +124,6 @@ public class MessageService {
              }
         ).reversed());
 
-//        need to study this
         Map<Long, Map<String, Object>> newReturnMap = sortList.stream().collect(Collectors.toMap(
                 Map.Entry::getKey,
                 Map.Entry::getValue,

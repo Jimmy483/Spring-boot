@@ -38,35 +38,24 @@ InitializeRequests initializeRequests;
             return point.proceed();
         }
         for(Object ob: point.getArgs()){
-            System.out.println("ob value = " + ob);
             if(ob instanceof HttpSession){
-                System.out.println("ob after = " + ob);
                 httpSession = (HttpSession) ob;
                 break;
             }
         }
 
-        System.out.println("http session = " + httpSession);
-
         if(Arrays.asList("loginPage","logoutUser").contains(methodName) && SessionUtility.getSessionValue(httpSession, "userId")!=null){
             return "redirect:/dashboard";
         }
 
-        System.out.println("method name = " + methodName);
-        System.out.println("!isUserLoggedIn(httpSession) = " + !isUserLoggedIn(httpSession));
-        System.out.println("controller name = " + controllerName);
         if((!isUserLoggedIn(httpSession)) || SessionUtility.getSessionValue(httpSession,"userRole").toString().isEmpty() ){
-            System.out.println("first check");
             if(controllersNotAllowedForGuest.contains(controllerName) || methodsNotAllowedForGuest.contains(methodName)){
                 return "redirect:/dashboard";
             }
             return point.proceed();
         }else{
-            System.out.println("last check = " +SessionUtility.getSessionValue(httpSession,"userRole").toString().equals("Moderator"));
-            System.out.println("last check check = " +SessionUtility.getSessionValue(httpSession,"userRole"));
             if((methodsNotAllowedForModerator.contains(methodName) && SessionUtility.getSessionValue(httpSession,"userRole").toString().equals("Moderator")) ||
                     (methodsNotAllowedForAssistant.contains(methodName) && SessionUtility.getSessionValue(httpSession, "userRole").toString().equals("Assistant"))){
-                System.out.println("last inside check");
                 return "redirect:/dashboard";
             }
             return point.proceed();

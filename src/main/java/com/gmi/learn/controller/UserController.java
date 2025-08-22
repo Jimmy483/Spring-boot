@@ -70,7 +70,6 @@ public class UserController {
     @ResponseBody
     @GetMapping(path="/checkPassword")
     public Boolean checkPassword(HttpSession httpSession, @RequestParam("password") String password){
-        System.out.println("check checkPass");
         return userService.checkPassword(httpSession, password);
     }
 

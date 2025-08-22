@@ -39,7 +39,6 @@ public class ItemController {
         Map<String, Object> dataMap=foodService.getFood(sort, order, page, name, size, fromPagination, true);
         model.addAttribute("columnMap",getColumnMap());
         model.addAttribute("data", dataMap);
-        System.out.println("hi man");
         return "viewItems :: tableContent";
     }
     @GetMapping(path="/getItem")
@@ -49,9 +48,7 @@ public class ItemController {
         if(sort.equals("")){
             sort=null;
         }
-        System.out.println("page = " + page + " size = " + size + " name = " + name + " sort = "+ sort + " order = " + order + " fromPagination = " + fromPagination);
 
-        System.out.println("this is the ajax call");
         Map<String, Object> returnMap=foodService.getFood(sort, order, page, name, size, fromPagination, true);
         returnMap.put("columnMap",getColumnMap());
         return  returnMap;
@@ -72,11 +69,8 @@ public class ItemController {
     @PostMapping(path="/addEditItem")
     @ResponseBody
     public String saveUpdateItem(@RequestParam("name") String itemName, @RequestParam("price") int price, @RequestParam(value = "image", required = false) MultipartFile image, HttpSession httpSession, @RequestParam("action") String addOrUpdate, @RequestParam("itemId") long id){
-
-        System.out.println("Success la");
         String fileName;
         if(image!=null){
-            System.out.println("inside first");
             fileName = foodService.uploadImage(image);
         }else{
             fileName="";

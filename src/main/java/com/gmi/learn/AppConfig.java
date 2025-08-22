@@ -1,36 +1,21 @@
 package com.gmi.learn;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-public class AppConfig {
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+public class AppConfig implements WebMvcConfigurer {
 
 
-//    @Bean
-//    public BookDaoImpl bookDaoImpl(){
-//        return new BookDaoImpl(jdbcTemplate);
-//    }
-
-//    @Bean
-//    public UserInfoDaoImpl userInfoDao(){
-//        return new UserInfoDaoImpl(jdbcTemplate);
-//    }
-
-//    @Bean
-//    public FoodDaoImpl foodDao(){
-//        return new FoodDaoImpl(jdbcTemplate);
-//    }
-
-//    @Bean
-//    public FoodService foodService(){return new FoodService();}
-
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry){
+        registry
+                .addResourceHandler("/uploads/**")
+                .addResourceLocations("file:" + System.getProperty("user.home")+"/uploads/");
+    }
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder(){

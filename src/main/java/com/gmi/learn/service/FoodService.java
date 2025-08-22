@@ -63,7 +63,6 @@ public class FoodService {
         }else
             food = foodRepository.findByNameContainingIgnoreCaseAndIsDeleted(name, false ,pageable);
 
-        System.out.println("food = " + food);
         returnMap.put("order",direction);
         returnMap.put("row",convertDateToDaysAndUpdateFood(food));
         return returnMap;
@@ -127,8 +126,7 @@ public class FoodService {
 
     public String uploadImage(MultipartFile imageFile){
         try{
-            String staticDir = new File("src/main/resources/static/uploads").getAbsolutePath();
-
+            String staticDir = System.getProperty("user.home") + "/uploads/items/";
             File dir= new File(staticDir);
             if(!dir.exists()){
                 dir.mkdirs();
@@ -138,7 +136,7 @@ public class FoodService {
             File destination = new File(dir,fileName);
             imageFile.transferTo(destination);
 
-            return "/uploads/" + fileName;
+            return "/uploads/items/" + fileName;
         }catch (IOException e){
             e.printStackTrace();
             return "Upload Failed : " + e.getMessage();
@@ -212,4 +210,8 @@ public class FoodService {
         return returnMap;
     }
 
+
+    public List<Food> getFoodListWithName(String name){
+        return foodRepository.findAllByName(name);
+    }
 }

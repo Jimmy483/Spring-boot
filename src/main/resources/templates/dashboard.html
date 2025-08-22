@@ -129,8 +129,6 @@ body {
             data: {name:name,page:0,sort:null},
             success: function(data){
                 $('#items').show();
-                console.log("data.row = " + data.row);
-               console.log("data.order = " + data.order);
                $("#page").val(0);
                 renderTable(data.row);
                 
@@ -199,7 +197,6 @@ body {
     function renderTable(data){
         var stringToDisplay = '<table>';
                 stringToDisplay += '<tr><th>Image</th><th onclick="sortTable(\'name\')">Items</th><th onclick="sortTable(\'price\')">Price</th><th onclick="sortTable(\'lastUpdated\')">Last Updated</th></tr>'
-                // alert("data value " + data.content);
                 data.content.forEach(function(item){
                 let imageSrc=item.image;
                 if(!item.image){
@@ -265,7 +262,7 @@ body {
 </div>
 
 <div id="search">
-    <input type="text" id="name" placeholder="Enter name of the edible you would like to search" onkeydown="keyPressed(event)"/>
+    <input type="text" id="name" autocomplete="off" placeholder="Enter name of the edible you would like to search" onkeydown="keyPressed(event)"/>
 </div>
 
 <div id="items"></div>

@@ -281,12 +281,9 @@ $.ajax({
     $('#itemPrice').val('');
     $('#imageFileChooser').val('');
     if(action=='edit'){
-                alert("action is  " + action)
-
         $('#successUpdateMessage').css('display','inline-block');
         $('#successAddMessage').css('display','none');
     }else if(action=='add'){
-        alert("action is  " + action)
         $('#successUpdateMessage').css('display','none');
         $('#successAddMessage').css('display','inline-block');
     }
@@ -420,7 +417,6 @@ function renderPagination(data){
 <div id="contentAdd">
     <div id="itemAdd">
         <div id="options">
-        <!-- <form th:action="@{/addItem}" id="formItem" method="GET"> -->
             <span id="headerNameAdd" class="headerStyle">Add Items</span>
             <span id="headerNameEdit" class="headerStyle">Edit Items</span>
             <label for="itemName">Item Name</label>
@@ -429,7 +425,6 @@ function renderPagination(data){
             <input id="itemPrice" name="itemName" type="text"/>
             <label for="imageFileChooser">Image</label>
             <input id="imageFileChooser" name="imageFileChooser" type="file" accept="image/*">
-        <!-- </form> -->
         </div>
         <div id="saveDiv">
             <input id="submitBtn" th:class="'btnStyle colour-' + ${session.themeColour!=null?session.themeColour:'EAE21D'}" type="button" value="Save" onclick="confirmSave('add')"/>

@@ -8,6 +8,5 @@ import java.util.List;
 
 @Repository
 public interface  UserSettingRepository extends CrudRepository<UserSetting, Long> {
-
     UserSetting findByUserId(Long userId);
 }

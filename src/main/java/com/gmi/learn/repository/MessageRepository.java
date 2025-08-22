@@ -9,10 +9,7 @@ import java.util.Optional;
 public interface MessageRepository extends JpaRepository<Messages, Long> {
 
     List<Messages> findAllByReceiverId(long id);
-
     List<Messages> findAllBySenderId(long id);
-
     List<Messages> findAllByReceiverIdAndSenderId(long receiverId, long senderId);
-
     List<Messages> findAllByReceiverIdAndSenderIdAndIdGreaterThan(long receiverId, long senderId, long messageId);
 }

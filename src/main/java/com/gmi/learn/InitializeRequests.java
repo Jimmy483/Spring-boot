@@ -42,9 +42,8 @@ public class InitializeRequests {
         System.out.println("userId = " + userId);
         if(username!=null && userId!=null){
             return true;
-        }else{
-            return false;
         }
+        return false;
 
     }
 
@@ -70,12 +69,9 @@ public class InitializeRequests {
 
 class SessionUtil {
 
-    // Utility method to store a key-value pair in the session
     public static void storeSessionValue(HttpSession session, String key, Object value) {
         session.setAttribute(key, value);
     }
-
-    // Utility method to retrieve a value from the session
     public static Object getSessionValue(HttpSession session, String key) {
         return session.getAttribute(key);
     }

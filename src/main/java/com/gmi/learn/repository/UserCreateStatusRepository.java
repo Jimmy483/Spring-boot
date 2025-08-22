@@ -10,10 +10,7 @@ import java.util.Optional;
 @Repository
 public interface UserCreateStatusRepository extends JpaRepository<UserCreateStatus, Long> {
 
-
     Optional<UserCreateStatus> findByStatus(String status);
-
     Optional<UserCreateStatus> findByUrlAndStatus(String url, String status);
-
     List<UserCreateStatus> findAll();
 }

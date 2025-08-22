@@ -70,10 +70,7 @@ public class SettingsController {
 
     @PostMapping(path = "/updateSetting")
     public String applySetting(Model model, HttpSession session, @ModelAttribute Theme theme){
-        System.out.println("success");
         String themeColour= theme.getColours();
-        System.out.println("Theme = " + themeColour);
-//        System.out.println("Theme = " + theme);
         if(!getThemeColours().containsValue(themeColour))
             themeColour=DEFAULT_THEME;
         settingService.UpdateSetting(session,themeColour);

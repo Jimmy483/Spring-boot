@@ -19,7 +19,6 @@ public class UserSettingController {
         this.userSettingRepository=userSettingRepository;
     }
 
-//    no use?
     @GetMapping
     @ResponseBody
     public String getThemeColor(HttpSession httpSession){
@@ -29,11 +28,9 @@ public class UserSettingController {
         System.out.println("userid = " + userid);
         String theme;
         if(userid==0){
-//            returnMap.put("theme","#EAE21D");
             theme="EAE21D";
         }else {
             userSettings=userSettingRepository.findByUserId(userid);
-//            returnMap.put("theme",userSettings);
             theme=userSettings.getTheme();
         }
 
