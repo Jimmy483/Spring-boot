@@ -1,0 +1,85 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        body{
+            margin:0px;
+        }
+        .mainDiv{
+            margin-top: 80px ;
+            margin-bottom: 100px;
+            margin-right: auto;
+            width: 1000px;
+            /* justify-content: center; */
+        }
+        
+
+        #leftNavList a{
+            text-decoration: none;
+            display: block;
+            color: #000000;
+            font-size: 20px;
+            margin-top: 10px;
+            letter-spacing: 1px;
+
+        }
+        #leftNav{
+            margin-top:-64px;
+            margin-left: 5px;
+            float: left;
+            width: 200px;
+            height: 500px;
+            overflow: hidden;
+            /* border: 2px solid black; */
+        }
+        
+        #leftNavList{
+            box-sizing: border-box;
+            width: 100vh;
+            height: auto; 
+        }
+
+        #leftNav *{
+            max-width: 100%;
+        }
+
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" type="text/javascript"></script>
+    <script src="/js/commonjs.js" type="text/javascript"></script>
+    <link href="/css/common.css?v=123" rel="stylesheet" type="text/css">
+    <script>
+        
+    function goTo(url){
+        window.location.href=url;
+    }
+    
+    </script>
+</head>
+<body>
+<div th:replace="header.html">
+</div>
+
+
+<div class="mainDiv">
+    <div id="leftNav" th:class="'colour-'+${session.themeColour!=null?session.themeColour:'EAE21D'}">
+        <div id="leftNavList" >
+            <a href="#" onclick="goTo('/profile')">Profile</a>
+            <a href="#" onclick="goTo('/loadSetting')">Setting</a>
+            <a href="#" onclick="goTo('/viewItem')" th:if="${#lists.contains({'Admin','Moderator'}, session.userRole)}">View Item</a>
+            <a href="#" onclick="goTo('/createUserLInk')" th:if="${#lists.contains({'Admin'}, session.userRole)}">Create Link</a>
+            <a href="#" onclick="goTo('/roleAssign')" th:if="${#lists.contains({'Admin'}, session.userRole)}">Change User Role</a>
+            <a href="#" onclick="goTo('/goToPasswordForm')">Change Password</a>
+        </div>
+    </div>
+
+    <div th:replace="${templateToRender}"></div>
+    
+<div th:replace="menu.html"></div>
+
+</div>
+</body>
+</html>

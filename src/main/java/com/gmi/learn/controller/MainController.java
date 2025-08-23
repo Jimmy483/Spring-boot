@@ -22,12 +22,12 @@ public class MainController {
     private UserService userService;
 
 
-        @RequestMapping(path = "/dashboard", method = {RequestMethod.GET, RequestMethod.POST})
-        public String dashboard(Model model, HttpSession httpSession) {
-            model.addAttribute("name", httpSession.getAttribute("username"));
-            model.addAttribute("loggedIn",httpSession.getAttribute("username")!=null);
-            return "dashboard";
-        }
+    @RequestMapping(path = "/", method = {RequestMethod.GET, RequestMethod.POST})
+    public String dashboard(Model model, HttpSession httpSession) {
+        model.addAttribute("name", httpSession.getAttribute("username"));
+        model.addAttribute("loggedIn",httpSession.getAttribute("username")!=null);
+        return "dashboard";
+    }
 
 
     @GetMapping(path = "/profile")
