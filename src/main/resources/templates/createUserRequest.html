@@ -116,7 +116,7 @@
     <table>
         <tr th:each="userStatus: ${data}">
             <td class="tableData">
-                <input id="requestUrl" type="text" th:value="|http://localhost:7071/createUserForm?request=${userStatus.url}|" disabled class="status"/>
+                <input id="requestUrl" type="text" th:value="|/createUserForm?request=${userStatus.url}|" disabled class="status"/>
                 <div th:class="'requestStatus ' + ${userStatus.status}">
                     <span th:text="${userStatus.status}"></span>
                 </div>
