@@ -1,8 +1,8 @@
 spring:
   jpa:
     hibernate:
+      ddl-auto: update
       naming:
-        ddl-auto: update
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     database-platform: org.hibernate.dialect.MySQL8Dialect
   datasource:
@@ -11,8 +11,9 @@ spring:
     username: root
     password: password
     driver-class-name: com.mysql.cj.jdbc.Driver
+    initialization-mode: always
     hikari:
-      maximum-pool-size:10
+      maximum-pool-size: 10
   application:
     name: learn
   thymeleaf:

@@ -45,18 +45,18 @@ InitializeRequests initializeRequests;
         }
 
         if(Arrays.asList("loginPage","logoutUser").contains(methodName) && SessionUtility.getSessionValue(httpSession, "userId")!=null){
-            return "redirect:/dashboard";
+            return "redirect:/";
         }
 
         if((!isUserLoggedIn(httpSession)) || SessionUtility.getSessionValue(httpSession,"userRole").toString().isEmpty() ){
             if(controllersNotAllowedForGuest.contains(controllerName) || methodsNotAllowedForGuest.contains(methodName)){
-                return "redirect:/dashboard";
+                return "redirect:/";
             }
             return point.proceed();
         }else{
             if((methodsNotAllowedForModerator.contains(methodName) && SessionUtility.getSessionValue(httpSession,"userRole").toString().equals("Moderator")) ||
                     (methodsNotAllowedForAssistant.contains(methodName) && SessionUtility.getSessionValue(httpSession, "userRole").toString().equals("Assistant"))){
-                return "redirect:/dashboard";
+                return "redirect:/";
             }
             return point.proceed();
         }

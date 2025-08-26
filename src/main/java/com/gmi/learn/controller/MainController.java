@@ -15,8 +15,6 @@ import java.util.Map;
 public class MainController {
 
 
-    File file=new File("src\\main\\resources\\templates\\dashboard.html");
-
 
     @Autowired
     private UserService userService;
