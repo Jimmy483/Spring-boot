@@ -2,17 +2,18 @@ spring:
   jpa:
     hibernate:
       naming:
+        ddl-auto: update
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    database-platform: org.hibernate.dialect.MySQL8Dialect
   datasource:
-    url: jdbc:mysql://localhost:3306/test
+    url: jdbc:mysql://mysql-db:3306/testDB
     username: root
     password: password
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
-      maximum-pool-size=:10
+      maximum-pool-size:10
   application:
-  name:
-    learn
+    name: learn
   thymeleaf:
     prefix: classpath:/templates/
     suffix: .html
@@ -20,8 +21,8 @@ spring:
     enabled: true
 
 server:
-  port:
-    7071
+  address: 0.0.0.0
+  port: 7071
   error:
     whitelabel:
       enabled: false  # Disable the default error page
