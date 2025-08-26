@@ -1,3 +1,7 @@
+CREATE database IF NOT EXISTS test;
+
+USE test;
+
 CREATE TABLE IF NOT EXISTS userInfo (
   id bigint NOT NULL AUTO_INCREMENT,
   firstName varchar(255) DEFAULT NULL,

@@ -12,6 +12,7 @@ import org.springframework.data.annotation.Reference;
 @AllArgsConstructor
 @Builder
 @Data
+@Table(name = "userRole")
 public class UserRole {
 
     @Id

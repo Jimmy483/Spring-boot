@@ -14,6 +14,7 @@ import java.sql.Date;
 @NoArgsConstructor
 @Builder
 @Entity
+@Table(name ="food")
 public class Food {
 
 //    used Entity cause new interface foodRepository extends PagingAndSortingRepository which is part of JPA and thus spring tries to process FoodRepository
