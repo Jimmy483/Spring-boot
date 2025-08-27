@@ -15,5 +15,4 @@ public interface UserInfoRepository extends JpaRepository<UserInfo, Long> {
     List<UserInfo> findAllExceptAdminRole();
     Optional<UserInfo> findByIdAndPasswd(Long userId, String password);
     Optional<UserInfo> findByUsernameAndPasswd(String username, String password);
-
 }

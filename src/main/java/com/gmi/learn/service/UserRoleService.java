@@ -39,4 +39,12 @@ public class UserRoleService {
         userRoleRepository.save(userRole);
     }
 
+    public Boolean checkIfAdminExist(){
+        Optional<UserRole> userRoleOptional = userRoleRepository.findByRole("Admin");
+        if(userRoleOptional.isPresent()){
+            return true;
+        }
+        return false;
+    }
+
 }

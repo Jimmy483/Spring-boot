@@ -158,14 +158,10 @@ public class UserService {
     }
 
     public void updateUserRole(String role, Long userId){
-        System.out.println("userId = " + userId);
-        System.out.println("role = " + role);
         userRoleService.changeUserRole(getUserInfo(userId),role);
     }
 
     public void createUser(UserInfo userInfo){
-        System.out.println("user pass = " + userInfo.getPasswd());
-        System.out.println("user hashed pass = " + passwordEncoder.encode(userInfo.getPasswd()));
         UserInfo newUserInfo = new UserInfo();
         newUserInfo.setFirstName(userInfo.getFirstName());
         newUserInfo.setLastName(userInfo.getLastName());
@@ -175,11 +171,8 @@ public class UserService {
     }
 
     public Boolean checkPassword(HttpSession httpSession, String password){
-        System.out.println("password = " + password);
         long userId = Long.parseLong(SessionUtility.getSessionValue(httpSession, "userId").toString());
-        System.out.println("user id = " + userId);
         Optional<UserInfo> userInfoOptional = userInfoRepository.findById(userId);
-        System.out.println("userInfo = " + userInfoOptional);
         if(userInfoOptional.isPresent()){
             UserInfo userInfo = userInfoOptional.get();
             if(!passwordEncoder.matches(password,userInfo.getPasswd())){
@@ -192,7 +185,6 @@ public class UserService {
     }
 
     public void changePassword(UserInfo userInfo){
-        System.out.println("userInfo change =" +userInfo);
         String hashedPass = passwordEncoder.encode(userInfo.getPasswd());
         Optional<UserInfo> userInfoOptional= userInfoRepository.findById(userInfo.getId());
         if(userInfoOptional.isPresent()){
@@ -203,8 +195,6 @@ public class UserService {
     }
 
     public Boolean checkLoginInfo(String username, String password, HttpSession httpSession){
-        System.out.println("password first " + password);
-        System.out.println("password hased = " + passwordEncoder.encode(password));
         Optional<UserInfo> userInfoOptional = userInfoRepository.findByUsername(username);
         if(userInfoOptional.isPresent()){
             UserInfo userInfo = userInfoOptional.get();

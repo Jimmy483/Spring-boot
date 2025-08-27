@@ -93,4 +93,21 @@ public class UserController {
     public Boolean checkIfUserExists(HttpSession httpSession, @RequestParam("username") String username){
         return userService.checkIfUserExists(username);
     }
+
+
+    @GetMapping(path="/createAdminForm")
+    public String createAdminForm(Model model){
+        if(userRoleService.checkIfAdminExist()){
+            return "redirect:/";
+        }
+        model.addAttribute("user", new UserInfo());
+        return "createAdminUser";
+    }
+
+    @GetMapping(path="createAdminUser")
+    public String createAdminUser(@ModelAttribute UserInfo userInfo){
+        userService.createUser(userInfo);
+        userRoleService.changeUserRole(userService.getUserInfoByUserName(userInfo.getUsername()), "Admin");
+        return "redirect:/login";
+    }
 }

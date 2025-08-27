@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS userInfo (
   username varchar(255) DEFAULT NULL,
   passwd varchar(255) DEFAULT NULL,
   displayPicture longtext,
-  PRIMARY KEY ('id')
+  PRIMARY KEY (id)
 );
 
 
@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS userRole (
   userId bigint DEFAULT NULL,
   role varchar(100) DEFAULT NULL,
   PRIMARY KEY (id),
-  KEY 'userId' (userId),
+  KEY userId (userId),
   CONSTRAINT 'userrole_ibfk_1' FOREIGN KEY (userId) REFERENCES userinfo (id)
 );
 
@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS food (
   createdBy bigint DEFAULT NULL,
   updatedBy bigint DEFAULT NULL,
   isDeleted boolean DEFAULT false,
-  PRIMARY KEY ('id')
+  PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS messages (
@@ -58,9 +58,3 @@ CREATE TABLE IF NOT EXISTS userCreateStatus (
   status varchar(10) DEFAULT NULL,
   PRIMARY KEY (id)
 );
-
-
-insert into userInfo(id, firstName, lastName, username, passwd, displayPicture)
-values(1, "Jimmy", "Sherpa", "Gmi123", "$2a$10$5mAIO10nej1aoIVIUMbUW.EtiF5/To0vgf4I9WnGnKPT1ILQvCf8a", null);
-
-insert into userRole(userId, role) values(1, 'Admin');

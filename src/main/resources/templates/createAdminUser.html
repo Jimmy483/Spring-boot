@@ -1,0 +1,130 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Create</title>
+</head>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+function submitForm(event){
+    let passwd= $('#passwd').val();
+    let cPasswd= $('#confirmPassword').val();
+    let firstName = $('#firstName').val();
+    let lastName=$('#lastName').val();
+    let username=$('#username').val();
+
+    $('#passwd').css("border-color","initial");
+    $('#confirmPassword').css("border-color","initial");
+    $('#firstName').css("border-color","initial");
+    $('#lastName').css("border-color","initial");
+    $('#username').css("border-color","initial");
+    $('#usernameError').css("display","none");
+    document.getElementById('passwordError').textContent='';
+
+    if(passwd==''){
+        $('#passwd').css("border-color","#e81a0c");
+        event.preventDefault();
+        return;
+    }
+    if(cPasswd==''){
+        $('#confirmPassword').css("border-color","#e81a0c");
+        event.preventDefault();
+        return;
+    }
+    if(firstName==''){
+        $('#firstName').css("border-color","#e81a0c");
+        event.preventDefault();
+        return;
+    }
+    if(lastName==''){
+        $('#lastName').css("border-color","#e81a0c");
+        event.preventDefault();
+        return;
+    }
+    if(username==''){
+        $('#username').css("border-color","#e81a0c");
+        event.preventDefault();
+        return;
+    }
+
+    const errorDiv = document.getElementById('passwordError');
+    errorDiv.textContent="";
+
+
+    if(passwd!=cPasswd){
+        errorDiv.textContent="Passwords do not match";
+        event.preventDefault();
+        return;
+    }
+
+    event.preventDefault();
+    $.ajax({
+        url:'/checkForExistingUsername',
+        method:'GET',
+        data:{
+            username
+        },
+        success:function(userExists){
+            if(userExists){
+
+                $('#usernameError').css('display','inline-block');
+                return;
+            }
+            $('#userForm').submit();
+        },
+        error:function(){
+            alert("Something went wrong");
+        }
+    })
+
+
+
+}
+</script>
+<style>
+    #form{
+      align-content: center;
+      width: 1000px;
+      margin:100px auto;
+    }
+
+    input{
+        display: block;
+        margin-left:300px;
+        margin-top:8px;
+    }
+
+    .passwordErr{
+        color: #e81a0c;
+        margin-left: 300px;
+    }
+
+    #usernameError{
+        color: #e81a0c;
+        display: none;
+        margin-left: 300px;
+    }
+
+
+</style>
+<body>
+<div id="form">
+    <form id="userForm" th:action="@{/createAdminUser}" th:object="${user}" method="post">
+        <input th:field="*{firstName}" type="text" placeholder="First Name"/>
+        <input th:field="*{lastName}" type="text" placeholder="Last Name"/>
+        <input th:field="*{username}" type="text" placeholder="Username"/>
+        <div id="usernameError">Username already exists</div>
+        <input th:field="*{passwd}" type="password" placeholder="password"/>
+        <input id="confirmPassword" type="password" placeholder="password"/>
+        <div id="passwordError" class="passwordErr">
+
+        </div>
+
+        <input id="btnCreate" type="button" value="Create" onclick="submitForm(event)"/>
+    </form>
+</div>
+</body>
+</html>
