@@ -37,9 +37,6 @@ public class InitializeRequests {
         }
         String username = (String) SessionUtil.getSessionValue(sessionAttributes, "username");
         Long userId = (Long) SessionUtil.getSessionValue(sessionAttributes, "userId");
-
-        System.out.println("username = " + username);
-        System.out.println("userId = " + userId);
         if(username!=null && userId!=null){
             return true;
         }

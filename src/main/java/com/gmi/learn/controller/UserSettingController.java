@@ -25,7 +25,6 @@ public class UserSettingController {
         UserSetting userSettings;
         Map<String, Object> returnMap=new HashMap<>();
         long userid= (Long)(SessionUtility.getSessionValue(httpSession,"userId")!=null? SessionUtility.getSessionValue(httpSession, "userId"):0L);
-        System.out.println("userid = " + userid);
         String theme;
         if(userid==0){
             theme="EAE21D";

@@ -32,7 +32,6 @@ public class SettingsController {
     public String loadSettingsForm(Model model, HttpSession session){
         model.addAttribute("themeColours",getThemeColours());
         model.addAttribute("themeForm",new Theme(SessionUtility.getSessionValue(session,"themeColour")!=null? SessionUtility.getSessionValue(session,"themeColour").toString():"EAE21D"));
-        System.out.println("theme = " + SessionUtility.getSessionValue(session,"themeColour"));
         return "settings";
 
     }

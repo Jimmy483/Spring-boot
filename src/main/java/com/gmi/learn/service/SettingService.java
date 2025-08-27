@@ -34,17 +34,11 @@ public SettingService(SettingRepository settingRepository){
                 UserSetting userSetting=userSettingOpt.get();
                 userSetting.setTheme(theme);
                 settingRepository.save(userSetting);
-            }else {
-                System.out.println("User's setting not found");
             }
-
         }catch (Throwable e){
             System.out.println("Something went wrong = " + e);
         }
         SessionUtility.storeSessionValue(session,"themeColour",theme);
-
-//        query here
-
     }
 
     public List<Map<String, Object>> getAllUserRequestsUrl(){

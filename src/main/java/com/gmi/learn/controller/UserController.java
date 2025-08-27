@@ -104,7 +104,7 @@ public class UserController {
         return "createAdminUser";
     }
 
-    @GetMapping(path="createAdminUser")
+    @PostMapping(path="createAdminUser")
     public String createAdminUser(@ModelAttribute UserInfo userInfo){
         userService.createUser(userInfo);
         userRoleService.changeUserRole(userService.getUserInfoByUserName(userInfo.getUsername()), "Admin");
