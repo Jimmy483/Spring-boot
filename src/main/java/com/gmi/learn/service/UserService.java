@@ -9,6 +9,7 @@ import com.gmi.learn.repository.UserRoleRepository;
 import jakarta.servlet.http.HttpSession;
 import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -32,7 +33,8 @@ public class UserService {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
-    private final String defaultDisplayImage = "/profilePics/defaultDP.jpg";
+    @Value("${default.display-image}")
+    private String defaultDisplayImage;
 
     @Autowired
     InitializeRequests requests;

@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpSession;
 import org.apache.catalina.manager.util.SessionUtils;
 import org.aspectj.bridge.Message;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +20,9 @@ import java.util.stream.Collectors;
 public class MessageService {
 
     private final MessageRepository messageRepository;
-    private final String defaultUserImage="/profilePics/defaultDP.jpg";
+
+    @Value("${default.display-image}")
+    private String defaultUserImage;
 
     @Autowired
     private UserService userService;

@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +27,8 @@ public class SettingsController {
     @Autowired
     UserCreateStatusService statusService;
 
-    private final String DEFAULT_THEME = "EAE21D";
+    @Value("${default.theme}")
+    private String DEFAULT_THEME;
 
     @GetMapping(path = "/loadSetting")
     public String loadSettingsForm(Model model, HttpSession session){
