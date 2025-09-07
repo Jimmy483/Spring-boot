@@ -11,6 +11,8 @@ spring:
 #    url: jdbc:mysql://localhost:3306/test
     username: sql12796455
     password: NehErjhFkr
+#    username: root
+#    password: password
     driver-class-name: com.mysql.cj.jdbc.Driver
     initialization-mode: always
     hikari:
@@ -22,6 +24,10 @@ spring:
     suffix: .html
     mode: HTML
     enabled: true
+
+default:
+  theme: EAE21D
+  display-image: /profilePics/defaultDP.jpg
 
 server:
   address: 0.0.0.0
